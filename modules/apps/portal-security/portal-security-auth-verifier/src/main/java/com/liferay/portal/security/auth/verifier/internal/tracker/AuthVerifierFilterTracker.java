@@ -18,8 +18,11 @@ import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
 import java.util.Hashtable;
+
+import javax.servlet.Filter;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -44,7 +47,7 @@ public class AuthVerifierFilterTracker {
 		throws InvalidSyntaxException {
 
 		String filterString = StringBundler.concat(
-			"(&(objectClass", ServletContextHelper.class.getName(), ")",
+			"(&(objectClass=", ServletContextHelper.class.getName(), ")",
 			"(com.liferay.auth.verifier.filter.enabled=true))");
 
 		_serviceTracker = ServiceTrackerFactory.open(
@@ -81,7 +84,7 @@ public class AuthVerifierFilterTracker {
 			ServiceReference<ServletContextHelper> serviceReference) {
 
 			return _bundleContext.registerService(
-				ServiceReference.class, serviceReference,
+				Filter.class, new AuthVerifierFilter(),
 				_buildProperties(serviceReference));
 		}
 
@@ -110,7 +113,9 @@ public class AuthVerifierFilterTracker {
 			Hashtable<String, Object> properties = new Hashtable<>();
 
 			for (String key : serviceReference.getPropertyKeys()) {
-				properties.put(key, serviceReference.getProperty(key));
+				if (!key.startsWith("osgi.http.whiteboard")) {
+					properties.put(key, serviceReference.getProperty(key));
+				}
 			}
 
 			Object contextName = serviceReference.getProperty(
@@ -124,10 +129,11 @@ public class AuthVerifierFilterTracker {
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT, value);
 
 			properties.put(
-				HttpWhiteboardConstants.
-					HTTP_WHITEBOARD_FILTER_INIT_PARAM_PREFIX +
-						"auth.verifier.OAuth2RestAuthVerifier.urls.includes",
-				"*");
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_NAME,
+				AuthVerifierFilter.class.getName());
+
+			properties.put(
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN, "/*");
 
 			return properties;
 		}
