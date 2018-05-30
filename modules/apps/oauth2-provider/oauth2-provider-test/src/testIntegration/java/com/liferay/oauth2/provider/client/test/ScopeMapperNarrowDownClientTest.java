@@ -44,11 +44,11 @@ import org.junit.runner.RunWith;
 @Ignore("TODO: We still need to fix this one")
 @RunAsClient
 @RunWith(Arquillian.class)
-public class ScopeMapperNarrowDownClientTest extends BaseClientTest {
+public class ScopeMapperNarrowDownClientTest extends BaseClientTestCase {
 
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
-		return BaseClientTest.getDeployment(
+		return BaseClientTestCase.getDeployment(
 			ScopeMapperNarrowDownClientTestPreparator.class);
 	}
 

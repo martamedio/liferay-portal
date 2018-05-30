@@ -32,11 +32,11 @@ import org.junit.runner.RunWith;
  */
 @RunAsClient
 @RunWith(Arquillian.class)
-public class TokenCompanyTest extends BaseClientTest {
+public class TokenCompanyTest extends BaseClientTestCase {
 
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
-		return BaseClientTest.getDeployment(
+		return BaseClientTestCase.getDeployment(
 			AnnotatedApplicationBundleActivator.class);
 	}
 

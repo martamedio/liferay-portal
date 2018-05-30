@@ -39,11 +39,11 @@ import org.junit.runner.RunWith;
  */
 @RunAsClient
 @RunWith(Arquillian.class)
-public class GrantAuthorizationCodeKillSwitchTest extends BaseClientTest {
+public class GrantAuthorizationCodeKillSwitchTest extends BaseClientTestCase {
 
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
-		return BaseClientTest.getDeployment(
+		return BaseClientTestCase.getDeployment(
 			GrantKillClientCredentialsSwitchTestPreparator.class);
 	}
 

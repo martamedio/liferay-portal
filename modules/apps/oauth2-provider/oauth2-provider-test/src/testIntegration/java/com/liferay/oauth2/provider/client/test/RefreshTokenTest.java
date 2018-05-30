@@ -48,11 +48,11 @@ import org.junit.runner.RunWith;
  */
 @RunAsClient
 @RunWith(Arquillian.class)
-public class RefreshTokenTest extends BaseClientTest {
+public class RefreshTokenTest extends BaseClientTestCase {
 
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
-		return BaseClientTest.getDeployment(
+		return BaseClientTestCase.getDeployment(
 			TokenExpeditionTestPreparator.class);
 	}
 

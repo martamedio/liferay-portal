@@ -42,11 +42,12 @@ import org.junit.runner.RunWith;
  */
 @RunAsClient
 @RunWith(Arquillian.class)
-public class AnnotationsAndHttpApplicationClientTest extends BaseClientTest {
+public class AnnotationsAndHttpApplicationClientTest
+	extends BaseClientTestCase {
 
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
-		return BaseClientTest.getDeployment(
+		return BaseClientTestCase.getDeployment(
 			AnnotationsAndHttpBundleActivator.class);
 	}
 

@@ -44,11 +44,12 @@ import org.junit.runner.RunWith;
  */
 @RunAsClient
 @RunWith(Arquillian.class)
-public class JsonWebServiceTest extends BaseClientTest {
+public class JsonWebServiceTest extends BaseClientTestCase {
 
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
-		return BaseClientTest.getDeployment(JsonWebServiceTestPreparator.class);
+		return BaseClientTestCase.getDeployment(
+			JsonWebServiceTestPreparator.class);
 	}
 
 	@Test

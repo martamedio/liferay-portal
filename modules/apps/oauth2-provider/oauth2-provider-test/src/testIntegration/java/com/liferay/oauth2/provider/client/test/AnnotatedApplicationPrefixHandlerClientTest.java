@@ -42,11 +42,11 @@ import org.junit.runner.RunWith;
 @RunAsClient
 @RunWith(Arquillian.class)
 public class AnnotatedApplicationPrefixHandlerClientTest
-	extends BaseClientTest {
+	extends BaseClientTestCase {
 
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
-		return BaseClientTest.getDeployment(
+		return BaseClientTestCase.getDeployment(
 			AnnotatedApplicationPrefixHandlerBundleActivator.class);
 	}
 

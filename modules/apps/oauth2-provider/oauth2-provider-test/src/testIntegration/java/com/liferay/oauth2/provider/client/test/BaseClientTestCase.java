@@ -74,7 +74,7 @@ import org.osgi.framework.BundleActivator;
 /**
  * @author Carlos Sierra Andrés
  */
-public class BaseClientTest {
+public abstract class BaseClientTestCase {
 
 	public static Archive<?> getDeployment(
 			Class<? extends BundleActivator> bundleActivatorClass)
