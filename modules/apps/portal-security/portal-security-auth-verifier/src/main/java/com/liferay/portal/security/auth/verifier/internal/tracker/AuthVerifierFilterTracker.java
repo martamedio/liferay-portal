@@ -18,6 +18,7 @@ import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
+import java.util.Dictionary;
 import java.util.Hashtable;
 
 import javax.servlet.Filter;
@@ -101,7 +102,7 @@ public class AuthVerifierFilterTracker {
 		private Hashtable<String, Object> _buildProperties(
 			ServiceReference<ServletContextHelper> serviceReference) {
 
-			Hashtable<String, Object> properties = new Hashtable<>();
+			Dictionary<String, Object> properties = new Hashtable<>();
 
 			for (String key : serviceReference.getPropertyKeys()) {
 				if (!key.startsWith("osgi.http.whiteboard")) {
