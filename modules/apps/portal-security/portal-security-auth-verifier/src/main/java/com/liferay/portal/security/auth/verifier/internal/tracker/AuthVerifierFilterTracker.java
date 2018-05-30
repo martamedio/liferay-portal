@@ -100,7 +100,7 @@ public class AuthVerifierFilterTracker {
 			serviceRegistration.unregister();
 		}
 
-		private Hashtable<String, Object> _buildProperties(
+		private Dictionary<String, ?> _buildProperties(
 			ServiceReference<ServletContextHelper> serviceReference) {
 
 			Dictionary<String, Object> properties = new HashMapDictionary<>();
