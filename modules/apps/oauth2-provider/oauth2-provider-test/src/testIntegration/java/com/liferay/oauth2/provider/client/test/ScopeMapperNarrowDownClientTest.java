@@ -94,7 +94,7 @@ public class ScopeMapperNarrowDownClientTest extends BaseClientTest {
 			scopeMapperProperties.put(
 				"osgi.jaxrs.name", TestApplication.class.getName());
 
-			createConfigurationFactory(
+			createFactoryConfiguration(
 				"com.liferay.oauth2.provider.scope.internal.configuration." +
 					"ConfigurableScopeMapperConfiguration",
 				scopeMapperProperties);

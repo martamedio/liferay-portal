@@ -131,12 +131,12 @@ public class AnnotationsAndHttpPrefixApplicationClientTest
 
 			bundlePrefixProperties.put("include.bundle.symbolic.name", false);
 
-			createConfigurationFactory(
+			createFactoryConfiguration(
 				"com.liferay.oauth2.provider.scope.internal.configuration." +
 					"ConfigurableScopeMapperConfiguration",
 				scopeMapperProperties);
 
-			createConfigurationFactory(
+			createFactoryConfiguration(
 				"com.liferay.oauth2.provider.scope.internal.configuration." +
 					"BundlePrefixHandlerFactoryConfiguration",
 				bundlePrefixProperties);
