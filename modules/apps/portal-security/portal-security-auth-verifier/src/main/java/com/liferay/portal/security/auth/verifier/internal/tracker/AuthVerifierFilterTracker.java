@@ -54,8 +54,6 @@ public class AuthVerifierFilterTracker {
 			bundleContext, filterString,
 			new ServletContextAuthVerifierServiceTrackerCustomizer(
 				bundleContext));
-
-		_serviceTracker.open();
 	}
 
 	@Deactivate
