@@ -108,7 +108,9 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 
 		if (!GetterUtil.getBoolean(
 				applicationProperties.get(
-					"com.liferay.auth.verifier.filter.enabled"))) {
+					"com.liferay.auth.verifier.filter.enabled")) &&
+			!applicationProperties.containsKey(
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT)) {
 
 			registerAuthVerifierFilter(
 				MapUtil.getString(
