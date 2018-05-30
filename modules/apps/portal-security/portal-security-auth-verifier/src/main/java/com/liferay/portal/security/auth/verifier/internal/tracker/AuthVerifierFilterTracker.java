@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
 import java.util.Dictionary;
-import java.util.Hashtable;
 
 import javax.servlet.Filter;
 
@@ -117,13 +116,11 @@ public class AuthVerifierFilterTracker {
 				serviceReference.getProperty(
 					HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME));
 
-			String httpWhiteboardContextSelect = StringBundler.concat(
-				"(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME, "=",
-				contextName, ")");
-
 			properties.put(
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT,
-				httpWhiteboardContextSelect);
+				StringBundler.concat(
+					"(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
+					"=", contextName, ")"));
 			properties.put(
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN, "/*");
 			properties.put(
