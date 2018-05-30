@@ -36,6 +36,8 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Application;
 
@@ -44,6 +46,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
+import org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Carlos Sierra Andrés
@@ -110,10 +115,10 @@ public abstract class BaseTestPreparatorBundleActivator
 		throws PortalException {
 
 		ServiceReference<OAuth2ApplicationLocalService> serviceReference =
-			_bundleContext.getServiceReference(
+			bundleContext.getServiceReference(
 				OAuth2ApplicationLocalService.class);
 
-		_oAuth2ApplicationLocalService = _bundleContext.getService(
+		_oAuth2ApplicationLocalService = bundleContext.getService(
 			serviceReference);
 
 		try {
@@ -135,7 +140,7 @@ public abstract class BaseTestPreparatorBundleActivator
 			return oAuth2Application;
 		}
 		finally {
-			_bundleContext.ungetService(serviceReference);
+			bundleContext.ungetService(serviceReference);
 		}
 	}
 
@@ -153,7 +158,7 @@ public abstract class BaseTestPreparatorBundleActivator
 		properties.put("osgi.jaxrs.application.base", "/oauth2-test/" + path);
 
 		ServiceRegistration<Application> serviceRegistration =
-			_bundleContext.registerService(
+			bundleContext.registerService(
 				Application.class, application, properties);
 
 		autoCloseables.add(serviceRegistration::unregister);
@@ -163,7 +168,7 @@ public abstract class BaseTestPreparatorBundleActivator
 
 	@Override
 	public void start(BundleContext bundleContext) {
-		_bundleContext = bundleContext;
+		this.bundleContext = bundleContext;
 
 		autoCloseables = new ArrayList<>();
 
@@ -197,7 +202,7 @@ public abstract class BaseTestPreparatorBundleActivator
 
 		Configuration factoryConfiguration =
 			TestUtils.createFactoryConfiguration(
-				_bundleContext, factoryPid, properties);
+				bundleContext, factoryPid, properties);
 
 		autoCloseables.add(factoryConfiguration::delete);
 
@@ -217,13 +222,59 @@ public abstract class BaseTestPreparatorBundleActivator
 			availableScopes);
 	}
 
+	protected void executeAndWaitForReadiness(Runnable runnable) {
+		CountDownLatch countDownLatch = new CountDownLatch(23);
+
+		ServiceTracker<JaxrsServiceRuntime, Object> serviceTracker =
+			new ServiceTracker<>(
+				bundleContext, JaxrsServiceRuntime.class,
+				new ServiceTrackerCustomizer<JaxrsServiceRuntime, Object>() {
+
+					@Override
+					public Object addingService(
+						ServiceReference<JaxrsServiceRuntime> reference) {
+
+						return reference;
+					}
+
+					@Override
+					public void modifiedService(
+						ServiceReference<JaxrsServiceRuntime> reference,
+						Object service) {
+
+						countDownLatch.countDown();
+					}
+
+					@Override
+					public void removedService(
+						ServiceReference<JaxrsServiceRuntime> reference,
+						Object service) {
+					}
+
+				});
+
+		serviceTracker.open();
+
+		runnable.run();
+
+		try {
+			countDownLatch.await(30, TimeUnit.SECONDS);
+		}
+		catch (Exception e) {
+
+		}
+		finally {
+			serviceTracker.close();
+		}
+	}
+
 	protected abstract void prepareTest() throws Exception;
 
 	protected ServiceRegistration<PrefixHandlerFactory> registerPrefixHandler(
 		PrefixHandler prefixHandler, Dictionary<String, Object> properties) {
 
 		ServiceRegistration<PrefixHandlerFactory> serviceRegistration =
-			_bundleContext.registerService(
+			bundleContext.registerService(
 				PrefixHandlerFactory.class, a -> prefixHandler, properties);
 
 		autoCloseables.add(serviceRegistration::unregister);
@@ -235,7 +286,7 @@ public abstract class BaseTestPreparatorBundleActivator
 		ScopeMapper scopeMapper, Dictionary<String, Object> properties) {
 
 		ServiceRegistration<ScopeMapper> serviceRegistration =
-			_bundleContext.registerService(
+			bundleContext.registerService(
 				ScopeMapper.class, scopeMapper, properties);
 
 		autoCloseables.add(serviceRegistration::unregister);
@@ -250,7 +301,7 @@ public abstract class BaseTestPreparatorBundleActivator
 
 		try {
 			configuration = TestUtils.configurationExists(
-				_bundleContext, servicePid);
+				bundleContext, servicePid);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -260,28 +311,33 @@ public abstract class BaseTestPreparatorBundleActivator
 
 		if (configuration == null) {
 			TestUtils.updateConfiguration(
-				_bundleContext, servicePid, properties);
+				bundleContext, servicePid, properties);
 
 			autoCloseables.add(
-				() -> TestUtils.deleteConfiguration(
-					_bundleContext, servicePid));
+				() -> TestUtils.deleteConfiguration(bundleContext, servicePid));
 		}
 		else {
 			Dictionary<String, Object> oldProperties =
 				configuration.getProperties();
 
 			TestUtils.updateConfiguration(
-				_bundleContext, servicePid, properties);
+				bundleContext, servicePid, properties);
 
 			autoCloseables.add(
 				() -> TestUtils.updateConfiguration(
-					_bundleContext, servicePid, oldProperties));
+					bundleContext, servicePid, oldProperties));
 		}
 	}
 
-	protected ArrayList<AutoCloseable> autoCloseables;
+	protected void waitForReadiness() {
+		executeAndWaitForReadiness(
+			() -> {
+			});
+	}
 
-	private BundleContext _bundleContext;
+	protected ArrayList<AutoCloseable> autoCloseables;
+	protected BundleContext bundleContext;
+
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 }

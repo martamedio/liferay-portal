@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PortalUtil;
 
+import java.util.Dictionary;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -57,21 +59,27 @@ public class GrantClientKillSwitchTest extends BaseClientTest {
 
 		@Override
 		protected void prepareTest() throws Exception {
-			HashMapDictionary<String, Object> properties =
-				new HashMapDictionary<>();
+			executeAndWaitForReadiness(
+				() -> {
+					HashMapDictionary<String, Object> properties =
+						new HashMapDictionary<>();
 
-			properties.put("oauth2.allow.client.credentials.grant", false);
+					properties.put(
+						"oauth2.allow.client.credentials.grant", false);
 
-			updateOrCreateConfiguration(
-				"com.liferay.oauth2.provider.configuration." +
-					"OAuth2ProviderConfiguration",
-				properties);
+					autoCloseables.add(this::waitForReadiness);
+
+					updateOrCreateConfiguration(
+						"com.liferay.oauth2.provider.configuration." +
+							"OAuth2ProviderConfiguration",
+						properties);
+				});
 
 			long defaultCompanyId = PortalUtil.getDefaultCompanyId();
 
 			User user = UserTestUtil.getAdminUser(defaultCompanyId);
 
-			properties = new HashMapDictionary<>();
+			Dictionary<String, Object> properties = new HashMapDictionary<>();
 
 			properties.put("oauth2.scopechecker.type", "annotations");
 

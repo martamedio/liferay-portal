@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Collections;
+import java.util.Dictionary;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -61,21 +62,27 @@ public class GrantAuthorizationCodePKCEKillSwitchTest extends BaseClientTest {
 
 		@Override
 		protected void prepareTest() throws Exception {
-			HashMapDictionary<String, Object> properties =
-				new HashMapDictionary<>();
+			executeAndWaitForReadiness(
+				() -> {
+					HashMapDictionary<String, Object> properties =
+						new HashMapDictionary<>();
 
-			properties.put("oauth2.allow.authorization.code.pkce.grant", false);
+					properties.put(
+						"oauth2.allow.authorization.code.pkce.grant", false);
 
-			updateOrCreateConfiguration(
-				"com.liferay.oauth2.provider.configuration." +
-					"OAuth2ProviderConfiguration",
-				properties);
+					autoCloseables.add(this::waitForReadiness);
+
+					updateOrCreateConfiguration(
+						"com.liferay.oauth2.provider.configuration." +
+							"OAuth2ProviderConfiguration",
+						properties);
+				});
 
 			long defaultCompanyId = PortalUtil.getDefaultCompanyId();
 
 			User user = UserTestUtil.getAdminUser(defaultCompanyId);
 
-			properties = new HashMapDictionary<>();
+			Dictionary<String, Object> properties = new HashMapDictionary<>();
 
 			properties.put("oauth2.scopechecker.type", "annotations");
 
