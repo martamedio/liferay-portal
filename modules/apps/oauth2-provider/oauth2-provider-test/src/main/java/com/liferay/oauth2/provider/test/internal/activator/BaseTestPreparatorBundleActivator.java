@@ -403,7 +403,10 @@ public abstract class BaseTestPreparatorBundleActivator
 		runnable.run();
 
 		try {
-			countDownLatch.await(30, TimeUnit.SECONDS);
+			if (!countDownLatch.await(10, TimeUnit.MINUTES)) {
+				throw new IllegalStateException(
+					"timeout waiting for fromework to be ready");
+			}
 		}
 		catch (Exception e) {
 
