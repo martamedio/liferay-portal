@@ -116,32 +116,6 @@ public abstract class BaseTestPreparatorBundleActivator
 		return user;
 	}
 
-	protected Configuration configurationExists(
-			BundleContext bundleContext, String pid)
-		throws InvalidSyntaxException, IOException {
-
-		ServiceReference<ConfigurationAdmin> serviceReference =
-			bundleContext.getServiceReference(ConfigurationAdmin.class);
-
-		ConfigurationAdmin configurationAdmin = bundleContext.getService(
-			serviceReference);
-
-		try {
-			Configuration[] configurations =
-				configurationAdmin.listConfigurations(
-					"(" + Constants.SERVICE_PID + "=" + pid + ")");
-
-			if (ArrayUtil.isEmpty(configurations)) {
-				return null;
-			}
-
-			return configurations[0];
-		}
-		finally {
-			bundleContext.ungetService(serviceReference);
-		}
-	}
-
 	protected Company createCompany(String hostName) throws PortalException {
 		String virtualHostname = hostName + ".xyz";
 
@@ -416,6 +390,32 @@ public abstract class BaseTestPreparatorBundleActivator
 		}
 	}
 
+	protected Configuration getConfiguration(
+			BundleContext bundleContext, String pid)
+		throws InvalidSyntaxException, IOException {
+
+		ServiceReference<ConfigurationAdmin> serviceReference =
+			bundleContext.getServiceReference(ConfigurationAdmin.class);
+
+		ConfigurationAdmin configurationAdmin = bundleContext.getService(
+			serviceReference);
+
+		try {
+			Configuration[] configurations =
+				configurationAdmin.listConfigurations(
+					"(" + Constants.SERVICE_PID + "=" + pid + ")");
+
+			if (ArrayUtil.isEmpty(configurations)) {
+				return null;
+			}
+
+			return configurations[0];
+		}
+		finally {
+			bundleContext.ungetService(serviceReference);
+		}
+	}
+
 	protected boolean isIncluded(
 		Dictionary<String, ?> properties1, Dictionary<String, ?> properties2) {
 
@@ -558,7 +558,7 @@ public abstract class BaseTestPreparatorBundleActivator
 		Configuration configuration = null;
 
 		try {
-			configuration = configurationExists(bundleContext, servicePid);
+			configuration = getConfiguration(bundleContext, servicePid);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
