@@ -61,7 +61,7 @@ public class AuthVerifierFilterTracker {
 
 	private ServiceTracker<?, ?> _serviceTracker;
 
-	private class ServletContextAuthVerifierServiceTrackerCustomizer
+	private static class ServletContextAuthVerifierServiceTrackerCustomizer
 		implements
 			ServiceTrackerCustomizer
 				<ServletContextHelper, ServiceRegistration<?>> {
