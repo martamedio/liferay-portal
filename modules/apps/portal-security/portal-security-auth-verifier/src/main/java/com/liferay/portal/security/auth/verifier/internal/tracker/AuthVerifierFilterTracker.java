@@ -96,8 +96,6 @@ public class AuthVerifierFilterTracker {
 			ServiceRegistration<?> serviceRegistration) {
 
 			serviceRegistration.unregister();
-
-			_bundleContext.ungetService(serviceReference);
 		}
 
 		private Hashtable<String, Object> _buildProperties(
