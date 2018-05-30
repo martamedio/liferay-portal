@@ -47,7 +47,7 @@ public class AuthVerifierFilterTracker {
 		throws InvalidSyntaxException {
 
 		String filterString = StringBundler.concat(
-			"(&(com.liferay.auth.verifier.filter.enabled=true)", "(",
+			"(&(com.liferay.auth.verifier.filter.enabled=true)(",
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME, "=*)",
 			"(objectClass=", ServletContextHelper.class.getName(), "))");
 
@@ -121,6 +121,7 @@ public class AuthVerifierFilterTracker {
 				StringBundler.concat(
 					"(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
 					"=", contextName, ")"));
+
 			properties.put(
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN, "/*");
 			properties.put(
