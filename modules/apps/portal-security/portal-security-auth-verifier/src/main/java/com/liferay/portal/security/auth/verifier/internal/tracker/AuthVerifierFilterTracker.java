@@ -15,6 +15,7 @@
 package com.liferay.portal.security.auth.verifier.internal.tracker;
 
 import com.liferay.osgi.util.ServiceTrackerFactory;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
@@ -111,12 +112,13 @@ public class AuthVerifierFilterTracker {
 				}
 			}
 
-			Object contextName = serviceReference.getProperty(
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME);
+			String contextName = GetterUtil.getString(
+				serviceReference.getProperty(
+					HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME));
 
 			String value = StringBundler.concat(
 				"(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME, "=",
-				contextName.toString(), ")");
+				contextName, ")");
 
 			properties.put(
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT, value);
