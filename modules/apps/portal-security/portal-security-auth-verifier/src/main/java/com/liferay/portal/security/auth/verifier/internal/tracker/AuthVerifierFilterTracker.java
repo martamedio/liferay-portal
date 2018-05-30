@@ -15,8 +15,6 @@
 package com.liferay.portal.security.auth.verifier.internal.tracker;
 
 import com.liferay.osgi.util.ServiceTrackerFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
@@ -60,9 +58,6 @@ public class AuthVerifierFilterTracker {
 	protected void deactivate() {
 		_serviceTracker.close();
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AuthVerifierFilterTracker.class);
 
 	private ServiceTracker<?, ?> _serviceTracker;
 
