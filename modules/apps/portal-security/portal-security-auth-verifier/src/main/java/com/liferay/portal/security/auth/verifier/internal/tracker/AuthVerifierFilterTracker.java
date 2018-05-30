@@ -117,12 +117,13 @@ public class AuthVerifierFilterTracker {
 				serviceReference.getProperty(
 					HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME));
 
-			String value = StringBundler.concat(
+			String httpWhiteboardContextSelect = StringBundler.concat(
 				"(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME, "=",
 				contextName, ")");
 
 			properties.put(
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT, value);
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT,
+				httpWhiteboardContextSelect);
 
 			properties.put(
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_NAME,
