@@ -15,12 +15,12 @@
 package com.liferay.portal.security.auth.verifier.internal.tracker;
 
 import com.liferay.osgi.util.ServiceTrackerFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
-import java.util.Hashtable;
+import java.util.Dictionary;
 
 import javax.servlet.Filter;
 
@@ -47,15 +47,14 @@ public class AuthVerifierFilterTracker {
 		throws InvalidSyntaxException {
 
 		String filterString = StringBundler.concat(
-			"(&(objectClass=", ServletContextHelper.class.getName(), ")",
-			"(com.liferay.auth.verifier.filter.enabled=true))");
+			"(&(com.liferay.auth.verifier.filter.enabled=true)(",
+			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME, "=*)",
+			"(objectClass=", ServletContextHelper.class.getName(), "))");
 
 		_serviceTracker = ServiceTrackerFactory.open(
 			bundleContext, filterString,
 			new ServletContextAuthVerifierServiceTrackerCustomizer(
 				bundleContext));
-
-		_serviceTracker.open();
 	}
 
 	@Deactivate
@@ -63,12 +62,9 @@ public class AuthVerifierFilterTracker {
 		_serviceTracker.close();
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		AuthVerifierFilterTracker.class);
-
 	private ServiceTracker<?, ?> _serviceTracker;
 
-	private class ServletContextAuthVerifierServiceTrackerCustomizer
+	private static class ServletContextAuthVerifierServiceTrackerCustomizer
 		implements
 			ServiceTrackerCustomizer
 				<ServletContextHelper, ServiceRegistration<?>> {
@@ -103,14 +99,12 @@ public class AuthVerifierFilterTracker {
 			ServiceRegistration<?> serviceRegistration) {
 
 			serviceRegistration.unregister();
-
-			_bundleContext.ungetService(serviceReference);
 		}
 
-		private Hashtable<String, Object> _buildProperties(
+		private Dictionary<String, ?> _buildProperties(
 			ServiceReference<ServletContextHelper> serviceReference) {
 
-			Hashtable<String, Object> properties = new Hashtable<>();
+			Dictionary<String, Object> properties = new HashMapDictionary<>();
 
 			for (String key : serviceReference.getPropertyKeys()) {
 				if (!key.startsWith("osgi.http.whiteboard")) {
@@ -118,22 +112,21 @@ public class AuthVerifierFilterTracker {
 				}
 			}
 
-			Object contextName = serviceReference.getProperty(
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME);
-
-			String value = StringBundler.concat(
-				"(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME, "=",
-				contextName.toString(), ")");
+			String contextName = GetterUtil.getString(
+				serviceReference.getProperty(
+					HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME));
 
 			properties.put(
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT, value);
-
-			properties.put(
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_NAME,
-				AuthVerifierFilter.class.getName());
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT,
+				StringBundler.concat(
+					"(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
+					"=", contextName, ")"));
 
 			properties.put(
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN, "/*");
+			properties.put(
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_NAME,
+				AuthVerifierFilter.class.getName());
 
 			return properties;
 		}
