@@ -47,8 +47,8 @@ public class AuthVerifierFilterTracker {
 		throws InvalidSyntaxException {
 
 		String filterString = StringBundler.concat(
-			"(&(objectClass=", ServletContextHelper.class.getName(), ")",
-			"(com.liferay.auth.verifier.filter.enabled=true))");
+			"(&(com.liferay.auth.verifier.filter.enabled=true)",
+			"(objectClass=", ServletContextHelper.class.getName(), "))");
 
 		_serviceTracker = ServiceTrackerFactory.open(
 			bundleContext, filterString,
