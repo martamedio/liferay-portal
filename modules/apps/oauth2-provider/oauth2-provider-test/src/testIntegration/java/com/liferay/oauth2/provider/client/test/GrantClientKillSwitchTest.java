@@ -67,12 +67,13 @@ public class GrantClientKillSwitchTest extends BaseClientTestCase {
 					properties.put(
 						"oauth2.allow.client.credentials.grant", false);
 
-					autoCloseables.add(this::waitForReadiness);
-
-					updateOrCreateConfiguration(
+					Runnable runnable = updateOrCreateConfiguration(
 						"com.liferay.oauth2.provider.configuration." +
 							"OAuth2ProviderConfiguration",
 						properties);
+
+					autoCloseables.add(
+						() -> executeAndWaitForReadiness(runnable));
 				});
 
 			long defaultCompanyId = PortalUtil.getDefaultCompanyId();

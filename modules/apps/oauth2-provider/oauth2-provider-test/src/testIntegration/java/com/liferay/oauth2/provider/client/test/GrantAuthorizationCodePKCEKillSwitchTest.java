@@ -71,12 +71,13 @@ public class GrantAuthorizationCodePKCEKillSwitchTest
 					properties.put(
 						"oauth2.allow.authorization.code.pkce.grant", false);
 
-					autoCloseables.add(this::waitForReadiness);
-
-					updateOrCreateConfiguration(
+					Runnable runnable = updateOrCreateConfiguration(
 						"com.liferay.oauth2.provider.configuration." +
 							"OAuth2ProviderConfiguration",
 						properties);
+
+					autoCloseables.add(
+						() -> executeAndWaitForReadiness(runnable));
 				});
 
 			long defaultCompanyId = PortalUtil.getDefaultCompanyId();

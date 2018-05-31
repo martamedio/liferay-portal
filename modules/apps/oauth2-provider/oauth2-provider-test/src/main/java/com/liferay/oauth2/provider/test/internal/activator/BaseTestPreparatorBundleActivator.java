@@ -383,7 +383,6 @@ public abstract class BaseTestPreparatorBundleActivator
 			}
 		}
 		catch (Exception e) {
-
 		}
 		finally {
 			serviceTracker.close();
@@ -552,7 +551,7 @@ public abstract class BaseTestPreparatorBundleActivator
 		}
 	}
 
-	protected void updateOrCreateConfiguration(
+	protected Runnable updateOrCreateConfiguration(
 		String servicePid, Dictionary<String, ?> properties) {
 
 		Configuration configuration = null;
@@ -563,14 +562,14 @@ public abstract class BaseTestPreparatorBundleActivator
 		catch (Exception e) {
 			e.printStackTrace();
 
-			return;
+			return () -> {
+			};
 		}
 
 		if (configuration == null) {
 			updateConfiguration(bundleContext, servicePid, properties);
 
-			autoCloseables.add(
-				() -> deleteConfiguration(bundleContext, servicePid));
+			return () -> deleteConfiguration(bundleContext, servicePid);
 		}
 		else {
 			Dictionary<String, Object> oldProperties =
@@ -578,16 +577,9 @@ public abstract class BaseTestPreparatorBundleActivator
 
 			updateConfiguration(bundleContext, servicePid, properties);
 
-			autoCloseables.add(
-				() -> updateConfiguration(
-					bundleContext, servicePid, oldProperties));
+			return () -> updateConfiguration(
+				bundleContext, servicePid, oldProperties);
 		}
-	}
-
-	protected void waitForReadiness() {
-		executeAndWaitForReadiness(
-			() -> {
-			});
 	}
 
 	protected ArrayList<AutoCloseable> autoCloseables;
