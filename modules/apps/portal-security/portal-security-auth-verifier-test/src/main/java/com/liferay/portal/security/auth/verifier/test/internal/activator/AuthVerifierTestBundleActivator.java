@@ -17,6 +17,7 @@ package com.liferay.portal.security.auth.verifier.test.internal.activator;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -38,7 +39,7 @@ import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 /**
  * @author Marta Medio
  */
-public class JaxServletBundleActivator implements BundleActivator {
+public class AuthVerifierTestBundleActivator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) {
@@ -130,12 +131,13 @@ public class JaxServletBundleActivator implements BundleActivator {
 			throws IOException {
 
 			String remoteUser = request.getRemoteUser();
+			PrintWriter writer = response.getWriter();
 
 			if (remoteUser == null) {
-				response.getWriter().write("");
+				writer.write("");
 			}
 			else {
-				response.getWriter().write(remoteUser);
+				writer.write(remoteUser);
 			}
 		}
 
