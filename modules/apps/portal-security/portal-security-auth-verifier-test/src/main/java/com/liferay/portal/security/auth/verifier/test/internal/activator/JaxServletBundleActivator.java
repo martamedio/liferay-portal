@@ -46,11 +46,11 @@ public class JaxServletBundleActivator implements BundleActivator {
 
 		properties.put("com.liferay.auth.verifier.filter.enabled", true);
 		properties.put(
-			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
-			"auth-verifier-filter-test");
-		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
 			"/auth-verifier-filter-test");
+		properties.put(
+			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
+			"auth-verifier-filter-test");
 		properties.put("test-servlet-context-helper", true);
 
 		_serviceRegistrations.add(
@@ -61,12 +61,12 @@ public class JaxServletBundleActivator implements BundleActivator {
 
 		properties = new HashMapDictionary<>();
 
-		properties.put(
-			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
-			"no-auth-verifier-filter-test");
 		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
 			"/no-auth-verifier-filter-test");
+		properties.put(
+			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
+			"no-auth-verifier-filter-test");
 		properties.put("test-servlet-context-helper", true);
 
 		_serviceRegistrations.add(
@@ -78,11 +78,11 @@ public class JaxServletBundleActivator implements BundleActivator {
 		properties = new HashMapDictionary<>();
 
 		properties.put(
-			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
-			"/getUserName");
-		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT,
 			"(test-servlet-context-helper=true)");
+		properties.put(
+			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
+			"/getUserName");
 
 		_serviceRegistrations.add(
 			bundleContext.registerService(
