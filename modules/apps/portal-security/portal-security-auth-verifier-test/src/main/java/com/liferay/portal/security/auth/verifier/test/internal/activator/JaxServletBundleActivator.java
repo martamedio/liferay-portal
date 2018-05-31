@@ -129,7 +129,14 @@ public class JaxServletBundleActivator implements BundleActivator {
 				HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
-			response.getWriter().write(request.getRemoteUser());
+			String remoteUser = request.getRemoteUser();
+
+			if (remoteUser == null) {
+				response.getWriter().write("");
+			}
+			else {
+				response.getWriter().write(remoteUser);
+			}
 		}
 
 	}
