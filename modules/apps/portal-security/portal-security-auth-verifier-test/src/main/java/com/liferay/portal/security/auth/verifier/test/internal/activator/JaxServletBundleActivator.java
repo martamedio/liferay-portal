@@ -44,10 +44,6 @@ public class JaxServletBundleActivator implements BundleActivator {
 	public void start(BundleContext bundleContext) {
 		Dictionary<String, Object> authContextProperties =
 			new HashMapDictionary<>();
-		Dictionary<String, Object> contextProperties =
-			new HashMapDictionary<>();
-		Dictionary<String, Object> servletProperties =
-			new HashMapDictionary<>();
 
 		authContextProperties.put(
 			"com.liferay.auth.verifier.filter.enabled", true);
@@ -65,6 +61,9 @@ public class JaxServletBundleActivator implements BundleActivator {
 				new ServletContextHelper(bundleContext.getBundle()) {},
 				authContextProperties));
 
+		Dictionary<String, Object> contextProperties =
+			new HashMapDictionary<>();
+
 		contextProperties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
 			"no-auth-verifier-filter-test");
@@ -78,6 +77,9 @@ public class JaxServletBundleActivator implements BundleActivator {
 				ServletContextHelper.class,
 				new ServletContextHelper(bundleContext.getBundle()) {},
 				contextProperties));
+
+		Dictionary<String, Object> servletProperties =
+			new HashMapDictionary<>();
 
 		servletProperties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
