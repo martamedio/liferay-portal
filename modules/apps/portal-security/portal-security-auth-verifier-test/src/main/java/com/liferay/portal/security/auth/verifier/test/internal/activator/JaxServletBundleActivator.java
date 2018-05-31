@@ -42,49 +42,46 @@ public class JaxServletBundleActivator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) {
-		Dictionary<String, Object> authContextProperties =
-			new HashMapDictionary<>();
+		Dictionary<String, Object> properties = new HashMapDictionary<>();
 
-		authContextProperties.put(
+		properties.put(
 			"com.liferay.auth.verifier.filter.enabled", true);
-		authContextProperties.put(
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
 			"auth-verifier-filter-test");
-		authContextProperties.put(
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
 			"/auth-verifier-filter-test");
-		authContextProperties.put("test-servlet-context-helper", true);
+		properties.put("test-servlet-context-helper", true);
 
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				ServletContextHelper.class,
 				new ServletContextHelper(bundleContext.getBundle()) {},
-				authContextProperties));
+				properties));
 
-		Dictionary<String, Object> contextProperties =
-			new HashMapDictionary<>();
+		properties = new HashMapDictionary<>();
 
-		contextProperties.put(
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
 			"no-auth-verifier-filter-test");
-		contextProperties.put(
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
 			"/no-auth-verifier-filter-test");
-		contextProperties.put("test-servlet-context-helper", true);
+		properties.put("test-servlet-context-helper", true);
 
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				ServletContextHelper.class,
 				new ServletContextHelper(bundleContext.getBundle()) {},
-				contextProperties));
+				properties));
 
-		Dictionary<String, Object> servletProperties =
-			new HashMapDictionary<>();
+		properties = new HashMapDictionary<>();
 
-		servletProperties.put(
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
 			"/getUserName");
-		servletProperties.put(
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT,
 			"(test-servlet-context-helper=true)");
 
@@ -109,7 +106,7 @@ public class JaxServletBundleActivator implements BundleActivator {
 					}
 
 				},
-				servletProperties));
+				properties));
 	}
 
 	@Override
