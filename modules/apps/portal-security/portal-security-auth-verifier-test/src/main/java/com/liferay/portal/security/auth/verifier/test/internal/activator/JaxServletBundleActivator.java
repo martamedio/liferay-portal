@@ -14,11 +14,12 @@
 
 package com.liferay.portal.security.auth.verifier.test.internal.activator;
 
+import com.liferay.portal.kernel.util.HashMapDictionary;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.servlet.Servlet;
@@ -41,46 +42,47 @@ public class JaxServletBundleActivator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) {
-		Dictionary<String, Object> authContextProperties = new Hashtable<>();
-		Dictionary<String, Object> contextProperties = new Hashtable<>();
-		Dictionary<String, Object> servletProperties = new Hashtable<>();
+		Dictionary<String, Object> properties = new HashMapDictionary<>();
 
-		authContextProperties.put(
-			"com.liferay.auth.verifier.filter.enabled", true);
-		authContextProperties.put(
-			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
-			"auth-verifier-filter-test");
-		authContextProperties.put(
+		properties.put("com.liferay.auth.verifier.filter.enabled", true);
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
 			"/auth-verifier-filter-test");
-		authContextProperties.put("test-servlet-context-helper", true);
+		properties.put(
+			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
+			"auth-verifier-filter-test");
+		properties.put("test-servlet-context-helper", true);
 
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				ServletContextHelper.class,
 				new ServletContextHelper(bundleContext.getBundle()) {},
-				authContextProperties));
+				properties));
 
-		contextProperties.put(
-			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
-			"no-auth-verifier-filter-test");
-		contextProperties.put(
+		properties = new HashMapDictionary<>();
+
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
 			"/no-auth-verifier-filter-test");
-		contextProperties.put("test-servlet-context-helper", true);
+		properties.put(
+			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
+			"no-auth-verifier-filter-test");
+		properties.put("test-servlet-context-helper", true);
 
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				ServletContextHelper.class,
 				new ServletContextHelper(bundleContext.getBundle()) {},
-				contextProperties));
+				properties));
 
-		servletProperties.put(
-			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
-			"/getUserName");
-		servletProperties.put(
+		properties = new HashMapDictionary<>();
+
+		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT,
 			"(test-servlet-context-helper=true)");
+		properties.put(
+			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
+			"/getUserName");
 
 		_serviceRegistrations.add(
 			bundleContext.registerService(
@@ -90,24 +92,24 @@ public class JaxServletBundleActivator implements BundleActivator {
 					@Override
 					public Servlet getService(
 						Bundle bundle,
-						ServiceRegistration<Servlet> registration) {
+						ServiceRegistration<Servlet> serviceRegistration) {
 
-						return new TestServlet();
+						return new TestHttpServlet();
 					}
 
 					@Override
 					public void ungetService(
 						Bundle bundle,
-						ServiceRegistration<Servlet> registration,
-						Servlet service) {
+						ServiceRegistration<Servlet> serviceRegistration,
+						Servlet servlet) {
 					}
 
 				},
-				servletProperties));
+				properties));
 	}
 
 	@Override
-	public void stop(BundleContext context) {
+	public void stop(BundleContext bundleContext) {
 		for (ServiceRegistration<?> serviceRegistration :
 				_serviceRegistrations) {
 
@@ -120,13 +122,14 @@ public class JaxServletBundleActivator implements BundleActivator {
 		}
 	}
 
-	public class TestServlet extends HttpServlet {
+	public class TestHttpServlet extends HttpServlet {
 
 		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+		protected void doGet(
+				HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
-			resp.getWriter().write(req.getRemoteUser());
+			response.getWriter().write(request.getRemoteUser());
 		}
 
 	}
