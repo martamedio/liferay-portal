@@ -92,16 +92,16 @@ public class JaxServletBundleActivator implements BundleActivator {
 					@Override
 					public Servlet getService(
 						Bundle bundle,
-						ServiceRegistration<Servlet> registration) {
+						ServiceRegistration<Servlet> serviceRegistration) {
 
-						return new TestServlet();
+						return new TestHttpServlet();
 					}
 
 					@Override
 					public void ungetService(
 						Bundle bundle,
-						ServiceRegistration<Servlet> registration,
-						Servlet service) {
+						ServiceRegistration<Servlet> serviceRegistration,
+						Servlet servlet) {
 					}
 
 				},
@@ -109,7 +109,7 @@ public class JaxServletBundleActivator implements BundleActivator {
 	}
 
 	@Override
-	public void stop(BundleContext context) {
+	public void stop(BundleContext bundleContext) {
 		for (ServiceRegistration<?> serviceRegistration :
 				_serviceRegistrations) {
 
@@ -122,13 +122,14 @@ public class JaxServletBundleActivator implements BundleActivator {
 		}
 	}
 
-	public class TestServlet extends HttpServlet {
+	public class TestHttpServlet extends HttpServlet {
 
 		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+		protected void doGet(
+				HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
-			resp.getWriter().write(req.getRemoteUser());
+			response.getWriter().write(request.getRemoteUser());
 		}
 
 	}
