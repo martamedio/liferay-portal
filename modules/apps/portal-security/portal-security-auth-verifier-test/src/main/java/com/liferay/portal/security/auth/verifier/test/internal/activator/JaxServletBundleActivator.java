@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -41,9 +42,12 @@ public class JaxServletBundleActivator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) {
-		Dictionary<String, Object> authContextProperties = new Hashtable<>();
-		Dictionary<String, Object> contextProperties = new Hashtable<>();
-		Dictionary<String, Object> servletProperties = new Hashtable<>();
+		Dictionary<String, Object> authContextProperties =
+			new HashMapDictionary<>();
+		Dictionary<String, Object> contextProperties =
+			new HashMapDictionary<>();
+		Dictionary<String, Object> servletProperties =
+			new HashMapDictionary<>();
 
 		authContextProperties.put(
 			"com.liferay.auth.verifier.filter.enabled", true);
