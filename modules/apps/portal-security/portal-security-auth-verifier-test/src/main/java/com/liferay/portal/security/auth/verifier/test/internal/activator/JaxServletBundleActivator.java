@@ -14,11 +14,12 @@
 
 package com.liferay.portal.security.auth.verifier.test.internal.activator;
 
+import com.liferay.portal.kernel.util.HashMapDictionary;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.servlet.Servlet;
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -44,8 +44,7 @@ public class JaxServletBundleActivator implements BundleActivator {
 	public void start(BundleContext bundleContext) {
 		Dictionary<String, Object> properties = new HashMapDictionary<>();
 
-		properties.put(
-			"com.liferay.auth.verifier.filter.enabled", true);
+		properties.put("com.liferay.auth.verifier.filter.enabled", true);
 		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
 			"auth-verifier-filter-test");
