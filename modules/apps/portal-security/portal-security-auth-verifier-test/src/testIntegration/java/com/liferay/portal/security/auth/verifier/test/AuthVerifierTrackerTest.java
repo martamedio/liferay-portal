@@ -14,13 +14,18 @@
 
 package com.liferay.portal.security.auth.verifier.test;
 
-import com.liferay.portal.kernel.util.StringUtil;
-
-import java.net.URL;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,16 +40,34 @@ public class AuthVerifierTrackerTest {
 
 	@Test
 	public void testGetUser() throws Exception {
-		URL url = new URL(_url, "/o/auth-verifier-filter-test/getUserName");
-		URL urlWithoutFilter = new URL(
-			_url, "/o/no-auth-verifier-filter-test/getUserName");
+		_provider.setCredentials(AuthScope.ANY, _credentials);
 
-		Assert.assertEquals("", StringUtil.read(urlWithoutFilter.openStream()));
+		HttpClient client =
+			HttpClientBuilder.create().setDefaultCredentialsProvider(
+				_provider).build();
 
-		Assert.assertNotEquals("", StringUtil.read(url.openStream()));
+		HttpResponse httpResponse = client.execute(
+			new HttpGet(
+				_LOCALHOST_URL + "/auth-verifier-filter-test/getUserName"));
+
+		String response = EntityUtils.toString(httpResponse.getEntity());
+
+		Assert.assertNotEquals("", response);
+
+		httpResponse = client.execute(
+			new HttpGet(
+				_LOCALHOST_URL + "/no-auth-verifier-filter-test/getUserName"));
+
+		response = EntityUtils.toString(httpResponse.getEntity());
+
+		Assert.assertEquals("", response);
 	}
 
-	@ArquillianResource
-	private URL _url;
+	private static final String _LOCALHOST_URL = "http://localhost:8080/o";
+
+	private final UsernamePasswordCredentials _credentials =
+		new UsernamePasswordCredentials("test@liferay.com", "test");
+	private final CredentialsProvider _provider =
+		new BasicCredentialsProvider();
 
 }
