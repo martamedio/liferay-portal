@@ -9,4 +9,5 @@ dependencies {
 
 	testIntegrationCompile group: "com.liferay.arquillian", name: "com.liferay.arquillian.arquillian-container-liferay", version: "1.0.7"
 	testIntegrationCompile group: "com.liferay.arquillian", name: "com.liferay.arquillian.arquillian-deployment-generator-bnd", version: "1.0.4"
+	testIntegrationCompile group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.3"
 }
