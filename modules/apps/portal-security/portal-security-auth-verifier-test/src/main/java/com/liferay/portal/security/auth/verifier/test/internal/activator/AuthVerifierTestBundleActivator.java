@@ -15,6 +15,7 @@
 package com.liferay.portal.security.auth.verifier.test.internal.activator;
 
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -83,7 +84,7 @@ public class AuthVerifierTestBundleActivator implements BundleActivator {
 			"(test-servlet-context-helper=true)");
 		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
-			"/getUserName");
+			"/remoteUser");
 
 		_serviceRegistrations.add(
 			bundleContext.registerService(
@@ -95,7 +96,7 @@ public class AuthVerifierTestBundleActivator implements BundleActivator {
 						Bundle bundle,
 						ServiceRegistration<Servlet> serviceRegistration) {
 
-						return new TestHttpServlet();
+						return new RemoteUserHttpServlet();
 					}
 
 					@Override
@@ -123,7 +124,7 @@ public class AuthVerifierTestBundleActivator implements BundleActivator {
 		}
 	}
 
-	public class TestHttpServlet extends HttpServlet {
+	public class RemoteUserHttpServlet extends HttpServlet {
 
 		@Override
 		protected void doGet(
@@ -133,11 +134,11 @@ public class AuthVerifierTestBundleActivator implements BundleActivator {
 			String remoteUser = request.getRemoteUser();
 			PrintWriter writer = response.getWriter();
 
-			if (remoteUser == null) {
-				writer.write("");
+			if (Validator.isNull(remoteUser)) {
+				writer.write("no-remote-user");
 			}
 			else {
-				writer.write(remoteUser);
+				writer.write("remote-user-set");
 			}
 		}
 

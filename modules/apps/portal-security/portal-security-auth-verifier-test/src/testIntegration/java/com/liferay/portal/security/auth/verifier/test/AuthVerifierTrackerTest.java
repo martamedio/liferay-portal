@@ -34,14 +34,16 @@ import org.junit.runner.RunWith;
 public class AuthVerifierTrackerTest {
 
 	@Test
-	public void testGetUser() throws Exception {
-		URL url = new URL(_url, "/o/auth-verifier-filter-test/getUserName");
-		URL urlWithoutFilter = new URL(
-			_url, "/o/no-auth-verifier-filter-test/getUserName");
+	public void testRemoteUser() throws Exception {
+		URL url = new URL(_url, "/o/auth-verifier-filter-test/remoteUser");
 
-		Assert.assertEquals("", StringUtil.read(urlWithoutFilter.openStream()));
+		Assert.assertEquals(
+			"remote-user-set", StringUtil.read(url.openStream()));
 
-		Assert.assertNotEquals("", StringUtil.read(url.openStream()));
+		url = new URL(_url, "/o/no-auth-verifier-filter-test/remoteUser");
+
+		Assert.assertEquals(
+			"no-remote-user", StringUtil.read(url.openStream()));
 	}
 
 	@ArquillianResource
