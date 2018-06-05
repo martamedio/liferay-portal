@@ -17,6 +17,8 @@ package com.liferay.portal.servlet.filters.authverifier;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
@@ -25,6 +27,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -81,6 +84,13 @@ public class AuthVerifierFilter extends BasePortalFilter {
 				_initParametersMap.put(
 					(String)entry.getKey(), entry.getValue());
 			}
+		}
+
+		if (_initParametersMap.containsKey("guest.allowed")) {
+			_guestAllowed = GetterUtil.getBoolean(
+				_initParametersMap.get("guest.allowed"), true);
+
+			_initParametersMap.remove("guest.allowed");
 		}
 
 		if (_initParametersMap.containsKey("hosts.allowed")) {
@@ -166,6 +176,16 @@ public class AuthVerifierFilter extends BasePortalFilter {
 
 			Class<?> clazz = getClass();
 
+			Company company = PortalUtil.getCompany(request);
+
+			User user = company.getDefaultUser();
+
+			if ((userId == user.getUserId()) && !_guestAllowed) {
+				_log.error("Guest is not allowed");
+
+				return;
+			}
+
 			processFilter(
 				clazz.getName(), protectedServletRequest, response,
 				filterChain);
@@ -239,6 +259,7 @@ public class AuthVerifierFilter extends BasePortalFilter {
 	private static final Log _log = LogFactoryUtil.getLog(
 		AuthVerifierFilter.class.getName());
 
+	private boolean _guestAllowed = true;
 	private final Set<String> _hostsAllowed = new HashSet<>();
 	private boolean _httpsRequired;
 	private final Map<String, Object> _initParametersMap = new HashMap<>();
