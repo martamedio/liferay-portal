@@ -248,8 +248,7 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 				return _osgiJAXRSName;
 			}
 
-			String key = StringBundler.concat(
-				"oauth2.application.description.", _osgiJAXRSName);
+			String key = "oauth2.application.description." + _osgiJAXRSName;
 
 			return GetterUtil.getString(
 				ResourceBundleUtil.getString(
@@ -266,7 +265,7 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 				return _defaultScopeDescriptor.describeScope(scope, locale);
 			}
 
-			String key = StringBundler.concat("oauth2.scope.", scope);
+			String key = "oauth2.scope." + scope;
 
 			return GetterUtil.getString(
 				ResourceBundleUtil.getString(
