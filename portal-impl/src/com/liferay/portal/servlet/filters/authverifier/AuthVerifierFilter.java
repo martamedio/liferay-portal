@@ -180,7 +180,7 @@ public class AuthVerifierFilter extends BasePortalFilter {
 
 			User user = company.getDefaultUser();
 
-			if (userId == user.getUserId() && !_guestAllowed) {
+			if ((userId == user.getUserId()) && !_guestAllowed) {
 				_log.error("Guest is not allowed");
 
 				return;
