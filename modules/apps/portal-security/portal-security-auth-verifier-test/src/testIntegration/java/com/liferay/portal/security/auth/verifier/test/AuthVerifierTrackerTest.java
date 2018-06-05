@@ -42,9 +42,11 @@ public class AuthVerifierTrackerTest {
 	public void testGetUser() throws Exception {
 		_provider.setCredentials(AuthScope.ANY, _credentials);
 
-		HttpClient client =
-			HttpClientBuilder.create().setDefaultCredentialsProvider(
-				_provider).build();
+		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+
+		HttpClient client = httpClientBuilder.setDefaultCredentialsProvider(
+			_provider
+		).build();
 
 		HttpResponse httpResponse = client.execute(
 			new HttpGet(
