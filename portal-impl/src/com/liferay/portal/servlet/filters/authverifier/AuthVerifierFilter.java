@@ -88,7 +88,7 @@ public class AuthVerifierFilter extends BasePortalFilter {
 
 		if (_initParametersMap.containsKey("guest.allowed")) {
 			_guestAllowed = GetterUtil.getBoolean(
-				_initParametersMap.get("guest.allowed"));
+				_initParametersMap.get("guest.allowed"), true);
 
 			_initParametersMap.remove("guest.allowed");
 		}
