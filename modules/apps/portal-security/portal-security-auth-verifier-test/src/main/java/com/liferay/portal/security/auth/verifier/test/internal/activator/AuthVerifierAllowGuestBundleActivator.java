@@ -46,7 +46,7 @@ public class AuthVerifierAllowGuestBundleActivator implements BundleActivator {
 		Dictionary<String, Object> properties = new HashMapDictionary<>();
 
 		properties.put("com.liferay.auth.verifier.filter.enabled", true);
-		properties.put("filter.init.auth.verifier.allow.guest", false);
+		properties.put("auth.verifier.allow.guest", false);
 		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
 			"/auth-verifier-no-allow-guest-test");
