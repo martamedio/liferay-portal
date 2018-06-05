@@ -25,7 +25,6 @@ import java.util.Dictionary;
 import javax.servlet.Filter;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
@@ -43,18 +42,17 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public class AuthVerifierFilterTracker {
 
 	@Activate
-	protected void activate(final BundleContext bundleContext)
-		throws InvalidSyntaxException {
+	protected void activate(BundleContext bundleContext) {
+		_bundleContext = bundleContext;
 
-		String filterString = StringBundler.concat(
+		String filter = StringBundler.concat(
 			"(&(com.liferay.auth.verifier.filter.enabled=true)(",
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME, "=*)",
 			"(objectClass=", ServletContextHelper.class.getName(), "))");
 
 		_serviceTracker = ServiceTrackerFactory.open(
-			bundleContext, filterString,
-			new ServletContextAuthVerifierServiceTrackerCustomizer(
-				bundleContext));
+			bundleContext, filter,
+			new ServletContextAuthVerifierServiceTrackerCustomizer());
 	}
 
 	@Deactivate
@@ -62,18 +60,13 @@ public class AuthVerifierFilterTracker {
 		_serviceTracker.close();
 	}
 
+	private BundleContext _bundleContext;
 	private ServiceTracker<?, ?> _serviceTracker;
 
-	private static class ServletContextAuthVerifierServiceTrackerCustomizer
+	private class ServletContextAuthVerifierServiceTrackerCustomizer
 		implements
 			ServiceTrackerCustomizer
 				<ServletContextHelper, ServiceRegistration<?>> {
-
-		public ServletContextAuthVerifierServiceTrackerCustomizer(
-			BundleContext bundleContext) {
-
-			_bundleContext = bundleContext;
-		}
 
 		@Override
 		public ServiceRegistration<?> addingService(
@@ -128,8 +121,6 @@ public class AuthVerifierFilterTracker {
 
 			return properties;
 		}
-
-		private final BundleContext _bundleContext;
 
 	}
 
