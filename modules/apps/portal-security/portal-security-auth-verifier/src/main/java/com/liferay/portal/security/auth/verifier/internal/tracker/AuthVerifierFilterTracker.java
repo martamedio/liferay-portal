@@ -100,7 +100,15 @@ public class AuthVerifierFilterTracker {
 			Dictionary<String, Object> properties = new HashMapDictionary<>();
 
 			for (String key : serviceReference.getPropertyKeys()) {
-				properties.put(key, serviceReference.getProperty(key));
+				if (key.startsWith("auth.verifier")) {
+					String newKey = key.replace("auth.verifier", "filter.init");
+
+					properties.put(newKey, serviceReference.getProperty(key));
+				}
+
+				if (key.startsWith("osgi.http.whiteboard")) {
+					properties.put(key, serviceReference.getProperty(key));
+				}
 			}
 
 			String contextName = GetterUtil.getString(
