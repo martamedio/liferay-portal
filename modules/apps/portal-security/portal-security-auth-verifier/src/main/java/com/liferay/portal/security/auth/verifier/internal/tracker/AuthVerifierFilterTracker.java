@@ -114,10 +114,10 @@ public class AuthVerifierFilterTracker {
 					"=", contextName, ")"));
 
 			properties.put(
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN, "/*");
-			properties.put(
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_NAME,
 				AuthVerifierFilter.class.getName());
+			properties.put(
+				HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN, "/*");
 
 			return properties;
 		}
