@@ -41,6 +41,11 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 @Component(immediate = true)
 public class AuthVerifierFilterTracker {
 
+	public static final String AUTH_VERIFIER_PROPERTY_PREFIX = "auth.verifier.";
+
+	public static final int AUTH_VERIFIER_PROPERTY_PREFIX_LENGTH =
+		AUTH_VERIFIER_PROPERTY_PREFIX.length();
+
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
@@ -100,10 +105,11 @@ public class AuthVerifierFilterTracker {
 			Dictionary<String, Object> properties = new HashMapDictionary<>();
 
 			for (String key : serviceReference.getPropertyKeys()) {
-				if (key.startsWith("auth.verifier")) {
-					String newKey = key.replace("auth.verifier", "filter.init");
-
-					properties.put(newKey, serviceReference.getProperty(key));
+				if (key.startsWith(AUTH_VERIFIER_PROPERTY_PREFIX)) {
+					properties.put(
+						"filter.init." +
+							key.substring(AUTH_VERIFIER_PROPERTY_PREFIX_LENGTH),
+						serviceReference.getProperty(key));
 				}
 
 				if (key.startsWith("osgi.http.whiteboard")) {
