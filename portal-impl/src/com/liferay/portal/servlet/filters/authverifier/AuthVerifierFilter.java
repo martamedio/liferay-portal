@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auth.AuthVerifierPipeline;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
-import com.liferay.portal.util.PortalImpl;
 import com.liferay.portal.util.PropsUtil;
 
 import java.io.IOException;
@@ -87,11 +86,11 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			}
 		}
 
-		if (_initParametersMap.containsKey("auth.verifier.allow.guest")) {
-			_allowGuest = GetterUtil.getBoolean(
-				_initParametersMap.get("auth.verifier.allow.guest"));
+		if (_initParametersMap.containsKey("guest.allowed")) {
+			_guestAllowed = GetterUtil.getBoolean(
+				_initParametersMap.get("guest.allowed"));
 
-			_initParametersMap.remove("auth.verifier.allow.guest");
+			_initParametersMap.remove("guest.allowed");
 		}
 
 		if (_initParametersMap.containsKey("hosts.allowed")) {
@@ -181,8 +180,9 @@ public class AuthVerifierFilter extends BasePortalFilter {
 
 			User user = company.getDefaultUser();
 
-			if (userId == user.getUserId() && !_allowGuest) {
+			if (userId == user.getUserId() && !_guestAllowed) {
 				_log.error("Guest is not allowed");
+
 				return;
 			}
 
@@ -259,9 +259,9 @@ public class AuthVerifierFilter extends BasePortalFilter {
 	private static final Log _log = LogFactoryUtil.getLog(
 		AuthVerifierFilter.class.getName());
 
+	private boolean _guestAllowed = true;
 	private final Set<String> _hostsAllowed = new HashSet<>();
 	private boolean _httpsRequired;
-	private boolean _allowGuest = true;
 	private final Map<String, Object> _initParametersMap = new HashMap<>();
 
 }
