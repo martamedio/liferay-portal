@@ -52,7 +52,7 @@ public class AuthVerifierFilterTracker {
 
 		_serviceTracker = ServiceTrackerFactory.open(
 			bundleContext, filter,
-			new ServletContextAuthVerifierServiceTrackerCustomizer());
+			new ServletContextHelperServiceTrackerCustomizer());
 	}
 
 	@Deactivate
@@ -63,7 +63,7 @@ public class AuthVerifierFilterTracker {
 	private BundleContext _bundleContext;
 	private ServiceTracker<?, ?> _serviceTracker;
 
-	private class ServletContextAuthVerifierServiceTrackerCustomizer
+	private class ServletContextHelperServiceTrackerCustomizer
 		implements
 			ServiceTrackerCustomizer
 				<ServletContextHelper, ServiceRegistration<?>> {
