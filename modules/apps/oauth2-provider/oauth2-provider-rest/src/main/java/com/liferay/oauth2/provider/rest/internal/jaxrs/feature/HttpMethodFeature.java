@@ -16,6 +16,11 @@ package com.liferay.oauth2.provider.rest.internal.jaxrs.feature;
 
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
+import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
+import com.liferay.portal.kernel.security.auth.AccessControlContext;
+import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 
@@ -62,6 +67,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class HttpMethodFeature implements Feature {
 
 	@Override
+
 	public boolean configure(FeatureContext context) {
 		Map<Class<?>, Integer> contracts = new HashMap<>();
 
@@ -88,6 +94,10 @@ public class HttpMethodFeature implements Feature {
 	public void filter(ContainerRequestContext containerRequestContext)
 		throws IOException {
 
+		if (!isFilterEnabled()) {
+			return;
+		}
+
 		Request request = containerRequestContext.getRequest();
 
 		if (!_scopeChecker.checkScope(request.getMethod())) {
@@ -96,6 +106,28 @@ public class HttpMethodFeature implements Feature {
 					Response.Status.FORBIDDEN
 				).build());
 		}
+	}
+
+	public boolean isFilterEnabled() {
+		AccessControlContext accessControlContext =
+			AccessControlUtil.getAccessControlContext();
+
+		AuthVerifierResult authVerifierResult =
+			accessControlContext.getAuthVerifierResult();
+
+		if (AuthVerifierResult.State.SUCCESS.equals(
+				authVerifierResult.getState())) {
+
+			Map<String, Object> settings = authVerifierResult.getSettings();
+
+			String authType = MapUtil.getString(settings, "auth.type");
+
+			if (Validator.isNotNull(authType) && !authType.equals("OAuth2")) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Activate

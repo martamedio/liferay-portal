@@ -20,7 +20,12 @@ import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
 import com.liferay.petra.reflect.AnnotationLocator;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
+import com.liferay.portal.kernel.security.auth.AccessControlContext;
+import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.lang.reflect.Method;
 
@@ -112,6 +117,10 @@ public class AnnotationFeature implements Feature {
 		implements ContainerRequestFilter {
 
 		public void filter(ContainerRequestContext containerRequestContext) {
+			if (!isFilterEnabled()) {
+				return;
+			}
+
 			Method resourceMethod = _resourceInfo.getResourceMethod();
 
 			RequiresNoScope requiresNoScope = resourceMethod.getAnnotation(
@@ -197,6 +206,30 @@ public class AnnotationFeature implements Feature {
 				Response.status(
 					Response.Status.FORBIDDEN
 				).build());
+		}
+
+		public boolean isFilterEnabled() {
+			AccessControlContext accessControlContext =
+				AccessControlUtil.getAccessControlContext();
+
+			AuthVerifierResult authVerifierResult =
+				accessControlContext.getAuthVerifierResult();
+
+			if (AuthVerifierResult.State.SUCCESS.equals(
+					authVerifierResult.getState())) {
+
+				Map<String, Object> settings = authVerifierResult.getSettings();
+
+				String authType = MapUtil.getString(settings, "auth.type");
+
+				if (Validator.isNotNull(authType) &&
+					!authType.equals("OAuth2")) {
+
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		protected boolean checkRequiresScope(
