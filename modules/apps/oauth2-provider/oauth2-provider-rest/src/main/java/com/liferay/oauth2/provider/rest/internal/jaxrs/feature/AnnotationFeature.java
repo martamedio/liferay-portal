@@ -17,15 +17,11 @@ package com.liferay.oauth2.provider.rest.internal.jaxrs.feature;
 import com.liferay.oauth2.provider.scope.RequiresNoScope;
 import com.liferay.oauth2.provider.scope.RequiresScope;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
+import com.liferay.oauth2.provider.scope.liferay.BaseScopeCheckerContainerRequestFilter;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
 import com.liferay.petra.reflect.AnnotationLocator;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
-import com.liferay.portal.kernel.security.auth.AccessControlContext;
-import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.lang.reflect.Method;
 
@@ -35,7 +31,6 @@ import java.util.Map;
 
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Configuration;
@@ -80,7 +75,7 @@ public class AnnotationFeature implements Feature {
 					resourceInfo.getResourceClass())));
 
 		context.register(
-			new AnnotationContainerRequestFilter(),
+			new AnnotationContainerScopeCheckerContainerRequestFilter(),
 			Priorities.AUTHORIZATION - 8);
 
 		Map<String, Object> applicationProperties =
@@ -113,13 +108,11 @@ public class AnnotationFeature implements Feature {
 
 	private ServiceRegistration<ScopeFinder> _serviceRegistration;
 
-	private class AnnotationContainerRequestFilter
-		implements ContainerRequestFilter {
+	private class AnnotationContainerScopeCheckerContainerRequestFilter
+		extends BaseScopeCheckerContainerRequestFilter {
 
-		public void filter(ContainerRequestContext containerRequestContext) {
-			if (!isFilterEnabled()) {
-				return;
-			}
+		public boolean doFilter(
+			ContainerRequestContext containerRequestContext) {
 
 			Method resourceMethod = _resourceInfo.getResourceMethod();
 
@@ -145,11 +138,11 @@ public class AnnotationFeature implements Feature {
 			}
 
 			if (requiresNoScope != null) {
-				return;
+				return false;
 			}
 
 			if (checkRequiresScope(containerRequestContext, requiresScope)) {
-				return;
+				return false;
 			}
 
 			Class<?> resourceClass = _resourceInfo.getResourceClass();
@@ -171,11 +164,11 @@ public class AnnotationFeature implements Feature {
 			}
 
 			if (requiresNoScope != null) {
-				return;
+				return false;
 			}
 
 			if (checkRequiresScope(containerRequestContext, requiresScope)) {
-				return;
+				return false;
 			}
 
 			requiresNoScope = AnnotationLocator.locate(
@@ -195,39 +188,17 @@ public class AnnotationFeature implements Feature {
 			}
 
 			if (requiresNoScope != null) {
-				return;
+				return false;
 			}
 
 			if (checkRequiresScope(containerRequestContext, requiresScope)) {
-				return;
+				return false;
 			}
 
 			containerRequestContext.abortWith(
 				Response.status(
 					Response.Status.FORBIDDEN
 				).build());
-		}
-
-		public boolean isFilterEnabled() {
-			AccessControlContext accessControlContext =
-				AccessControlUtil.getAccessControlContext();
-
-			AuthVerifierResult authVerifierResult =
-				accessControlContext.getAuthVerifierResult();
-
-			if (AuthVerifierResult.State.SUCCESS.equals(
-					authVerifierResult.getState())) {
-
-				Map<String, Object> settings = authVerifierResult.getSettings();
-
-				String authType = MapUtil.getString(settings, "auth.type");
-
-				if (Validator.isNotNull(authType) &&
-					!authType.equals("OAuth2")) {
-
-					return false;
-				}
-			}
 
 			return true;
 		}

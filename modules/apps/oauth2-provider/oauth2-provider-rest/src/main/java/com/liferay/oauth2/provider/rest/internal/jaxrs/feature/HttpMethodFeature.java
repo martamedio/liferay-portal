@@ -15,14 +15,8 @@
 package com.liferay.oauth2.provider.rest.internal.jaxrs.feature;
 
 import com.liferay.oauth2.provider.scope.ScopeChecker;
+import com.liferay.oauth2.provider.scope.liferay.BaseScopeCheckerContainerRequestFilter;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
-import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
-import com.liferay.portal.kernel.security.auth.AccessControlContext;
-import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
-import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.Validator;
-
-import java.io.IOException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,14 +61,14 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class HttpMethodFeature implements Feature {
 
 	@Override
-
 	public boolean configure(FeatureContext context) {
 		Map<Class<?>, Integer> contracts = new HashMap<>();
 
 		contracts.put(
 			ContainerRequestFilter.class, Priorities.AUTHORIZATION - 8);
 
-		context.register((ContainerRequestFilter)this::filter, contracts);
+		context.register(
+			new HttpContainerScopeCheckerContainerRequestFilter(), contracts);
 
 		Configuration configuration = context.getConfiguration();
 
@@ -87,45 +81,6 @@ public class HttpMethodFeature implements Feature {
 			new Hashtable<>(
 				(Map<String, Object>)configuration.getProperty(
 					"osgi.jaxrs.application.serviceProperties")));
-
-		return true;
-	}
-
-	public void filter(ContainerRequestContext containerRequestContext)
-		throws IOException {
-
-		if (!isFilterEnabled()) {
-			return;
-		}
-
-		Request request = containerRequestContext.getRequest();
-
-		if (!_scopeChecker.checkScope(request.getMethod())) {
-			containerRequestContext.abortWith(
-				Response.status(
-					Response.Status.FORBIDDEN
-				).build());
-		}
-	}
-
-	public boolean isFilterEnabled() {
-		AccessControlContext accessControlContext =
-			AccessControlUtil.getAccessControlContext();
-
-		AuthVerifierResult authVerifierResult =
-			accessControlContext.getAuthVerifierResult();
-
-		if (AuthVerifierResult.State.SUCCESS.equals(
-				authVerifierResult.getState())) {
-
-			Map<String, Object> settings = authVerifierResult.getSettings();
-
-			String authType = MapUtil.getString(settings, "auth.type");
-
-			if (Validator.isNotNull(authType) && !authType.equals("OAuth2")) {
-				return false;
-			}
-		}
 
 		return true;
 	}
@@ -148,5 +103,25 @@ public class HttpMethodFeature implements Feature {
 	private ScopeChecker _scopeChecker;
 
 	private ServiceRegistration<ScopeFinder> _serviceRegistration;
+
+	private class HttpContainerScopeCheckerContainerRequestFilter
+		extends BaseScopeCheckerContainerRequestFilter {
+
+		public boolean doFilter(
+			ContainerRequestContext containerRequestContext) {
+
+			Request request = containerRequestContext.getRequest();
+
+			if (!_scopeChecker.checkScope(request.getMethod())) {
+				containerRequestContext.abortWith(
+					Response.status(
+						Response.Status.FORBIDDEN
+					).build());
+			}
+
+			return true;
+		}
+
+	}
 
 }

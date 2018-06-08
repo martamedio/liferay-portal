@@ -16,6 +16,7 @@ package com.liferay.oauth2.provider.rest.internal.jaxrs.feature;
 
 import com.liferay.oauth2.provider.rest.internal.jaxrs.feature.configuration.ConfigurableScopeCheckerFeatureConfiguration;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
+import com.liferay.oauth2.provider.scope.liferay.BaseScopeCheckerContainerRequestFilter;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -140,7 +141,8 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 			ContainerRequestFilter.class, Priorities.AUTHORIZATION - 8);
 
 		context.register(
-			new ConfigurableCheckerContainerRequestFilter(), contracts);
+			new ConfigurableContainerScopeCheckerContainerRequestFilter(),
+			contracts);
 
 		Configuration configuration = context.getConfiguration();
 
@@ -224,11 +226,13 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 
 	}
 
-	private class ConfigurableCheckerContainerRequestFilter
-		implements ContainerRequestFilter {
+	private class ConfigurableContainerScopeCheckerContainerRequestFilter
+		extends BaseScopeCheckerContainerRequestFilter {
 
 		@Override
-		public void filter(ContainerRequestContext containerRequestContext) {
+		public boolean doFilter(
+			ContainerRequestContext containerRequestContext) {
+
 			boolean anyMatch = false;
 			String path = StringPool.SLASH + _uriInfo.getPath();
 			Request request = containerRequestContext.getRequest();
@@ -250,7 +254,7 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 								" was approved, does not require a scope");
 					}
 
-					return;
+					return false;
 				}
 
 				if (_scopeChecker.checkAllScopes(scopes)) {
@@ -262,7 +266,7 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 								StringUtil.merge(scopes)));
 					}
 
-					return;
+					return false;
 				}
 			}
 
@@ -276,6 +280,8 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 				}
 
 				abortRequest(containerRequestContext);
+
+				return false;
 			}
 			else if (_allowUnmatched) {
 				if (_log.isDebugEnabled()) {
@@ -286,7 +292,11 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 			}
 			else {
 				abortRequest(containerRequestContext);
+
+				return false;
 			}
+
+			return true;
 		}
 
 		protected void abortRequest(
