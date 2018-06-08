@@ -52,6 +52,11 @@ public class AuthVerifierGuestAllowedBundleActivator
 
 		properties = new HashMapDictionary<>();
 
+		registerServletContextHelper(
+			"auth-verifier-guest-allowed-default-test", properties);
+
+		properties = new HashMapDictionary<>();
+
 		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
 			"/guestAllowed");

@@ -53,6 +53,13 @@ public class AuthVerifierTrackerTest {
 		try (InputStream inputStream = url.openStream()) {
 			Assert.assertEquals("no-remote-user", StringUtil.read(inputStream));
 		}
+
+		url = new URL(
+			_url, "/o/auth-verifier-filter-tracker-default-test/remoteUser");
+
+		try (InputStream inputStream = url.openStream()) {
+			Assert.assertEquals("no-remote-user", StringUtil.read(inputStream));
+		}
 	}
 
 	@ArquillianResource

@@ -59,6 +59,13 @@ public class AuthVerifierGuestAllowedTest {
 		try (InputStream inputStream = url.openStream()) {
 			Assert.assertEquals("guest-allowed", StringUtil.read(inputStream));
 		}
+
+		url = new URL(
+			_url, "/o/auth-verifier-guest-allowed-default-test/guestAllowed");
+
+		try (InputStream inputStream = url.openStream()) {
+			Assert.assertEquals("guest-allowed", StringUtil.read(inputStream));
+		}
 	}
 
 	@ArquillianResource

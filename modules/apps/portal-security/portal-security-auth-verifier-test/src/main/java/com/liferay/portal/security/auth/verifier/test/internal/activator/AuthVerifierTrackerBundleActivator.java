@@ -53,6 +53,11 @@ public class AuthVerifierTrackerBundleActivator
 
 		properties = new HashMapDictionary<>();
 
+		registerServletContextHelper(
+			"auth-verifier-filter-tracker-default-test", properties);
+
+		properties = new HashMapDictionary<>();
+
 		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
 			"/remoteUser");
