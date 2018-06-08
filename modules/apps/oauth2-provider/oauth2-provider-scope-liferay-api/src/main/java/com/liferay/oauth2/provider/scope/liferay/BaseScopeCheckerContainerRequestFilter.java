@@ -14,6 +14,14 @@
 
 package com.liferay.oauth2.provider.scope.liferay;
 
+import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
+import com.liferay.portal.kernel.security.auth.AccessControlContext;
+import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Map;
+
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 
@@ -25,7 +33,7 @@ public abstract class BaseScopeCheckerContainerRequestFilter
 
 	@Override
 	public void filter(ContainerRequestContext containerRequestContext) {
-		if (OAuth2VerifierUtil.isOAuth2AuthVerified()) {
+		if (isOAuth2AuthVerified()) {
 			if (!doFilter(containerRequestContext)) {
 				return;
 			}
@@ -34,5 +42,31 @@ public abstract class BaseScopeCheckerContainerRequestFilter
 
 	protected abstract boolean doFilter(
 		ContainerRequestContext containerRequestContext);
+
+	protected boolean isOAuth2AuthVerified() {
+		AccessControlContext accessControlContext =
+			AccessControlUtil.getAccessControlContext();
+
+		AuthVerifierResult authVerifierResult =
+			accessControlContext.getAuthVerifierResult();
+
+		if (AuthVerifierResult.State.SUCCESS.equals(
+				authVerifierResult.getState())) {
+
+			Map<String, Object> settings = authVerifierResult.getSettings();
+
+			String authType = MapUtil.getString(settings, "auth.type");
+
+			if (Validator.isNotNull(authType) &&
+				!authType.equals(
+					OAuth2ProviderScopeLiferayConstants.
+						AUTH_VERIFIER_OAUTH2_TYPE)) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 }
