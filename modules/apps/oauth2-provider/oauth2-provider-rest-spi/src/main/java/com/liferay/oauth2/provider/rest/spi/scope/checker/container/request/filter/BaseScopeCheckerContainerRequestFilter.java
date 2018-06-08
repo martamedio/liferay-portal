@@ -12,8 +12,9 @@
  * details.
  */
 
-package com.liferay.oauth2.provider.scope.liferay;
+package com.liferay.oauth2.provider.rest.spi.scope.checker.container.request.filter;
 
+import com.liferay.oauth2.provider.scope.liferay.OAuth2ProviderScopeLiferayConstants;
 import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
