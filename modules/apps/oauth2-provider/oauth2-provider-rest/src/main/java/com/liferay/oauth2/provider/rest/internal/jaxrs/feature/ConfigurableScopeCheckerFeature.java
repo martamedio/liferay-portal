@@ -50,7 +50,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
@@ -254,7 +253,7 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 								" was approved, does not require a scope");
 					}
 
-					return false;
+					return true;
 				}
 
 				if (_scopeChecker.checkAllScopes(scopes)) {
@@ -266,7 +265,7 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 								StringUtil.merge(scopes)));
 					}
 
-					return false;
+					return true;
 				}
 			}
 
@@ -279,8 +278,6 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 							"patterns"));
 				}
 
-				abortRequest(containerRequestContext);
-
 				return false;
 			}
 			else if (_allowUnmatched) {
@@ -288,24 +285,15 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 					_log.debug(
 						"Path " + path +
 							" was approved, does not match any patterns");
+
+					return true;
 				}
 			}
 			else {
-				abortRequest(containerRequestContext);
-
 				return false;
 			}
 
-			return true;
-		}
-
-		protected void abortRequest(
-			ContainerRequestContext containerRequestContext) {
-
-			containerRequestContext.abortWith(
-				Response.status(
-					403
-				).build());
+			return false;
 		}
 
 		protected boolean matches(

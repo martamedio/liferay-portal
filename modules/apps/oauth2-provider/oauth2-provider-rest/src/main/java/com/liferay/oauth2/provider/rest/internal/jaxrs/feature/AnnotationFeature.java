@@ -37,7 +37,6 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import org.osgi.framework.BundleContext;
@@ -138,11 +137,11 @@ public class AnnotationFeature implements Feature {
 			}
 
 			if (requiresNoScope != null) {
-				return false;
+				return true;
 			}
 
-			if (checkRequiresScope(containerRequestContext, requiresScope)) {
-				return false;
+			if (checkRequiresScope(requiresScope)) {
+				return true;
 			}
 
 			Class<?> resourceClass = _resourceInfo.getResourceClass();
@@ -164,11 +163,11 @@ public class AnnotationFeature implements Feature {
 			}
 
 			if (requiresNoScope != null) {
-				return false;
+				return true;
 			}
 
-			if (checkRequiresScope(containerRequestContext, requiresScope)) {
-				return false;
+			if (checkRequiresScope(requiresScope)) {
+				return true;
 			}
 
 			requiresNoScope = AnnotationLocator.locate(
@@ -188,45 +187,23 @@ public class AnnotationFeature implements Feature {
 			}
 
 			if (requiresNoScope != null) {
-				return false;
+				return true;
 			}
 
-			if (checkRequiresScope(containerRequestContext, requiresScope)) {
-				return false;
+			if (checkRequiresScope(requiresScope)) {
+				return true;
 			}
 
-			containerRequestContext.abortWith(
-				Response.status(
-					Response.Status.FORBIDDEN
-				).build());
-
-			return true;
+			return false;
 		}
 
-		protected boolean checkRequiresScope(
-			ContainerRequestContext containerRequestContext,
-			RequiresScope requiresScope) {
-
+		protected boolean checkRequiresScope(RequiresScope requiresScope) {
 			if (requiresScope != null) {
-				boolean allowed;
-
 				if (requiresScope.allNeeded()) {
-					allowed = _scopeChecker.checkAllScopes(
-						requiresScope.value());
+					return _scopeChecker.checkAllScopes(requiresScope.value());
 				}
 				else {
-					allowed = _scopeChecker.checkAnyScope(
-						requiresScope.value());
-				}
-
-				if (allowed) {
-					return true;
-				}
-				else {
-					containerRequestContext.abortWith(
-						Response.status(
-							Response.Status.FORBIDDEN
-						).build());
+					return _scopeChecker.checkAnyScope(requiresScope.value());
 				}
 			}
 

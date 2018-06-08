@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Response;
 
 /**
  * @author Marta Medio
@@ -35,7 +36,10 @@ public abstract class BaseScopeCheckerContainerRequestFilter
 	public void filter(ContainerRequestContext containerRequestContext) {
 		if (isOAuth2AuthVerified()) {
 			if (!doFilter(containerRequestContext)) {
-				return;
+				containerRequestContext.abortWith(
+					Response.status(
+						Response.Status.FORBIDDEN
+					).build());
 			}
 		}
 	}

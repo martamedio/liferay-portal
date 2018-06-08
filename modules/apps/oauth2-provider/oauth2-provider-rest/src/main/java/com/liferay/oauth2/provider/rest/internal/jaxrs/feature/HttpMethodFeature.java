@@ -33,7 +33,6 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import org.osgi.framework.BundleContext;
@@ -112,14 +111,11 @@ public class HttpMethodFeature implements Feature {
 
 			Request request = containerRequestContext.getRequest();
 
-			if (!_scopeChecker.checkScope(request.getMethod())) {
-				containerRequestContext.abortWith(
-					Response.status(
-						Response.Status.FORBIDDEN
-					).build());
+			if (_scopeChecker.checkScope(request.getMethod())) {
+				return true;
 			}
 
-			return true;
+			return false;
 		}
 
 	}
