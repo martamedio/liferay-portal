@@ -106,7 +106,7 @@ public class HttpMethodFeature implements Feature {
 	private class HttpContainerScopeCheckerContainerRequestFilter
 		extends BaseScopeCheckerContainerRequestFilter {
 
-		public boolean doFilter(
+		public boolean isContainerRequestContextAllowed(
 			ContainerRequestContext containerRequestContext) {
 
 			Request request = containerRequestContext.getRequest();

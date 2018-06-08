@@ -35,7 +35,7 @@ public abstract class BaseScopeCheckerContainerRequestFilter
 	@Override
 	public void filter(ContainerRequestContext containerRequestContext) {
 		if (isOAuth2AuthVerified()) {
-			if (!doFilter(containerRequestContext)) {
+			if (!isContainerRequestContextAllowed(containerRequestContext)) {
 				containerRequestContext.abortWith(
 					Response.status(
 						Response.Status.FORBIDDEN
@@ -44,7 +44,7 @@ public abstract class BaseScopeCheckerContainerRequestFilter
 		}
 	}
 
-	protected abstract boolean doFilter(
+	protected abstract boolean isContainerRequestContextAllowed(
 		ContainerRequestContext containerRequestContext);
 
 	protected boolean isOAuth2AuthVerified() {

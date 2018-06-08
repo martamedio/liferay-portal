@@ -229,7 +229,7 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 		extends BaseScopeCheckerContainerRequestFilter {
 
 		@Override
-		public boolean doFilter(
+		public boolean isContainerRequestContextAllowed(
 			ContainerRequestContext containerRequestContext) {
 
 			boolean anyMatch = false;

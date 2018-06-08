@@ -110,7 +110,7 @@ public class AnnotationFeature implements Feature {
 	private class AnnotationContainerScopeCheckerContainerRequestFilter
 		extends BaseScopeCheckerContainerRequestFilter {
 
-		public boolean doFilter(
+		public boolean isContainerRequestContextAllowed(
 			ContainerRequestContext containerRequestContext) {
 
 			Method resourceMethod = _resourceInfo.getResourceMethod();
