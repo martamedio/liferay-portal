@@ -30,7 +30,8 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"osgi.jaxrs.application.base=/oauth2",
-		"osgi.jaxrs.name=Liferay.OAuth2.Application"
+		"osgi.jaxrs.name=Liferay.OAuth2.Application",
+		"liferay.auth.verifier=false", "liferay.oauth2=false"
 	},
 	service = Application.class
 )
