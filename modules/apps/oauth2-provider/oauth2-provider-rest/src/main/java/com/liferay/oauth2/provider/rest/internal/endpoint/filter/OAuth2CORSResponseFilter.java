@@ -16,6 +16,8 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.filter;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
@@ -32,8 +34,12 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -55,6 +61,68 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 		ContainerRequestContext requestContext,
 		ContainerResponseContext responseContext) {
 
+		String origin = requestContext.getHeaderString("Origin");
+
+		if (Validator.isBlank(origin)) {
+			return;
+		}
+
+		URI originURI = null;
+		try {
+			originURI = new URI(origin);
+		}
+		catch (URISyntaxException urise) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Invalid origin: " + origin, urise);
+			}
+
+			responseContext.setEntity(null);
+			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+
+			return;
+		}
+
+		OAuth2Application oAuth2Application = getOAuth2Application();
+
+		if (oAuth2Application == null) {
+			responseContext.setStatus(403);
+		}
+
+		List<String> redirectURIsList = oAuth2Application.getRedirectURIsList();
+
+		boolean originAllowed = false;
+
+		for (String redirectURI : redirectURIsList) {
+			try {
+				URI uri = new URI(redirectURI);
+
+				if (originURI.equals(uri)){
+					originAllowed = true;
+
+					break;
+				}
+			}
+			catch (URISyntaxException urise) {
+				if (_log.isDebugEnabled()) {
+					_log.debug("Invalid redirectURI: " + redirectURI, urise);
+				}
+			}
+		}
+
+		if (originAllowed) {
+			MultivaluedMap<String, Object> headers =
+				responseContext.getHeaders();
+
+			headers.putSingle("Access-Control-Allow-Origin", origin);
+			headers.putSingle("Access-Control-Allow-Headers", "*");
+		}
+		else {
+			responseContext.setEntity(null);
+			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+		}
+	}
+
+	protected OAuth2Application getOAuth2Application() {
 		AccessControlContext accessControlContext =
 			AccessControlUtil.getAccessControlContext();
 
@@ -67,35 +135,16 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 			BearerTokenProvider.AccessToken.class.getName());
 
 		if (accessTokenObject == null) {
-			return;
+			return null;
 		}
 
 		BearerTokenProvider.AccessToken accessToken =
 			(BearerTokenProvider.AccessToken)accessTokenObject;
 
-		OAuth2Application oAuth2Application =
-			accessToken.getOAuth2Application();
-
-		List<String> redirectURIsList = oAuth2Application.getRedirectURIsList();
-
-		List hostUris = new ArrayList<>();
-
-		for (String redirectUri : redirectURIsList) {
-			try {
-				URI uri = new URI(redirectUri);
-
-				String host = uri.getScheme() + "://" + uri.getHost();
-
-				hostUris.add(host);
-			}
-			catch (URISyntaxException urise) {
-			}
-		}
-
-		MultivaluedMap<String, Object> headers = responseContext.getHeaders();
-
-		headers.put("Access-Control-Allow-Origin", Arrays.asList(hostUris));
-		headers.put("Access-Control-Allow-Headers", Arrays.asList("*"));
+		return accessToken.getOAuth2Application();
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		OAuth2CORSResponseFilter.class);
 
 }
