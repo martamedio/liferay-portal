@@ -30,9 +30,6 @@ public class OAuth2ProviderRestEndpointConstants {
 	public static final String PROPERTY_KEY_CLIENT_FEATURE_TOKEN_INTROSPECTION =
 		"token_introspection";
 
-	public static final String PROPERTY_KEY_CROSS_ORIGIN_RESOURCE_SHARING =
-		"cross_origin_resource_sharing";
-
 	public static final String PROPERTY_KEY_CLIENT_FEATURES = "features";
 
 	public static final String PROPERTY_KEY_CLIENT_REMOTE_ADDR =
@@ -42,5 +39,8 @@ public class OAuth2ProviderRestEndpointConstants {
 		"client.remote.host";
 
 	public static final String PROPERTY_KEY_COMPANY_ID = "company.id";
+
+	public static final String PROPERTY_KEY_CROSS_ORIGIN_RESOURCE_SHARING =
+		"cross_origin_resource_sharing";
 
 }

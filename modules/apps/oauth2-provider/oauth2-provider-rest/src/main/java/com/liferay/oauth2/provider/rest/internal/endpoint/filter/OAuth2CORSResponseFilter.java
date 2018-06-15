@@ -17,17 +17,17 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.filter;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +38,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -69,12 +66,13 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 		}
 
 		URI originURI = null;
+
 		try {
 			originURI = new URI(origin);
 		}
 		catch (URISyntaxException urise) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Invalid origin: " + origin, urise);
+				_log.debug("Invalid origin sent by browser: " + origin, urise);
 			}
 
 			responseContext.setEntity(null);
@@ -102,10 +100,12 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 				OAuth2ProviderRestEndpointConstants.
 					PROPERTY_KEY_CROSS_ORIGIN_RESOURCE_SHARING)) {
 
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"CORS was not enabled for client" +
-						oAuth2Application.getClientId());
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"CORS was not enabled for client ",
+						oAuth2Application.getClientId(), " from origin ",
+						origin));
 			}
 
 			responseContext.setEntity(null);
@@ -122,7 +122,7 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 			try {
 				URI uri = new URI(redirectURI);
 
-				if (originURI.equals(uri)){
+				if (originURI.equals(uri)) {
 					originAllowed = true;
 
 					break;
@@ -130,14 +130,22 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 			}
 			catch (URISyntaxException urise) {
 				if (_log.isDebugEnabled()) {
-					_log.debug("Invalid redirectURI: " + redirectURI, urise);
+					_log.debug(
+						StringBundler.concat(
+							"Invalid client ", oAuth2Application.getClientId(),
+							" redirectURI ", redirectURI),
+						urise);
 				}
 			}
 		}
 
 		if (originAllowed) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("CORS was allowed for origin " + origin);
+				_log.debug(
+					StringBundler.concat(
+						"CORS was allowed for client ",
+						oAuth2Application.getClientId(), " and origin: ",
+						origin));
 			}
 
 			MultivaluedMap<String, Object> headers =
@@ -148,7 +156,11 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 		}
 		else {
 			if (_log.isDebugEnabled()) {
-				_log.debug("CORS was disallowed for origin " + origin);
+				_log.debug(
+					StringBundler.concat(
+						"CORS was disallowed for client ",
+						oAuth2Application.getClientId(), " and origin: ",
+						origin));
 			}
 
 			responseContext.setEntity(null);
