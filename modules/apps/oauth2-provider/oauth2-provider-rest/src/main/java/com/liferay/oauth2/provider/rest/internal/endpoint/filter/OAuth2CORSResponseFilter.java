@@ -15,6 +15,7 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.filter;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -85,7 +86,32 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 		OAuth2Application oAuth2Application = getOAuth2Application();
 
 		if (oAuth2Application == null) {
-			responseContext.setStatus(403);
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to find OAuth2 application");
+			}
+
+			responseContext.setEntity(null);
+			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+
+			return;
+		}
+
+		List<String> featuresList = oAuth2Application.getFeaturesList();
+
+		if (!featuresList.contains(
+				OAuth2ProviderRestEndpointConstants.
+					PROPERTY_KEY_CROSS_ORIGIN_RESOURCE_SHARING)) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"CORS was not enabled for client" +
+						oAuth2Application.getClientId());
+			}
+
+			responseContext.setEntity(null);
+			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+
+			return;
 		}
 
 		List<String> redirectURIsList = oAuth2Application.getRedirectURIsList();
@@ -110,6 +136,10 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 		}
 
 		if (originAllowed) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("CORS was allowed for origin " + origin);
+			}
+
 			MultivaluedMap<String, Object> headers =
 				responseContext.getHeaders();
 
@@ -117,6 +147,10 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 			headers.putSingle("Access-Control-Allow-Headers", "*");
 		}
 		else {
+			if (_log.isDebugEnabled()) {
+				_log.debug("CORS was disallowed for origin " + origin);
+			}
+
 			responseContext.setEntity(null);
 			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
 		}

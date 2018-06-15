@@ -3,7 +3,7 @@
 <portlet-preferences>
 	<preference>
 		<name>oAuth2Features</name>
-		<value>token_introspection</value>
+		<value>token_introspection,cross_origin_resource_sharing</value>
 	</preference>
 	<preference>
 		<name>oAuth2Grants</name>
