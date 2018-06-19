@@ -19,12 +19,19 @@ import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2Provid
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.rs.security.oauth2.common.Client;
@@ -69,6 +76,26 @@ public class LiferayAccessTokenService extends AccessTokenService {
 			remoteHost);
 
 		return client;
+	}
+
+	@POST
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("application/json")
+	@Override
+	public Response handleTokenRequest(MultivaluedMap<String, String> params) {
+		Response response = super.handleTokenRequest(params);
+
+		Client client = authenticateClientIfNeeded(params);
+
+		MultivaluedMap<String, Object> headers = response.getHeaders();
+
+		headers.put(
+			"Access-Control-Allow-Origin", new ArrayList<>(
+				client.getRedirectUris()));
+		headers.put(
+			"Access-Control-Allow-Methods", Arrays.asList("GET", "POST"));
+
+		return response;
 	}
 
 }
