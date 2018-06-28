@@ -84,18 +84,18 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			}
 		}
 
+		if (_initParametersMap.containsKey("cors.preflight.allowed")) {
+			_corsPreflightAllowed = GetterUtil.getBoolean(
+				_initParametersMap.get("cors.preflight.allowed"), true);
+
+			_initParametersMap.remove("cors.preflight.allowed");
+		}
+
 		if (_initParametersMap.containsKey("guest.allowed")) {
 			_guestAllowed = GetterUtil.getBoolean(
 				_initParametersMap.get("guest.allowed"), true);
 
 			_initParametersMap.remove("guest.allowed");
-		}
-
-		if (_initParametersMap.containsKey("cors.preflight.allowed")) {
-			_guestAllowed = GetterUtil.getBoolean(
-				_initParametersMap.get("cors.preflight.allowed"), true);
-
-			_initParametersMap.remove("cors.preflight.allowed");
 		}
 
 		if (_initParametersMap.containsKey("hosts.allowed")) {
