@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auth.AuthVerifierPipeline;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
 import com.liferay.portal.util.PropsUtil;
+import com.liferay.util.servlet.NullServletOutputStream;
 
 import java.io.IOException;
 
@@ -44,8 +45,10 @@ import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * <p>
@@ -142,6 +145,12 @@ public class AuthVerifierFilter extends BasePortalFilter {
 		}
 
 		if (_isApplyCORSPreflight(request, response)) {
+			response = new CORSServletResponse(response);
+
+			Class<?> clazz = getClass();
+
+			processFilter(clazz.getName(), request, response,
+				filterChain);
 			return;
 		}
 
@@ -232,17 +241,8 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			return false;
 		}
 
-		String accessControlRequestHeaders = request.getHeader(
-			"Access-Control-Request-Headers");
-
-		response.setHeader("Access-Control-Allow-Credentials", "true");
-		response.setHeader("Access-Control-Allow-Origin ", origin);
-		response.setHeader(
-			"Access-Control-Allow-Headers", accessControlRequestHeaders);
-		response.setHeader(
-			"Access-Control-Allow-Methods", accessControlRequestMethod);
-
 		return true;
+
 	}
 
 	private boolean _isAccessAllowed(
@@ -314,5 +314,38 @@ public class AuthVerifierFilter extends BasePortalFilter {
 	private final Set<String> _hostsAllowed = new HashSet<>();
 	private boolean _httpsRequired;
 	private final Map<String, Object> _initParametersMap = new HashMap<>();
+
+	private static class CORSServletResponse extends HttpServletResponseWrapper {
+
+		public static final String ACCESS_CONTROL_ALLOW_HEADERS =
+			"Access-Control-Allow-Headers";
+
+		public static final String ACCESS_CONTROL_ALLOW_METHODS =
+			"Access-Control-Allow-Methods";
+
+		public static final String ACCESS_CONTROL_ALLOW_ORIGIN =
+			"Access-Control-Allow-Origin";
+
+		public CORSServletResponse(HttpServletResponse response) {
+			super(response);
+		}
+
+		/*@Override
+		public void setHeader(String name, String value) {
+			if (!name.equals(ACCESS_CONTROL_ALLOW_ORIGIN) &&
+				!name.equals(ACCESS_CONTROL_ALLOW_HEADERS) &&
+				!name.equals(ACCESS_CONTROL_ALLOW_METHODS)) {
+
+				super.setHeader(name, value);
+			}
+		}
+
+		@Override
+		public ServletOutputStream getOutputStream() throws IOException {
+			return new NullServletOutputStream();
+		}*/
+
+	}
+
 
 }

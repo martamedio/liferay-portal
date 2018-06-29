@@ -31,27 +31,16 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
-
-import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Marta Medio
  */
-@Component(
-	immediate = true,
-	property = {
-		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.extension.select=(osgi.jaxrs.name=Liferay.OAuth2)",
-		"osgi.jaxrs.name=OAuth2CORSResponseFilter"
-	}
-)
-@Provider
 public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 
 	@Override
@@ -61,91 +50,9 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 
 		String origin = requestContext.getHeaderString("Origin");
 
-		if (Validator.isBlank(origin)) {
-			return;
-		}
-
-		URI originURI = null;
-
-		try {
-			originURI = new URI(origin);
-		}
-		catch (URISyntaxException urise) {
+		if (_isPreflight(requestContext)) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Invalid origin sent by browser: " + origin, urise);
-			}
-
-			responseContext.setEntity(null);
-			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
-
-			return;
-		}
-
-		OAuth2Application oAuth2Application = getOAuth2Application();
-
-		if (oAuth2Application == null) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to find OAuth2 application");
-			}
-
-			responseContext.setEntity(null);
-			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
-
-			return;
-		}
-
-		List<String> featuresList = oAuth2Application.getFeaturesList();
-
-		if (!featuresList.contains(
-				OAuth2ProviderRestEndpointConstants.
-					PROPERTY_KEY_CROSS_ORIGIN_RESOURCE_SHARING)) {
-
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"CORS was not enabled for client ",
-						oAuth2Application.getClientId(), " from origin ",
-						origin));
-			}
-
-			responseContext.setEntity(null);
-			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
-
-			return;
-		}
-
-		List<String> redirectURIsList = oAuth2Application.getRedirectURIsList();
-
-		boolean originAllowed = false;
-
-		for (String redirectURI : redirectURIsList) {
-			try {
-				URI uri = new URI(redirectURI);
-
-				if (originURI.equals(uri)) {
-					originAllowed = true;
-
-					break;
-				}
-			}
-			catch (URISyntaxException urise) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						StringBundler.concat(
-							"Invalid client ", oAuth2Application.getClientId(),
-							" redirectURI ", redirectURI),
-						urise);
-				}
-			}
-		}
-
-		if (originAllowed) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					StringBundler.concat(
-						"CORS was allowed for client ",
-						oAuth2Application.getClientId(), " and origin: ",
-						origin));
+				_log.debug("Preflight CORS allowed for origin: " + origin);
 			}
 
 			MultivaluedMap<String, Object> headers =
@@ -155,16 +62,113 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 			headers.putSingle("Access-Control-Allow-Headers", "*");
 		}
 		else {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					StringBundler.concat(
-						"CORS was disallowed for client ",
-						oAuth2Application.getClientId(), " and origin: ",
-						origin));
+			URI originUri = null;
+
+			try {
+				originUri = new URI(origin);
+			}
+			catch (URISyntaxException urise) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Invalid origin sent by browser: " + origin, urise);
+				}
+
+				responseContext.setEntity(null);
+				responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+
+				return;
 			}
 
-			responseContext.setEntity(null);
-			responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+			OAuth2Application oAuth2Application = getOAuth2Application();
+
+			if (oAuth2Application == null) {
+				if (_log.isDebugEnabled()) {
+					_log.debug("Unable to find OAuth2 application");
+				}
+
+				responseContext.setEntity(null);
+				responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+
+				return;
+			}
+
+			List<String> featuresList = oAuth2Application.getFeaturesList();
+
+			if (!featuresList.contains(
+					OAuth2ProviderRestEndpointConstants.
+						PROPERTY_KEY_CROSS_ORIGIN_RESOURCE_SHARING)) {
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"CORS was not enabled for client ",
+							oAuth2Application.getClientId(), " from origin ",
+							origin));
+				}
+
+				responseContext.setEntity(null);
+				responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+
+				return;
+			}
+
+			List<String> redirectURIsList =
+				oAuth2Application.getRedirectURIsList();
+
+			boolean originAllowed = false;
+
+			for (String redirectURI : redirectURIsList) {
+				try {
+					URI uri = new URI(redirectURI);
+
+					String originHost = originUri.getHost();
+					String uriHost = uri.getHost();
+
+					if (originHost.equals(uriHost)) {
+						originAllowed = true;
+
+						break;
+					}
+				}
+				catch (URISyntaxException urise) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							StringBundler.concat(
+								"Invalid client ",
+								oAuth2Application.getClientId(),
+								" redirectURI ", redirectURI),
+							urise);
+					}
+				}
+			}
+
+			if (originAllowed) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							"CORS was allowed for client ",
+							oAuth2Application.getClientId(), " and origin: ",
+							origin));
+				}
+
+				MultivaluedMap<String, Object> headers =
+					responseContext.getHeaders();
+
+				headers.putSingle("Access-Control-Allow-Origin", origin);
+				headers.putSingle("Access-Control-Allow-Headers", "*");
+			}
+			else {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							"CORS was disallowed for client ",
+							oAuth2Application.getClientId(), " and origin: ",
+							origin));
+				}
+
+				responseContext.setEntity(null);
+				responseContext.setStatusInfo(Response.Status.FORBIDDEN);
+			}
 		}
 	}
 
@@ -188,6 +192,22 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 			(BearerTokenProvider.AccessToken)accessTokenObject;
 
 		return accessToken.getOAuth2Application();
+	}
+
+	private boolean _isPreflight(ContainerRequestContext requestContext) {
+		String accessControlRequestMethod = requestContext.getHeaderString(
+			"Access-Control-Request-Method");
+		String method = requestContext.getMethod();
+		String origin = requestContext.getHeaderString("Origin");
+
+		if (method.equals(HttpMethod.OPTIONS) &&
+			!Validator.isBlank(accessControlRequestMethod) &&
+			!Validator.isBlank(origin)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
