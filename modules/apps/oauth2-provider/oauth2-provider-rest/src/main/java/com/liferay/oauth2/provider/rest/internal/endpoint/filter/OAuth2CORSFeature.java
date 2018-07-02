@@ -47,16 +47,16 @@ public class OAuth2CORSFeature implements Feature {
 		Map<Class<?>, Integer> contracts = new HashMap<>();
 
 		contracts.put(
-			ContainerRequestFilter.class, Priorities.HEADER_DECORATOR);
+			ContainerResponseFilter.class, Priorities.HEADER_DECORATOR);
 
-		context.register(new OAuth2CORSRequestFilter(), contracts);
+		context.register(new OAuth2CORSResponseFilter(), contracts);
 
 		contracts = new HashMap<>();
 
 		contracts.put(
-			ContainerResponseFilter.class, Priorities.HEADER_DECORATOR);
+			ContainerRequestFilter.class, Priorities.HEADER_DECORATOR);
 
-		context.register(new OAuth2CORSResponseFilter(), contracts);
+		context.register(new OAuth2CORSRequestFilter(), contracts);
 
 		return true;
 	}

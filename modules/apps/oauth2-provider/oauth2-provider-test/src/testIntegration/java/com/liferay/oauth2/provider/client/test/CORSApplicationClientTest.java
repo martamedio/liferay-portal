@@ -53,30 +53,17 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void test() throws Exception {
-		WebTarget webTarget = getWebTarget("/no-cors");
+
+		WebTarget webTarget = getWebTarget("/app");
 
 		Invocation.Builder invocationBuilder = authorize(
-			webTarget.request(), getToken("oauthTestApplicationNoCORS"));
-
-		invocationBuilder.header("Origin", _DUMMY_URI);
-		invocationBuilder.header(
-			"Access-Control-Request-Method", "authentication");
-
-		Response response = invocationBuilder.options();
-
-		Assert.assertNull(
-			response.getHeaderString("Access-Control-Allow-Origin"));
-
-		webTarget = getWebTarget("/app");
-
-		invocationBuilder = authorize(
 			webTarget.request(), getToken("oauthTestApplicationCORS"));
 
 		invocationBuilder.header("Origin", _DUMMY_URI);
 		invocationBuilder.header(
 			"Access-Control-Request-Method", "authentication");
 
-		response = invocationBuilder.options();
+		Response response = invocationBuilder.options();
 
 		Assert.assertEquals(
 			_DUMMY_URI,
@@ -103,6 +90,20 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 			_DUMMY_URI,
 			response.getHeaderString("Access-Control-Allow-Origin"));
 		Assert.assertEquals(200, response.getStatus());
+
+		webTarget = getWebTarget("/no-cors");
+
+		invocationBuilder = authorize(
+			webTarget.request(), getToken("oauthTestApplicationNoCORS"));
+
+		invocationBuilder.header("Origin", _DUMMY_URI);
+		invocationBuilder.header(
+			"Access-Control-Request-Method", "authentication");
+
+		response = invocationBuilder.options();
+
+		Assert.assertNull(
+			response.getHeaderString("Access-Control-Allow-Origin"));
 	}
 
 	public static class MethodApplicationTestPreparatorBundleActivator
@@ -110,23 +111,12 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 
 		@Override
 		protected void prepareTest() throws Exception {
+			registerJaxRsApplication(new TestApplication(), "app",
+				new HashMapDictionary<>());
+
 			long defaultCompanyId = PortalUtil.getDefaultCompanyId();
 
 			User user = UserTestUtil.getAdminUser(defaultCompanyId);
-
-			Dictionary<String, Object> properties = new HashMapDictionary<>();
-
-			properties.put("liferay.cors", false);
-
-			registerJaxRsApplication(
-				new TestApplication(), "no-cors", properties);
-
-			createOAuth2Application(
-				defaultCompanyId, user, "oauthTestApplicationNoCORS");
-
-			properties = new HashMapDictionary<>();
-
-			registerJaxRsApplication(new TestApplication(), "app", properties);
 
 			createOAuth2Application(
 				defaultCompanyId, user, "oauthTestApplicationCORS");
@@ -139,6 +129,16 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 					GrantType.RESOURCE_OWNER_PASSWORD),
 				Arrays.asList("everything", "everything.readonly"),
 				Arrays.asList(_DUMMY_URI));
+
+			Dictionary<String, Object> properties = new HashMapDictionary<>();
+
+			properties.put("liferay.cors", false);
+
+			registerJaxRsApplication(
+				new TestApplication(), "no-cors", properties);
+
+			createOAuth2Application(
+				defaultCompanyId, user, "oauthTestApplicationNoCORS");
 		}
 
 	}
