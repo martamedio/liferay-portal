@@ -14,13 +14,8 @@
 
 package com.liferay.oauth2.provider.rest.internal.endpoint.filter;
 
-import com.liferay.oauth2.provider.scope.ScopeChecker;
-import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Priority;
 
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -29,12 +24,7 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -49,7 +39,6 @@ import org.osgi.service.component.annotations.ServiceScope;
 	},
 	scope = ServiceScope.PROTOTYPE
 )
-@Priority(Priorities.HEADER_DECORATOR - 8)
 @Provider
 public class OAuth2CORSFeature implements Feature {
 
@@ -58,7 +47,7 @@ public class OAuth2CORSFeature implements Feature {
 		Map<Class<?>, Integer> contracts = new HashMap<>();
 
 		contracts.put(
-			ContainerRequestFilter.class, Priorities.HEADER_DECORATOR - 8);
+			ContainerRequestFilter.class, Priorities.HEADER_DECORATOR);
 
 		context.register(new OAuth2CORSRequestFilter(), contracts);
 
@@ -71,24 +60,5 @@ public class OAuth2CORSFeature implements Feature {
 
 		return true;
 	}
-
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		_bundleContext = bundleContext;
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		if (_serviceRegistration != null) {
-			_serviceRegistration.unregister();
-		}
-	}
-
-	private BundleContext _bundleContext;
-
-	@Reference
-	private ScopeChecker _scopeChecker;
-
-	private ServiceRegistration<ScopeFinder> _serviceRegistration;
 
 }
