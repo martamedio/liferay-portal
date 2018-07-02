@@ -144,13 +144,13 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			return;
 		}
 
-		if (_isApplyCORSPreflight(request, response)) {
-			response = new CORSServletResponse(response);
-
+		if (_isApplyCORSPreflight(request)) {
 			Class<?> clazz = getClass();
 
-			processFilter(clazz.getName(), request, response,
+			processFilter(
+				clazz.getName(), request, new CORSServletResponse(response),
 				filterChain);
+
 			return;
 		}
 
@@ -215,9 +215,32 @@ public class AuthVerifierFilter extends BasePortalFilter {
 		}
 	}
 
-	private boolean _isApplyCORSPreflight(
-		HttpServletRequest request, HttpServletResponse response) {
+	private boolean _isAccessAllowed(
+			HttpServletRequest request, HttpServletResponse response)
+		throws IOException {
 
+		String remoteAddr = request.getRemoteAddr();
+
+		if (AccessControlUtil.isAccessAllowed(request, _hostsAllowed)) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Access allowed for " + remoteAddr);
+			}
+
+			return true;
+		}
+
+		if (_log.isWarnEnabled()) {
+			_log.warn("Access denied for " + remoteAddr);
+		}
+
+		response.sendError(
+			HttpServletResponse.SC_FORBIDDEN,
+			"Access denied for " + remoteAddr);
+
+		return false;
+	}
+
+	private boolean _isApplyCORSPreflight(HttpServletRequest request) {
 		if (!_corsPreflightAllowed) {
 			return false;
 		}
@@ -242,32 +265,6 @@ public class AuthVerifierFilter extends BasePortalFilter {
 		}
 
 		return true;
-
-	}
-
-	private boolean _isAccessAllowed(
-			HttpServletRequest request, HttpServletResponse response)
-		throws IOException {
-
-		String remoteAddr = request.getRemoteAddr();
-
-		if (AccessControlUtil.isAccessAllowed(request, _hostsAllowed)) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Access allowed for " + remoteAddr);
-			}
-
-			return true;
-		}
-
-		if (_log.isWarnEnabled()) {
-			_log.warn("Access denied for " + remoteAddr);
-		}
-
-		response.sendError(
-			HttpServletResponse.SC_FORBIDDEN,
-			"Access denied for " + remoteAddr);
-
-		return false;
 	}
 
 	private boolean _isApplySSL(
@@ -315,13 +312,11 @@ public class AuthVerifierFilter extends BasePortalFilter {
 	private boolean _httpsRequired;
 	private final Map<String, Object> _initParametersMap = new HashMap<>();
 
-	private static class CORSServletResponse extends HttpServletResponseWrapper {
+	private static class CORSServletResponse
+		extends HttpServletResponseWrapper {
 
 		public static final String ACCESS_CONTROL_ALLOW_HEADERS =
 			"Access-Control-Allow-Headers";
-
-		public static final String ACCESS_CONTROL_ALLOW_METHODS =
-			"Access-Control-Allow-Methods";
 
 		public static final String ACCESS_CONTROL_ALLOW_ORIGIN =
 			"Access-Control-Allow-Origin";
@@ -330,22 +325,20 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			super(response);
 		}
 
-		/*@Override
+		@Override
+		public ServletOutputStream getOutputStream() throws IOException {
+			return new NullServletOutputStream();
+		}
+
+		@Override
 		public void setHeader(String name, String value) {
-			if (!name.equals(ACCESS_CONTROL_ALLOW_ORIGIN) &&
-				!name.equals(ACCESS_CONTROL_ALLOW_HEADERS) &&
-				!name.equals(ACCESS_CONTROL_ALLOW_METHODS)) {
+			if (name.equals(ACCESS_CONTROL_ALLOW_ORIGIN) ||
+				name.equals(ACCESS_CONTROL_ALLOW_HEADERS)) {
 
 				super.setHeader(name, value);
 			}
 		}
 
-		@Override
-		public ServletOutputStream getOutputStream() throws IOException {
-			return new NullServletOutputStream();
-		}*/
-
 	}
-
 
 }
