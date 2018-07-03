@@ -273,7 +273,7 @@ public abstract class BaseTestPreparatorBundleActivator
 					availableGrants, clientId, 0, clientSecret,
 					"test oauth application",
 					Arrays.asList(
-						"token_introspection", "cross_origin_resource_sharing"),
+						"token_introspection"),
 					"http://localhost:8080", 0, "test application",
 					"http://localhost:8080", redirectUris, availableScopes,
 					new ServiceContext());

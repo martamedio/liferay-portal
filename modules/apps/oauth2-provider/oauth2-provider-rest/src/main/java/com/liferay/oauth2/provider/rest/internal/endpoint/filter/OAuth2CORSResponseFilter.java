@@ -92,26 +92,6 @@ public class OAuth2CORSResponseFilter implements ContainerResponseFilter {
 				return;
 			}
 
-			List<String> featuresList = oAuth2Application.getFeaturesList();
-
-			if (!featuresList.contains(
-					OAuth2ProviderRestEndpointConstants.
-						PROPERTY_KEY_CROSS_ORIGIN_RESOURCE_SHARING)) {
-
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						StringBundler.concat(
-							"CORS was not enabled for client ",
-							oAuth2Application.getClientId(), " from origin ",
-							origin));
-				}
-
-				responseContext.setEntity(null);
-				responseContext.setStatusInfo(Response.Status.FORBIDDEN);
-
-				return;
-			}
-
 			List<String> redirectURIsList =
 				oAuth2Application.getRedirectURIsList();
 
