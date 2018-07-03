@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	property = {
-		"osgi.jaxrs.application.select=(!(liferay.cors=false))",
+		"osgi.jaxrs.application.select=(auth.verifier.cors.allowed=true)",
 		"osgi.jaxrs.extension=true",
 		"osgi.jaxrs.extension.select=(osgi.jaxrs.name=Liferay.OAuth2)",
 		"osgi.jaxrs.name=OAuth2CORSFeature"

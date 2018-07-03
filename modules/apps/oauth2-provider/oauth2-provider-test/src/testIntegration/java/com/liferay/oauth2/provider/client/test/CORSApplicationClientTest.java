@@ -53,8 +53,7 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void test() throws Exception {
-
-		WebTarget webTarget = getWebTarget("/app");
+		WebTarget webTarget = getWebTarget("/cors");
 
 		Invocation.Builder invocationBuilder = authorize(
 			webTarget.request(), getToken("oauthTestApplicationCORS"));
@@ -111,8 +110,11 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 
 		@Override
 		protected void prepareTest() throws Exception {
-			registerJaxRsApplication(new TestApplication(), "app",
-				new HashMapDictionary<>());
+			Dictionary<String, Object> properties = new HashMapDictionary<>();
+
+			properties.put("auth.verifier.cors.allowed", true);
+
+			registerJaxRsApplication(new TestApplication(), "cors", properties);
 
 			long defaultCompanyId = PortalUtil.getDefaultCompanyId();
 
@@ -130,9 +132,7 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 				Arrays.asList("everything", "everything.readonly"),
 				Arrays.asList(_DUMMY_URI));
 
-			Dictionary<String, Object> properties = new HashMapDictionary<>();
-
-			properties.put("liferay.cors", false);
+			properties = new HashMapDictionary<>();
 
 			registerJaxRsApplication(
 				new TestApplication(), "no-cors", properties);

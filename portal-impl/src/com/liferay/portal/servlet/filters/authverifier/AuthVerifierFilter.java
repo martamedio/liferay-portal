@@ -87,11 +87,11 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			}
 		}
 
-		if (_initParametersMap.containsKey("cors.preflight.allowed")) {
-			_corsPreflightAllowed = GetterUtil.getBoolean(
-				_initParametersMap.get("cors.preflight.allowed"), true);
+		if (_initParametersMap.containsKey("cors.allowed")) {
+			_corsAllowed = GetterUtil.getBoolean(
+				_initParametersMap.get("cors.allowed"), true);
 
-			_initParametersMap.remove("cors.preflight.allowed");
+			_initParametersMap.remove("cors.allowed");
 		}
 
 		if (_initParametersMap.containsKey("guest.allowed")) {
@@ -241,7 +241,7 @@ public class AuthVerifierFilter extends BasePortalFilter {
 	}
 
 	private boolean _isApplyCORSPreflight(HttpServletRequest request) {
-		if (!_corsPreflightAllowed) {
+		if (!_corsAllowed) {
 			return false;
 		}
 
@@ -306,7 +306,7 @@ public class AuthVerifierFilter extends BasePortalFilter {
 	private static final Log _log = LogFactoryUtil.getLog(
 		AuthVerifierFilter.class.getName());
 
-	private boolean _corsPreflightAllowed = true;
+	private boolean _corsAllowed = false;
 	private boolean _guestAllowed = true;
 	private final Set<String> _hostsAllowed = new HashSet<>();
 	private boolean _httpsRequired;
