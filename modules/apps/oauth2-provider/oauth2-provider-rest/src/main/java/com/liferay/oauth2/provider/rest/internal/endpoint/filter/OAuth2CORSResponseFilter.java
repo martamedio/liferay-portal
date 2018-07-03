@@ -15,7 +15,6 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.filter;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
-import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
