@@ -17,6 +17,7 @@ package com.liferay.oauth2.provider.client.test;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.test.internal.TestApplication;
 import com.liferay.oauth2.provider.test.internal.activator.BaseTestPreparatorBundleActivator;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -52,7 +53,49 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void testApplicationWithoutCORS() throws Exception {
+		WebTarget webTarget = getWebTarget("/no-cors");
+
+		Invocation.Builder invocationBuilder = authorize(
+			webTarget.request(), getToken("oauthTestApplicationNoCORS"));
+
+		invocationBuilder.header("Origin", _DUMMY_URI);
+		invocationBuilder.header(
+			"Access-Control-Request-Method", "authentication");
+
+		Response response = invocationBuilder.options();
+
+		Assert.assertNull(
+			response.getHeaderString("Access-Control-Allow-Origin"));
+	}
+
+	@Test
+	public void testCORSApplicationUri() throws Exception {
+		WebTarget webTarget = getWebTarget("/cors");
+
+		Invocation.Builder invocationBuilder = authorize(
+			webTarget.request(), getToken("oauthTestApplicationCORSWithUri"));
+
+		invocationBuilder.header("Origin", _DUMMY_URI);
+
+		Response response = invocationBuilder.options();
+
+		Assert.assertEquals(
+			_DUMMY_URI,
+			response.getHeaderString("Access-Control-Allow-Origin"));
+
+		response = invocationBuilder.get();
+
+		Assert.assertEquals(
+			_DUMMY_URI,
+			response.getHeaderString("Access-Control-Allow-Origin"));
+		Assert.assertEquals(200, response.getStatus());
+		Assert.assertNotEquals(
+			StringPool.BLANK, response.readEntity(String.class));
+	}
+
+	@Test
+	public void testCORSPreflight() throws Exception {
 		WebTarget webTarget = getWebTarget("/cors");
 
 		Invocation.Builder invocationBuilder = authorize(
@@ -70,39 +113,8 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 
 		response = invocationBuilder.get();
 
-		Assert.assertEquals(403, response.getStatus());
-
-		invocationBuilder = authorize(
-			webTarget.request(), getToken("oauthTestApplicationCORSWithUri"));
-
-		invocationBuilder.header("Origin", _DUMMY_URI);
-
-		response = invocationBuilder.options();
-
 		Assert.assertEquals(
-			_DUMMY_URI,
-			response.getHeaderString("Access-Control-Allow-Origin"));
-
-		response = invocationBuilder.get();
-
-		Assert.assertEquals(
-			_DUMMY_URI,
-			response.getHeaderString("Access-Control-Allow-Origin"));
-		Assert.assertEquals(200, response.getStatus());
-
-		webTarget = getWebTarget("/no-cors");
-
-		invocationBuilder = authorize(
-			webTarget.request(), getToken("oauthTestApplicationNoCORS"));
-
-		invocationBuilder.header("Origin", _DUMMY_URI);
-		invocationBuilder.header(
-			"Access-Control-Request-Method", "authentication");
-
-		response = invocationBuilder.options();
-
-		Assert.assertNull(
-			response.getHeaderString("Access-Control-Allow-Origin"));
+			StringPool.BLANK, response.readEntity(String.class));
 	}
 
 	public static class MethodApplicationTestPreparatorBundleActivator
