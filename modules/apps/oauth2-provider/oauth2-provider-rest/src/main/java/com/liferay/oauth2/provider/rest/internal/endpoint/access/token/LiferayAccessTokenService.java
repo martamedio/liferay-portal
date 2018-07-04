@@ -15,15 +15,14 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.access.token;
 
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +31,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
@@ -56,25 +57,26 @@ public class LiferayAccessTokenService extends AccessTokenService {
 
 		MultivaluedMap<String, Object> headers = response.getHeaders();
 
-		List hostUris = new ArrayList<>();
+		String origin = _httpHeaders.getHeaderString("Origin");
 
 		for (String redirectUri : client.getRedirectUris()) {
 			try {
 				URI uri = new URI(redirectUri);
 
-				String host = uri.getScheme() + "://" + uri.getHost();
-
-				hostUris.add(host);
+				if (origin.equals(uri.getHost())) {
+					headers.putSingle(
+						"Accept", "application/x-www-form-urlencoded");
+					headers.putSingle("Access-Control-Allow-Methods", "POST");
+					headers.putSingle("Access-Control-Allow-Origin", origin);
+					headers.putSingle("Content-Type", "application/json");
+				}
 			}
 			catch (URISyntaxException urise) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Invalid callback uri", urise);
+				}
 			}
 		}
-
-		headers.put(
-			"Accept", Arrays.asList("application/x-www-form-urlencoded"));
-		headers.put("Access-Control-Allow-Origin", hostUris);
-		headers.put("Access-Control-Allow-Methods", Arrays.asList("POST"));
-		headers.put("Content-Type", Arrays.asList("application/json"));
 
 		return response;
 	}
@@ -113,5 +115,11 @@ public class LiferayAccessTokenService extends AccessTokenService {
 
 		return client;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LiferayAccessTokenService.class);
+
+	@Context
+	private HttpHeaders _httpHeaders;
 
 }

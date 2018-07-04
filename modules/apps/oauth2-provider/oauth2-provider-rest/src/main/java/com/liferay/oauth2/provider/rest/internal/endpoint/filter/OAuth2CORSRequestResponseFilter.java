@@ -37,7 +37,6 @@ import java.util.Map;
 import javax.annotation.Priority;
 
 import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -52,7 +51,6 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	property = {
-		"osgi.jaxrs.application.select=(auth.verifier.cors.allowed=true)",
 		"osgi.jaxrs.extension=true",
 		"osgi.jaxrs.extension.select=(osgi.jaxrs.name=Liferay.OAuth2)",
 		"osgi.jaxrs.name=OAuth2CORSFilter"
@@ -68,10 +66,23 @@ public class OAuth2CORSRequestResponseFilter
 	public void filter(ContainerRequestContext requestContext)
 		throws IOException {
 
+		String origin = requestContext.getHeaderString("Origin");
+
+		if (Validator.isBlank(origin)) {
+			return;
+		}
+
 		String method = requestContext.getMethod();
 
 		if (StringUtil.equals(method, HttpMethods.OPTIONS)) {
-			if (!_isValidPreflight(requestContext)) {
+			String accessControlRequestMethod = requestContext.getHeaderString(
+				"Access-Control-Request-Method");
+
+			if (Validator.isBlank(accessControlRequestMethod)) {
+				if (_log.isDebugEnabled()) {
+					_log.debug("Invalid preflight sent by browser");
+				}
+
 				throw new ForbiddenException();
 			}
 		}
@@ -85,8 +96,6 @@ public class OAuth2CORSRequestResponseFilter
 
 				throw new ForbiddenException();
 			}
-
-			String origin = requestContext.getHeaderString("Origin");
 
 			List<String> redirectURIsList =
 				oAuth2Application.getRedirectURIsList();
@@ -112,10 +121,14 @@ public class OAuth2CORSRequestResponseFilter
 
 		String origin = requestContext.getHeaderString("Origin");
 
+		if (Validator.isBlank(origin)) {
+			return;
+		}
+
 		MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 
-		headers.putSingle("Access-Control-Allow-Origin", origin);
 		headers.putSingle("Access-Control-Allow-Headers", "*");
+		headers.putSingle("Access-Control-Allow-Origin", origin);
 	}
 
 	protected OAuth2Application getOAuth2Application() {
@@ -144,53 +157,31 @@ public class OAuth2CORSRequestResponseFilter
 		String origin, OAuth2Application oAuth2Application,
 		List<String> redirectURIsList) {
 
-		boolean originAllowed = false;
-
-		for (String redirectURI : redirectURIsList) {
+		for (String redirect : redirectURIsList) {
 			try {
-				URI originUri = new URI(origin);
-				URI uri = new URI(redirectURI);
+				URI originURI = new URI(origin);
+				URI redirectURI = new URI(redirect);
 
-				String originHost = originUri.getHost();
-				String uriHost = uri.getHost();
+				String originHost = originURI.getHost();
+				String redirectHost = redirectURI.getHost();
 
-				if (originHost.equals(uriHost)) {
-					originAllowed = true;
-
-					break;
+				if (originHost.equals(redirectHost)) {
+					return true;
 				}
 			}
 			catch (URISyntaxException urise) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						StringBundler.concat(
-							"Invalid client ", oAuth2Application.getClientId(),
-							" redirectURI ", redirectURI),
+							"Invalid callback uri ", redirect,
+							" for client id: ",
+							oAuth2Application.getClientId()),
 						urise);
 				}
 			}
 		}
 
-		return originAllowed;
-	}
-
-	private boolean _isValidPreflight(ContainerRequestContext requestContext) {
-		String accessControlRequestMethod = requestContext.getHeaderString(
-			"Access-Control-Request-Method");
-
-		String origin = requestContext.getHeaderString("Origin");
-
-		if (Validator.isBlank(accessControlRequestMethod) ||
-			Validator.isBlank(origin)) {
-
-			if (_log.isDebugEnabled()) {
-				_log.debug("Invalid preflight sent by browser");
-			}
-
-			return false;
-		}
-
-		return true;
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
