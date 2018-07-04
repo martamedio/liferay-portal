@@ -37,10 +37,12 @@ import java.util.Map;
 import javax.annotation.Priority;
 
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.osgi.service.component.annotations.Component;
@@ -58,6 +60,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE,
 	service = {ContainerRequestFilter.class, ContainerResponseFilter.class}
 )
+@PreMatching
 @Priority(Priorities.HEADER_DECORATOR - 8)
 public class OAuth2CORSRequestResponseFilter
 	implements ContainerRequestFilter, ContainerResponseFilter {

@@ -135,7 +135,8 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 				new TestApplication(), "no-cors", new HashMapDictionary<>());
 
 			createOAuth2Application(
-				defaultCompanyId, user, "oauthTestApplication");
+				defaultCompanyId, user, "oauthTestApplication",
+				Collections.singletonList("GET"));
 			createOAuth2Application(
 				defaultCompanyId, user, "oauthTestApplicationCORS",
 				"oauthTestApplicationSecret",
