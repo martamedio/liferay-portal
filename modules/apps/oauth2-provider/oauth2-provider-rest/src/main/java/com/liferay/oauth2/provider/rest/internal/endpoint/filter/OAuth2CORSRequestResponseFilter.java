@@ -34,13 +34,35 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Priority;
+
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.core.MultivaluedMap;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Marta Medio
  */
-public class OAuth2CORSRequestFilter implements ContainerRequestFilter {
+@Component(
+	property = {
+		"osgi.jaxrs.application.select=(auth.verifier.cors.allowed=true)",
+		"osgi.jaxrs.extension=true",
+		"osgi.jaxrs.extension.select=(osgi.jaxrs.name=Liferay.OAuth2)",
+		"osgi.jaxrs.name=OAuth2CORSFilter"
+	},
+	scope = ServiceScope.PROTOTYPE,
+	service = {ContainerRequestFilter.class, ContainerResponseFilter.class}
+)
+@Priority(Priorities.HEADER_DECORATOR - 8)
+public class OAuth2CORSRequestResponseFilter
+	implements ContainerRequestFilter, ContainerResponseFilter {
 
 	@Override
 	public void filter(ContainerRequestContext requestContext)
@@ -50,7 +72,7 @@ public class OAuth2CORSRequestFilter implements ContainerRequestFilter {
 
 		if (StringUtil.equals(method, HttpMethods.OPTIONS)) {
 			if (!_isValidPreflight(requestContext)) {
-				return;
+				throw new ForbiddenException();
 			}
 		}
 		else {
@@ -61,43 +83,15 @@ public class OAuth2CORSRequestFilter implements ContainerRequestFilter {
 					_log.debug("Unable to find OAuth2 application");
 				}
 
-				return;
+				throw new ForbiddenException();
 			}
 
 			String origin = requestContext.getHeaderString("Origin");
 
-			boolean originAllowed = false;
-
 			List<String> redirectURIsList =
 				oAuth2Application.getRedirectURIsList();
 
-			for (String redirectURI : redirectURIsList) {
-				try {
-					URI originUri = new URI(origin);
-					URI uri = new URI(redirectURI);
-
-					String originHost = originUri.getHost();
-					String uriHost = uri.getHost();
-
-					if (originHost.equals(uriHost)) {
-						originAllowed = true;
-
-						break;
-					}
-				}
-				catch (URISyntaxException urise) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							StringBundler.concat(
-								"Invalid client ",
-								oAuth2Application.getClientId(),
-								" redirectURI ", redirectURI),
-							urise);
-					}
-				}
-			}
-
-			if (!originAllowed) {
+			if (!isOriginAllowed(origin, oAuth2Application, redirectURIsList)) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						StringBundler.concat(
@@ -106,9 +100,22 @@ public class OAuth2CORSRequestFilter implements ContainerRequestFilter {
 							origin));
 				}
 
-				return;
+				throw new ForbiddenException();
 			}
 		}
+	}
+
+	@Override
+	public void filter(
+		ContainerRequestContext requestContext,
+		ContainerResponseContext responseContext) {
+
+		String origin = requestContext.getHeaderString("Origin");
+
+		MultivaluedMap<String, Object> headers = responseContext.getHeaders();
+
+		headers.putSingle("Access-Control-Allow-Origin", origin);
+		headers.putSingle("Access-Control-Allow-Headers", "*");
 	}
 
 	protected OAuth2Application getOAuth2Application() {
@@ -133,6 +140,40 @@ public class OAuth2CORSRequestFilter implements ContainerRequestFilter {
 		return accessToken.getOAuth2Application();
 	}
 
+	protected boolean isOriginAllowed(
+		String origin, OAuth2Application oAuth2Application,
+		List<String> redirectURIsList) {
+
+		boolean originAllowed = false;
+
+		for (String redirectURI : redirectURIsList) {
+			try {
+				URI originUri = new URI(origin);
+				URI uri = new URI(redirectURI);
+
+				String originHost = originUri.getHost();
+				String uriHost = uri.getHost();
+
+				if (originHost.equals(uriHost)) {
+					originAllowed = true;
+
+					break;
+				}
+			}
+			catch (URISyntaxException urise) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							"Invalid client ", oAuth2Application.getClientId(),
+							" redirectURI ", redirectURI),
+						urise);
+				}
+			}
+		}
+
+		return originAllowed;
+	}
+
 	private boolean _isValidPreflight(ContainerRequestContext requestContext) {
 		String accessControlRequestMethod = requestContext.getHeaderString(
 			"Access-Control-Request-Method");
@@ -153,6 +194,6 @@ public class OAuth2CORSRequestFilter implements ContainerRequestFilter {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		OAuth2CORSRequestFilter.class);
+		OAuth2CORSRequestResponseFilter.class);
 
 }

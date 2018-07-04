@@ -24,7 +24,9 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -101,9 +103,9 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 		Invocation.Builder invocationBuilder = authorize(
 			webTarget.request(), getToken("oauthTestApplicationCORS"));
 
-		invocationBuilder.header("Origin", _DUMMY_URI);
 		invocationBuilder.header(
 			"Access-Control-Request-Method", "authentication");
+		invocationBuilder.header("Origin", _DUMMY_URI);
 
 		Response response = invocationBuilder.options();
 
@@ -141,8 +143,8 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 				Arrays.asList(
 					GrantType.CLIENT_CREDENTIALS,
 					GrantType.RESOURCE_OWNER_PASSWORD),
-				Arrays.asList("everything", "everything.readonly"),
-				Arrays.asList(_DUMMY_URI));
+				Collections.singletonList("GET"),
+				Collections.singletonList(_DUMMY_URI));
 
 			properties = new HashMapDictionary<>();
 
