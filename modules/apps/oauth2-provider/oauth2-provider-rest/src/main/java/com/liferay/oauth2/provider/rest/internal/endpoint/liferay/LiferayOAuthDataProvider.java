@@ -276,8 +276,8 @@ public class LiferayOAuthDataProvider
 		if (OAuth2ProviderConstants.EXPIRED_TOKEN.equals(
 				oAuth2Authorization.getAccessTokenContent())) {
 
-			if (_log.isWarnEnabled()) {
-				_log.warn(
+			if (_log.isDebugEnabled()) {
+				_log.debug(
 					StringBundler.concat(
 						"Remote client ", _getRemoteIP(),
 						" tried to use expired or revoked OAuth 2 token for ",
@@ -417,8 +417,8 @@ public class LiferayOAuthDataProvider
 			if (OAuth2ProviderConstants.EXPIRED_TOKEN.equals(
 					oAuth2Authorization.getRefreshTokenContent())) {
 
-				if (_log.isWarnEnabled()) {
-					_log.warn(
+				if (_log.isDebugEnabled()) {
+					_log.debug(
 						StringBundler.concat(
 							"Remote client ", _getRemoteIP(),
 							" tried to use expired or revoked OAuth 2 refresh ",
@@ -507,8 +507,8 @@ public class LiferayOAuthDataProvider
 
 			doRevokeRefreshToken(oldRefreshToken);
 
-			if (_log.isWarnEnabled()) {
-				_log.warn(
+			if (_log.isDebugEnabled()) {
+				_log.debug(
 					StringBundler.concat(
 						"Remote client ", _getRemoteIP(),
 						" tried to use an expired OAuth 2 refresh token for ",
