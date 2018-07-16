@@ -263,7 +263,8 @@ public class LiferayOAuthDataProvider
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Remote client " + _getRemoteIP() +
-						" tried to use deleted or brute force OAuth 2 token.");
+						" used unknown OAuth 2 token. Repeating report" +
+						" may be a sign of a brute-force attack.");
 			}
 
 			return null;
@@ -275,7 +276,9 @@ public class LiferayOAuthDataProvider
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Remote client " + _getRemoteIP() +
-						" tried to use an expired OAuth 2 token.");
+						" tried to use expired or revoked OAuth 2 token for " +
+						"Liferay OAuth2Application " + oAuth2Authorization.getOAuth2ApplicationId() +
+					" and user " + oAuth2Authorization.getUserId());
 			}
 
 			return null;
@@ -318,7 +321,8 @@ public class LiferayOAuthDataProvider
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Remote client " + _getRemoteIP() +
-						" tried to use a nonexistent OAuth 2 clientId.");
+						" tried to use a nonexistent OAuth 2 clientId "
+						+ clientId);
 			}
 
 			throw new SystemException(
@@ -395,7 +399,8 @@ public class LiferayOAuthDataProvider
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						"Remote client " + _getRemoteIP() +
-							" tried to use an invalid OAuth 2 refresh token.");
+							" used unknown OAuth 2 refresh token. Repeating " +
+							"report may be a sign of a brute-force attack.");
 				}
 
 				return null;
@@ -407,7 +412,9 @@ public class LiferayOAuthDataProvider
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						"Remote client " + _getRemoteIP() +
-							" tried to use an expired OAuth 2 token.");
+							" tried to use expired or revoked OAuth 2" +
+							"refresh token for Liferay OAuth2Application " + oAuth2Authorization.getOAuth2ApplicationId() +
+							" and user " + oAuth2Authorization.getUserId());
 				}
 
 				return null;
@@ -493,7 +500,8 @@ public class LiferayOAuthDataProvider
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Remote client " + _getRemoteIP() +
-						" tried to use an expired OAuth 2 token.");
+						" tried to use an expired OAuth 2 refresh token for " +
+						"OAuth 2 clientId " + client.getClientId());
 			}
 
 			throw new OAuthServiceException(OAuthConstants.ACCESS_DENIED);
@@ -512,7 +520,7 @@ public class LiferayOAuthDataProvider
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Remote client " + _getRemoteIP() +
-						" tried to use an invalid OAuth 2 token.");
+						" tried to use an invalid OAuth 2 token for OAuth 2 clientId " + client.getClientId());
 			}
 
 			throw new OAuthServiceException(OAuthConstants.ACCESS_DENIED);
@@ -526,7 +534,8 @@ public class LiferayOAuthDataProvider
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Remote client " + _getRemoteIP() +
-						" tried to use an invalid OAuth 2 refresh token.");
+						" used unknown OAuth2 refresh token for OAuth 2 clientId " + client.getClientId() +". Repeating " +
+						"report may be a sign of a brute-force attack.");
 			}
 
 			throw new OAuthServiceException(OAuthConstants.ACCESS_DENIED);
@@ -590,7 +599,8 @@ public class LiferayOAuthDataProvider
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Remote client " + _getRemoteIP() +
-						" tried to use a nonexistent OAuth 2 client.");
+						" tried to use a nonexistent OAuth 2 clientId "
+						+ client.getClientId());
 			}
 
 			throw new SystemException(
