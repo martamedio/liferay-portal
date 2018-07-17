@@ -107,49 +107,19 @@ if (referer.startsWith(themeDisplay.getPathMain() + "/portal/update_password") &
 				</aui:form>
 
 				<c:if test="<%= !SessionErrors.isEmpty(request) %>">
+						
+					<aui:script use="liferay-form">
+
+					var validationErrors = [];
 						<c:choose>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustBeLonger.class.getName()) %>">
 								<%
 								UserPasswordException.MustBeLonger upe = (UserPasswordException.MustBeLonger)SessionErrors.get(request, UserPasswordException.MustBeLonger.class.getName());
 								%>
-
-								<aui:script use="liferay-form">
-									var form = Liferay.Form.get('<portlet:namespace />update-password-fm');
-
-									var thatPasswordIsTooShort = '<liferay-ui:message arguments="<%= String.valueOf(upe.minLength) %>" key="that-password-is-too-short" translateArguments="<%= false %>" />';
-
-									var oldFieldRules = form.get('fieldRules');
-
-									var newFieldRules = [];
-
-									if (thatPasswordIsTooShort.length > 0) {
-
-										newFieldRules.push(
-												{
-													body: function(val, fieldNode, ruleValue) {
-														console.log('!!!! Validation triggered');
-														return true;
-													},
-													custom: false,
-													fieldName: '<portlet:namespace />password1',
-													validatorName: 'required',
-													errorMessage: thatPasswordIsTooShort
-												}
-											);
-									}
-
-									var fieldRules = oldFieldRules.concat(newFieldRules);
-
-									form.set('fieldRules', fieldRules);
-
-									var formValidator = form.formValidator;
-                					formValidator.validateField('<portlet:namespace />password1');
-
-								</aui:script>
-
+								validationErrors.push('<liferay-ui:message arguments="<%= String.valueOf(upe.minLength) %>" key="that-password-is-too-short" translateArguments="<%= false %>" />');
 							</c:when>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustComplyWithModelListeners.class.getName()) %>">
-								<liferay-ui:message key="that-password-is-invalid-please-enter-a-different-password" />
+								validationErrors.push('<liferay-ui:message key="that-password-is-invalid-please-enter-a-different-password" />');
 							</c:when>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustComplyWithRegex.class.getName()) %>">
 
@@ -157,30 +127,63 @@ if (referer.startsWith(themeDisplay.getPathMain() + "/portal/update_password") &
 								UserPasswordException.MustComplyWithRegex upe = (UserPasswordException.MustComplyWithRegex)SessionErrors.get(request, UserPasswordException.MustComplyWithRegex.class.getName());
 								%>
 
-								<liferay-ui:message arguments="<%= upe.regex %>" key="that-password-does-not-comply-with-the-regular-expression" translateArguments="<%= false %>" />
+								validationErrors.push('<liferay-ui:message arguments="<%= upe.regex %>" key="that-password-does-not-comply-with-the-regular-expression" translateArguments="<%= false %>" />');
 							</c:when>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustMatch.class.getName()) %>">
-								<liferay-ui:message key="the-passwords-you-entered-do-not-match" />
+								validationErrors.push('<liferay-ui:message key="the-passwords-you-entered-do-not-match" />');
 							</c:when>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeEqualToCurrent.class.getName()) %>">
-								<liferay-ui:message key="your-new-password-cannot-be-the-same-as-your-old-password-please-enter-a-different-password" />
+								validationErrors.push('<liferay-ui:message key="your-new-password-cannot-be-the-same-as-your-old-password-please-enter-a-different-password" />');
 							</c:when>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeNull.class.getName()) %>">
-								<liferay-ui:message key="the-password-cannot-be-blank" />
+								validationErrors.push('<liferay-ui:message key="the-password-cannot-be-blank" />');
 							</c:when>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeRecentlyUsed.class.getName()) %>">
-								<liferay-ui:message key="that-password-has-already-been-used-please-enter-a-different-password" />
+								validationErrors.push('<liferay-ui:message key="that-password-has-already-been-used-please-enter-a-different-password" />');
 							</c:when>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeTrivial.class.getName()) %>">
-								<liferay-ui:message key="that-password-uses-common-words-please-enter-a-password-that-is-harder-to-guess-i-e-contains-a-mix-of-numbers-and-letters" />
+								validationErrors.push('<liferay-ui:message key="that-password-uses-common-words-please-enter-a-password-that-is-harder-to-guess-i-e-contains-a-mix-of-numbers-and-letters" />');
 							</c:when>
 							<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotContainDictionaryWords.class.getName()) %>">
-								<liferay-ui:message key="that-password-uses-common-dictionary-words" />
+								validationErrors.push('<liferay-ui:message key="that-password-uses-common-dictionary-words" />');
 							</c:when>
 							<c:otherwise>
-								<liferay-ui:message key="your-request-failed-to-complete" />
+								<div class="alert alert-danger">
+									<liferay-ui:message key="your-request-failed-to-complete" />
+								</div>
 							</c:otherwise>
 						</c:choose>
+
+						var form = Liferay.Form.get('<portlet:namespace />update-password-fm');
+
+						var oldFieldRules = form.get('fieldRules');
+
+						var newFieldRules = [];
+
+						if (validationErrors.length > 0) {
+
+							newFieldRules.push(
+									{
+										body: function(val, fieldNode, ruleValue) {
+											console.log('!!!! Validation triggered');
+											return true;
+										},
+										custom: false,
+										fieldName: '<portlet:namespace />password1',
+										validatorName: 'required',
+										errorMessage: validationErrors.join(' ')
+									}
+								);
+						}
+
+						var fieldRules = oldFieldRules.concat(newFieldRules);
+
+						form.set('fieldRules', fieldRules);
+
+						var formValidator = form.formValidator;
+    					formValidator.validateField('<portlet:namespace />password1');
+
+					</aui:script>
 				</c:if>
 
 			</c:otherwise>
