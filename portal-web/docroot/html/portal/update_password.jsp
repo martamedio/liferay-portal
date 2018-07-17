@@ -79,7 +79,7 @@ if (referer.startsWith(themeDisplay.getPathMain() + "/portal/update_password") &
 				</div>
 			</c:when>
 			<c:otherwise>
-				<aui:form action='<%= themeDisplay.getPathMain() + "/portal/update_password" %>' method="post" name="fm">
+				<aui:form action='<%= themeDisplay.getPathMain() + "/portal/update_password" %>' method="post" id="update-password-fm" name="update-password-fm">
 					<aui:input name="p_l_id" type="hidden" value="<%= layout.getPlid() %>" />
 					<aui:input name="p_auth" type="hidden" value="<%= AuthTokenUtil.getToken(request) %>" />
 					<aui:input name="doAsUserId" type="hidden" value="<%= themeDisplay.getDoAsUserId() %>" />
@@ -88,7 +88,6 @@ if (referer.startsWith(themeDisplay.getPathMain() + "/portal/update_password") &
 					<aui:input name="ticketKey" type="hidden" value="<%= ticketKey %>" />
 
 					<c:if test="<%= !SessionErrors.isEmpty(request) %>">
-						<div class="alert alert-danger">
 							<c:choose>
 								<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustBeLonger.class.getName()) %>">
 
@@ -96,7 +95,30 @@ if (referer.startsWith(themeDisplay.getPathMain() + "/portal/update_password") &
 									UserPasswordException.MustBeLonger upe = (UserPasswordException.MustBeLonger)SessionErrors.get(request, UserPasswordException.MustBeLonger.class.getName());
 									%>
 
-									<liferay-ui:message arguments="<%= String.valueOf(upe.minLength) %>" key="that-password-is-too-short" translateArguments="<%= false %>" />
+									<aui:script use="liferay-form">
+										var form = Liferay.Form.get('<portlet:namespace />update-password-fm');
+
+										var oldFieldRules = form.get('fieldRules');
+
+										var newFieldRules = [
+											{
+											body: function(val, fieldNode, ruleValue) {
+												return false;
+											},
+											custom: true,
+											fieldName: '<portlet:namespace />password1',
+											validatorName: 'password-too-short',
+											errorMessage: '<liferay-ui:message arguments="<%= String.valueOf(upe.minLength) %>" key="that-password-is-too-short" translateArguments="<%= false %>" />'
+										}
+										];
+
+										var fieldRules = oldFieldRules.concat(newFieldRules);
+
+										form.set('fieldRules', fieldRules);
+
+
+									</aui:script>
+
 								</c:when>
 								<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustComplyWithModelListeners.class.getName()) %>">
 									<liferay-ui:message key="that-password-is-invalid-please-enter-a-different-password" />
@@ -131,7 +153,6 @@ if (referer.startsWith(themeDisplay.getPathMain() + "/portal/update_password") &
 									<liferay-ui:message key="your-request-failed-to-complete" />
 								</c:otherwise>
 							</c:choose>
-						</div>
 					</c:if>
 
 					<aui:fieldset>
