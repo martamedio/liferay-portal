@@ -30,6 +30,9 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -145,6 +148,8 @@ public class PortalLogAssertorTest {
 
 					NodeList childNodelist = node.getChildNodes();
 
+					boolean detectedError = true;
+
 					String message =
 						"\nPortal log assert failure, see above log for more " +
 							"information: \n";
@@ -153,25 +158,33 @@ public class PortalLogAssertorTest {
 						Node childNode = childNodelist.item(j);
 
 						String nodeName = childNode.getNodeName();
+						String textContent = childNode.getTextContent();
 
-						if (nodeName.equals("message")) {
-							message += childNode.getTextContent();
+						if (_containsLogMessageExclusion(textContent)) {
+							detectedError = false;
 						}
-						else if (nodeName.equals("throwable")) {
-							message += "\n" + childNode.getTextContent();
+						else {
+							if (nodeName.equals("message")) {
+								message += textContent;
+							}
+							else if (nodeName.equals("throwable")) {
+								message += "\n" + textContent;
+							}
 						}
 					}
 
-					System.out.println(
-						"Detected error, dumpping full log for reference:");
+					if (detectedError) {
+						System.out.println(
+							"Detected error, dumpping full log for reference:");
 
-					Files.copy(
-						Paths.get(
-							StringUtil.replace(
-								path.toString(), ".xml", ".log")),
-						System.out);
+						Files.copy(
+							Paths.get(
+								StringUtil.replace(
+									path.toString(), ".xml", ".log")),
+							System.out);
 
-					Assert.fail(message);
+						Assert.fail(message);
+					}
 				}
 			}
 		}
@@ -179,5 +192,18 @@ public class PortalLogAssertorTest {
 			throw new IOException(e);
 		}
 	}
+
+	private boolean _containsLogMessageExclusion(String textContent) {
+		for (String logMessageException : _logMessageExclusionList) {
+			if (textContent.contains(logMessageException)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private final List<String> _logMessageExclusionList = Arrays.asList(
+		"tried to use a nonexistent OAuth 2 clientId");
 
 }
