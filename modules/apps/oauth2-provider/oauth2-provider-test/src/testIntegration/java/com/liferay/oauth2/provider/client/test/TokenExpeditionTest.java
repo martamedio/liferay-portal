@@ -60,7 +60,7 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 	@ExpectedLogs(
 		expectedLogs = {
 			@ExpectedLog(
-				expectedLog = "tried to use a nonexistent OAuth 2 clientId",
+				expectedLog = "tried to use a nonexistent OAuth 2 client ID",
 				expectedType = ExpectedType.CONTAINS
 			)
 		},
