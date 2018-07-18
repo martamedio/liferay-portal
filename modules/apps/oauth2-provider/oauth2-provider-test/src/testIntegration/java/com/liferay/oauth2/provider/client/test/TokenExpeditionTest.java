@@ -59,8 +59,8 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 	@ExpectedLogs(
 		expectedLogs = {
 			@ExpectedLog(
-				expectedLog = "tried to use a nonexistent OAuth 2 client ID",
-				expectedType = ExpectedType.CONTAINS
+				expectedLog = "tried to use a nonexistent OAuth 2 client ID ",
+				expectedType = ExpectedType.POSTFIX
 			)
 		},
 		level = "WARN", loggerClass = LiferayOAuthDataProvider.class
