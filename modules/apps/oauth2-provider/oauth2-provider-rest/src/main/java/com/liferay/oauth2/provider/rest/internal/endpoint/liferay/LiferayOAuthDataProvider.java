@@ -331,8 +331,7 @@ public class LiferayOAuthDataProvider
 						clientId));
 			}
 
-			throw new SystemException(
-				"Nonexistent OAuth 2 client ID " + clientId);
+			return null;
 		}
 
 		MessageContext messageContext = getMessageContext();
@@ -620,8 +619,8 @@ public class LiferayOAuthDataProvider
 						client.getClientId()));
 			}
 
-			throw new SystemException(
-				"Nonexistent OAuth 2 client ID " + client.getClientId());
+			return null;
+
 		}
 
 		return oAuth2Application;
