@@ -18,6 +18,7 @@ import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDa
 import com.liferay.oauth2.provider.test.internal.TestAnnotatedApplication;
 import com.liferay.oauth2.provider.test.internal.activator.BaseTestPreparatorBundleActivator;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -34,12 +35,15 @@ import javax.ws.rs.core.Response;
 import com.liferay.portal.test.rule.ExpectedLog;
 import com.liferay.portal.test.rule.ExpectedLogs;
 import com.liferay.portal.test.rule.ExpectedType;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,6 +54,11 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class TokenExpeditionTest extends BaseClientTestCase {
 
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
+
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
 		return BaseClientTestCase.getDeployment(
@@ -59,8 +68,8 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 	@ExpectedLogs(
 		expectedLogs = {
 			@ExpectedLog(
-				expectedLog = "tried to use a nonexistent OAuth 2 client ID ",
-				expectedType = ExpectedType.POSTFIX
+				expectedLog = "tried to use a nonexistent OAuth 2 client ID",
+				expectedType = ExpectedType.CONTAINS
 			)
 		},
 		level = "WARN", loggerClass = LiferayOAuthDataProvider.class
