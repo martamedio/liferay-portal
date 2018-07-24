@@ -15,17 +15,28 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.access.token;
 
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.apache.cxf.rs.security.oauth2.services.AccessTokenService;
@@ -35,6 +46,45 @@ import org.apache.cxf.rs.security.oauth2.services.AccessTokenService;
  */
 @Path("/token")
 public class LiferayAccessTokenService extends AccessTokenService {
+
+	@Consumes("application/x-www-form-urlencoded")
+	@Override
+	@POST
+	@Produces("application/json")
+	public Response handleTokenRequest(MultivaluedMap<String, String> params) {
+		Response response = super.handleTokenRequest(params);
+
+		Client client = authenticateClientIfNeeded(params);
+
+		MultivaluedMap<String, Object> headers = response.getHeaders();
+
+		String origin = _httpHeaders.getHeaderString("Origin");
+
+		if (Validator.isBlank(origin)) {
+			return response;
+		}
+
+		for (String redirectUri : client.getRedirectUris()) {
+			try {
+				URI uri = new URI(redirectUri);
+
+				if (origin.equals(uri.getHost())) {
+					headers.putSingle(
+						"Accept", "application/x-www-form-urlencoded");
+					headers.putSingle("Access-Control-Allow-Methods", "POST");
+					headers.putSingle("Access-Control-Allow-Origin", origin);
+					headers.putSingle("Content-Type", "application/json");
+				}
+			}
+			catch (URISyntaxException urise) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Invalid callback uri", urise);
+				}
+			}
+		}
+
+		return response;
+	}
 
 	@Override
 	protected Client authenticateClientIfNeeded(
@@ -70,5 +120,11 @@ public class LiferayAccessTokenService extends AccessTokenService {
 
 		return client;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LiferayAccessTokenService.class);
+
+	@Context
+	private HttpHeaders _httpHeaders;
 
 }
