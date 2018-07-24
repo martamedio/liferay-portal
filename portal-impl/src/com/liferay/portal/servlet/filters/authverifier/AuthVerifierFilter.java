@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.ProtectedServletRequest;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -90,6 +91,13 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			_initParametersMap.remove("guest.allowed");
 		}
 
+		if (_initParametersMap.containsKey("cors.preflight.allowed")) {
+			_guestAllowed = GetterUtil.getBoolean(
+				_initParametersMap.get("cors.preflight.allowed"), true);
+
+			_initParametersMap.remove("cors.preflight.allowed");
+		}
+
 		if (_initParametersMap.containsKey("hosts.allowed")) {
 			String hostsAllowedString = (String)_initParametersMap.get(
 				"hosts.allowed");
@@ -130,6 +138,10 @@ public class AuthVerifierFilter extends BasePortalFilter {
 		}
 
 		if (_isApplySSL(request, response)) {
+			return;
+		}
+
+		if (_isApplyCORSPreflight(request, response)) {
 			return;
 		}
 
@@ -192,6 +204,45 @@ public class AuthVerifierFilter extends BasePortalFilter {
 		else {
 			_log.error("Unimplemented state " + state);
 		}
+	}
+
+	private boolean _isApplyCORSPreflight(
+		HttpServletRequest request, HttpServletResponse response) {
+
+		if (!_corsPreflightAllowed) {
+			return false;
+		}
+
+		String method = request.getMethod();
+
+		if (!StringUtil.equals(method, HttpMethods.OPTIONS)) {
+			return false;
+		}
+
+		String origin = request.getHeader("Origin");
+
+		if (Validator.isBlank(origin)) {
+			return false;
+		}
+
+		String accessControlRequestMethod = request.getHeader(
+			"Access-Control-Request-Method");
+
+		if (Validator.isBlank(accessControlRequestMethod)) {
+			return false;
+		}
+
+		String accessControlRequestHeaders = request.getHeader(
+			"Access-Control-Request-Headers");
+
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+		response.setHeader("Access-Control-Allow-Origin ", origin);
+		response.setHeader(
+			"Access-Control-Allow-Headers", accessControlRequestHeaders);
+		response.setHeader(
+			"Access-Control-Allow-Methods", accessControlRequestMethod);
+
+		return true;
 	}
 
 	private boolean _isAccessAllowed(
@@ -258,6 +309,7 @@ public class AuthVerifierFilter extends BasePortalFilter {
 	private static final Log _log = LogFactoryUtil.getLog(
 		AuthVerifierFilter.class.getName());
 
+	private boolean _corsPreflightAllowed = true;
 	private boolean _guestAllowed = true;
 	private final Set<String> _hostsAllowed = new HashSet<>();
 	private boolean _httpsRequired;
