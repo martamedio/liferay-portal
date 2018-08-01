@@ -24,6 +24,7 @@ import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 
 import java.io.IOException;
 
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class LDAPConfigurationListener implements ConfigurationListener {
 	@Override
 	public void configurationEvent(ConfigurationEvent configurationEvent) {
 		String factoryPid = configurationEvent.getFactoryPid();
+		String pid = configurationEvent.getPid();
 
 		if (Validator.isNull(factoryPid) ||
 			!_configurationProviders.containsKey(factoryPid)) {
@@ -58,13 +60,15 @@ public class LDAPConfigurationListener implements ConfigurationListener {
 			_configurationProviders.get(factoryPid);
 
 		try {
-			Configuration configuration = _configurationAdmin.getConfiguration(
-				configurationEvent.getPid(), StringPool.QUESTION);
-
 			if (configurationEvent.getType() == ConfigurationEvent.CM_DELETED) {
-				configurationProvider.unregisterConfiguration(configuration);
+				configurationProvider.unregisterConfiguration(
+					new ParameterConfiguration(pid));
 			}
 			else {
+				Configuration configuration =
+					_configurationAdmin.getConfiguration(
+						configurationEvent.getPid(), StringPool.QUESTION);
+
 				configurationProvider.registerConfiguration(configuration);
 			}
 		}
@@ -139,5 +143,57 @@ public class LDAPConfigurationListener implements ConfigurationListener {
 	private ConfigurationAdmin _configurationAdmin;
 	private final Map<String, ConfigurationProvider<?>>
 		_configurationProviders = new HashMap<>();
+
+	private static class ParameterConfiguration implements Configuration {
+
+		public ParameterConfiguration(String pid) {
+			_pid = pid;
+		}
+
+		@Override
+		public void delete() throws IOException {
+		}
+
+		@Override
+		public String getBundleLocation() {
+			return null;
+		}
+
+		@Override
+		public long getChangeCount() {
+			return 0;
+		}
+
+		@Override
+		public String getFactoryPid() {
+			return null;
+		}
+
+		@Override
+		public String getPid() {
+			return _pid;
+		}
+
+		@Override
+		public Dictionary<String, Object> getProperties() {
+			return null;
+		}
+
+		@Override
+		public void setBundleLocation(String location) {
+		}
+
+		@Override
+		public void update() throws IOException {
+		}
+
+		@Override
+		public void update(Dictionary<String, ?> properties)
+			throws IOException {
+		}
+
+		private final String _pid;
+
+	}
 
 }
