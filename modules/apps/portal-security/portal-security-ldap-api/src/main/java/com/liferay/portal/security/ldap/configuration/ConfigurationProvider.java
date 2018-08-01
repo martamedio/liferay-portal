@@ -52,7 +52,13 @@ public interface ConfigurationProvider<T> {
 
 	public void registerConfiguration(Configuration configuration);
 
+	/**
+	 * @deprecated As of Judson (7.1.x), Replaced by {@link #unregisterConfiguration(String)}
+	 */
+	@Deprecated
 	public void unregisterConfiguration(Configuration configuration);
+
+	public void unregisterConfiguration(String pid);
 
 	public void updateProperties(
 		long companyId, Dictionary<String, Object> properties);

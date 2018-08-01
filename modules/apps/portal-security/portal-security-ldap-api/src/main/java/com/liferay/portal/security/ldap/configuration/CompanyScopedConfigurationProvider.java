@@ -54,6 +54,8 @@ public abstract class CompanyScopedConfigurationProvider
 
 		Configuration configuration = objectValuePair.getKey();
 
+		_pidCompanyConfigurations.remove(configuration.getPid());
+
 		try {
 			Dictionary<String, Object> properties =
 				configuration.getProperties();
@@ -197,25 +199,32 @@ public abstract class CompanyScopedConfigurationProvider
 		T configurable = ConfigurableUtil.createConfigurable(
 			getMetatype(), properties);
 
+		_pidCompanyConfigurations.put(
+			configuration.getPid(), configurable.companyId());
+
 		_configurations.put(
 			configurable.companyId(),
 			new ObjectValuePair<>(configuration, configurable));
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), Replaced by {@link #unregisterConfiguration(String)}
+	 */
+	@Deprecated
 	@Override
 	public synchronized void unregisterConfiguration(
 		Configuration configuration) {
 
-		Dictionary<String, Object> properties = configuration.getProperties();
+		throw new UnsupportedOperationException("Deprecated method");
+	}
 
-		if (properties == null) {
-			properties = new HashMapDictionary<>();
+	@Override
+	public synchronized void unregisterConfiguration(String pid) {
+		Long companyId = _pidCompanyConfigurations.remove(pid);
+
+		if (companyId != null) {
+			_configurations.remove(companyId);
 		}
-
-		T configurable = ConfigurableUtil.createConfigurable(
-			getMetatype(), properties);
-
-		_configurations.remove(configurable.companyId());
 	}
 
 	@Override
@@ -271,5 +280,6 @@ public abstract class CompanyScopedConfigurationProvider
 		new HashMap<>();
 	private final T _defaultConfiguration = ConfigurableUtil.createConfigurable(
 		getMetatype(), Collections.emptyMap());
+	private final Map<String, Long> _pidCompanyConfigurations = new HashMap<>();
 
 }
