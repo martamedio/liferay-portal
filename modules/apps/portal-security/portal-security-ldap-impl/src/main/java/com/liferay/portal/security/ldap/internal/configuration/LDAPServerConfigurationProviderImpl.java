@@ -349,15 +349,6 @@ public class LDAPServerConfigurationProviderImpl
 		}
 	}
 
-	/**
-	 * @deprecated As of Judson (7.1.x), Replaced by {@link #unregisterConfiguration(String)}
-	 */
-	@Deprecated
-	@Override
-	public void unregisterConfiguration(Configuration configuration) {
-		throw new UnsupportedOperationException("Deprecated method");
-	}
-
 	@Override
 	public void unregisterConfiguration(String pid) {
 		Long companyId = _pidCompanyConfigurations.remove(pid);
