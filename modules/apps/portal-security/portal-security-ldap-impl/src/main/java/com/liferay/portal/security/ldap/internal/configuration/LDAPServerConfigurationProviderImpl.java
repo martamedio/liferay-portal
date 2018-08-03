@@ -351,10 +351,10 @@ public class LDAPServerConfigurationProviderImpl
 
 	@Override
 	public void unregisterConfiguration(String pid) {
-		Long companyId = _pidCompanyConfigurations.remove(pid);
-		Long ldapServerId = _pidServerConfigurations.remove(pid);
-
 		synchronized (_configurations) {
+			Long companyId = _pidCompanyConfigurations.remove(pid);
+			Long ldapServerId = _pidServerConfigurations.remove(pid);
+			
 			Map<Long, ObjectValuePair<Configuration, LDAPServerConfiguration>>
 				objectValuePairs = _configurations.get(companyId);
 
