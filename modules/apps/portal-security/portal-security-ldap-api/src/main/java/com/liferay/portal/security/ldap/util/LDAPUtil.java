@@ -52,21 +52,7 @@ public class LDAPUtil {
 			attribute = StringEscapeUtils.escapeJava(attribute);
 		}
 
-		String[] characters = {
-			StringPool.GREATER_THAN, StringPool.LESS_THAN, StringPool.PLUS,
-			StringPool.POUND, StringPool.QUOTE, StringPool.SEMICOLON
-		};
-
-		String[] newCharacters = {
-			StringPool.DOUBLE_BACK_SLASH.concat(StringPool.GREATER_THAN),
-			StringPool.DOUBLE_BACK_SLASH.concat(StringPool.LESS_THAN),
-			StringPool.DOUBLE_BACK_SLASH.concat(StringPool.PLUS),
-			StringPool.DOUBLE_BACK_SLASH.concat(StringPool.POUND),
-			StringPool.DOUBLE_BACK_SLASH.concat(StringPool.QUOTE),
-			StringPool.DOUBLE_BACK_SLASH.concat(StringPool.SEMICOLON)
-		};
-
-		return StringUtil.replace(attribute, characters, newCharacters);
+		return StringUtil.replace(attribute, _CHARACTERS, _NEW_CHARACTERS);
 	}
 
 	public static Object getAttributeObject(
@@ -244,5 +230,19 @@ public class LDAPUtil {
 
 		return dateFormat.parse(date);
 	}
+
+	private static final String[] _CHARACTERS = {
+		StringPool.GREATER_THAN, StringPool.LESS_THAN, StringPool.PLUS,
+		StringPool.POUND, StringPool.QUOTE, StringPool.SEMICOLON
+	};
+
+	private static final String[] _NEW_CHARACTERS = {
+		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.GREATER_THAN),
+		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.LESS_THAN),
+		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.PLUS),
+		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.POUND),
+		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.QUOTE),
+		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.SEMICOLON)
+	};
 
 }
