@@ -66,10 +66,7 @@ public class LDAPUtil {
 			StringPool.DOUBLE_BACK_SLASH.concat(StringPool.SEMICOLON)
 		};
 
-		String escapedAttribute = StringUtil.replace(
-			attribute, characters, newCharacters);
-
-		return escapedAttribute;
+		return StringUtil.replace(attribute, characters, newCharacters);
 	}
 
 	public static Object getAttributeObject(
