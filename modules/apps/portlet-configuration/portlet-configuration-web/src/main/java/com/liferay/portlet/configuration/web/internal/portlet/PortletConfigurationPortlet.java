@@ -666,13 +666,20 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 
 			super.doDispatch(renderRequest, renderResponse);
 		}
+		catch (PortalException pe) {
+			if (_log.isInfoEnabled()) {
+				_log.info(pe.getMessage());
+			}
+
+			SessionErrors.add(renderRequest, pe.getClass());
+		}
 		catch (Exception e) {
 			_log.error(e.getMessage());
 
 			SessionErrors.add(renderRequest, e.getClass());
-
-			include("/error.jsp", renderRequest, renderResponse);
 		}
+
+		include("/error.jsp", renderRequest, renderResponse);
 	}
 
 	protected String[] getActionIds(
