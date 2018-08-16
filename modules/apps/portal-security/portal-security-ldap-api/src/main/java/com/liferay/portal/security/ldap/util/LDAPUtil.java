@@ -52,7 +52,8 @@ public class LDAPUtil {
 			attribute = StringEscapeUtils.escapeJava(attribute);
 		}
 
-		return StringUtil.replace(attribute, _CHARACTERS, _NEW_CHARACTERS);
+		return StringUtil.replace(
+			attribute, _INVALID_CHARS, _INVALID_CHARS_SUBS);
 	}
 
 	public static Object getAttributeObject(
@@ -231,12 +232,12 @@ public class LDAPUtil {
 		return dateFormat.parse(date);
 	}
 
-	private static final String[] _CHARACTERS = {
+	private static final String[] _INVALID_CHARS = {
 		StringPool.GREATER_THAN, StringPool.LESS_THAN, StringPool.PLUS,
 		StringPool.POUND, StringPool.QUOTE, StringPool.SEMICOLON
 	};
 
-	private static final String[] _NEW_CHARACTERS = {
+	private static final String[] _INVALID_CHARS_SUBS = {
 		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.GREATER_THAN),
 		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.LESS_THAN),
 		StringPool.DOUBLE_BACK_SLASH.concat(StringPool.PLUS),
