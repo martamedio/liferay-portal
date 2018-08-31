@@ -36,6 +36,8 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 import com.liferay.users.admin.kernel.util.UsersAdmin;
 
+import java.util.Date;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletSession;
@@ -101,11 +103,12 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 			if (Validator.isNotNull(newPassword1) ||
 				Validator.isNotNull(newPassword2)) {
 
-				_userLocalService.updatePassword(
+				User updatedUser = _userLocalService.updatePassword(
 					user.getUserId(), newPassword1, newPassword2,
 					passwordReset);
 
-				_setPasswordModifiedDateSession(actionRequest);
+				_setPasswordModifiedDateSession(
+					actionRequest, updatedUser.getPasswordModifiedDate());
 			}
 
 			_userLocalService.updatePasswordReset(
@@ -158,21 +161,16 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
-	private void _setPasswordModifiedDateSession(ActionRequest actionRequest)
+	private void _setPasswordModifiedDateSession(
+			ActionRequest actionRequest, Date date)
 		throws PortalException {
 
-		HttpServletRequest request = _portal.getHttpServletRequest(
-			actionRequest);
-
 		HttpServletRequest originalRequest = _portal.getOriginalServletRequest(
-			request);
+			_portal.getHttpServletRequest(actionRequest));
 
 		HttpSession session = originalRequest.getSession(false);
 
-		User user = _portal.getUser(actionRequest);
-
-		session.setAttribute(
-			"DATE_PASSWORD_CHANGED", user.getPasswordModifiedDate());
+		session.setAttribute("DATE_PASSWORD_CHANGED", date);
 	}
 
 	@Reference

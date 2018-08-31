@@ -39,6 +39,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.pwd.PwdToolkitUtilThreadLocal;
 import com.liferay.portal.util.PropsValues;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -195,10 +197,11 @@ public class UpdatePasswordAction extends Action {
 
 			PwdToolkitUtilThreadLocal.setValidate(currentValidate);
 
-			UserLocalServiceUtil.updatePassword(
+			User user = UserLocalServiceUtil.updatePassword(
 				userId, password1, password2, passwordReset);
 
-			_setPasswordModifiedDateSession(request);
+			_setPasswordModifiedDateSession(
+				request, user.getPasswordModifiedDate());
 		}
 		finally {
 			PwdToolkitUtilThreadLocal.setValidate(previousValidate);
@@ -238,7 +241,8 @@ public class UpdatePasswordAction extends Action {
 		}
 	}
 
-	private void _setPasswordModifiedDateSession(HttpServletRequest request)
+	private void _setPasswordModifiedDateSession(
+			HttpServletRequest request, Date date)
 		throws PortalException {
 
 		HttpServletRequest originalRequest =
@@ -246,10 +250,7 @@ public class UpdatePasswordAction extends Action {
 
 		HttpSession session = originalRequest.getSession(false);
 
-		User user = PortalUtil.getUser(request);
-
-		session.setAttribute(
-			"DATE_PASSWORD_CHANGED", user.getPasswordModifiedDate());
+		session.setAttribute("DATE_PASSWORD_CHANGED", date);
 	}
 
 }
