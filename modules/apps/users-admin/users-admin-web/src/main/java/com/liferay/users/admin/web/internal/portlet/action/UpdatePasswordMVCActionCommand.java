@@ -16,6 +16,7 @@ package com.liferay.users.admin.web.internal.portlet.action;
 
 import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.User;
@@ -38,6 +39,9 @@ import com.liferay.users.admin.kernel.util.UsersAdmin;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletSession;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -100,6 +104,8 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 				_userLocalService.updatePassword(
 					user.getUserId(), newPassword1, newPassword2,
 					passwordReset);
+
+				_setPasswordModifiedDateSession(actionRequest);
 			}
 
 			_userLocalService.updatePasswordReset(
@@ -150,6 +156,23 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 				throw e;
 			}
 		}
+	}
+
+	private void _setPasswordModifiedDateSession(ActionRequest actionRequest)
+		throws PortalException {
+
+		HttpServletRequest request = _portal.getHttpServletRequest(
+			actionRequest);
+
+		HttpServletRequest originalRequest = _portal.getOriginalServletRequest(
+			request);
+
+		HttpSession session = originalRequest.getSession(false);
+
+		User user = _portal.getUser(actionRequest);
+
+		session.setAttribute(
+			"DATE_PASSWORD_CHANGED", user.getPasswordModifiedDate());
 	}
 
 	@Reference

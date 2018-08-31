@@ -15,6 +15,7 @@
 package com.liferay.portal.action;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserLockoutException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.model.Company;
@@ -196,6 +197,8 @@ public class UpdatePasswordAction extends Action {
 
 			UserLocalServiceUtil.updatePassword(
 				userId, password1, password2, passwordReset);
+
+			_setPasswordModifiedDateSession(request);
 		}
 		finally {
 			PwdToolkitUtilThreadLocal.setValidate(previousValidate);
@@ -233,6 +236,20 @@ public class UpdatePasswordAction extends Action {
 
 			session.setAttribute(WebKeys.USER_PASSWORD, password1);
 		}
+	}
+
+	private void _setPasswordModifiedDateSession(HttpServletRequest request)
+		throws PortalException {
+
+		HttpServletRequest originalRequest =
+			PortalUtil.getOriginalServletRequest(request);
+
+		HttpSession session = originalRequest.getSession(false);
+
+		User user = PortalUtil.getUser(request);
+
+		session.setAttribute(
+			"DATE_PASSWORD_CHANGED", user.getPasswordModifiedDate());
 	}
 
 }
