@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.servlet.filters.secure;
+package com.liferay.portal.servlet.filters.password.modified;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpSession;
 /**
  * @author Marta Medio
  */
-public class SecuritySessionFilter extends BasePortalFilter {
+public class PasswordModifiedFilter extends BasePortalFilter {
 
 	@Override
 	protected void processFilter(
@@ -95,6 +95,6 @@ public class SecuritySessionFilter extends BasePortalFilter {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		SecuritySessionFilter.class);
+		PasswordModifiedFilter.class);
 
 }
