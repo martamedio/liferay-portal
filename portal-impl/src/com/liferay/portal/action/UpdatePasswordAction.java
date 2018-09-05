@@ -15,7 +15,6 @@
 package com.liferay.portal.action;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserLockoutException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.model.Company;
@@ -37,9 +36,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.pwd.PwdToolkitUtilThreadLocal;
-import com.liferay.portal.util.PropsValues;
-
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -197,11 +193,8 @@ public class UpdatePasswordAction extends Action {
 
 			PwdToolkitUtilThreadLocal.setValidate(currentValidate);
 
-			User user = UserLocalServiceUtil.updatePassword(
+			UserLocalServiceUtil.updatePassword(
 				userId, password1, password2, passwordReset);
-
-			_setPasswordModifiedDateSession(
-				request, user.getPasswordModifiedDate());
 		}
 		finally {
 			PwdToolkitUtilThreadLocal.setValidate(previousValidate);
@@ -210,47 +203,30 @@ public class UpdatePasswordAction extends Action {
 		if (ticket != null) {
 			TicketLocalServiceUtil.deleteTicket(ticket);
 
-			User user = UserLocalServiceUtil.getUser(userId);
-
-			Company company = CompanyLocalServiceUtil.getCompanyById(
-				user.getCompanyId());
-
-			String login = null;
-
-			String authType = company.getAuthType();
-
-			if (authType.equals(CompanyConstants.AUTH_TYPE_EA)) {
-				login = user.getEmailAddress();
-			}
-			else if (authType.equals(CompanyConstants.AUTH_TYPE_SN)) {
-				login = user.getScreenName();
-			}
-			else if (authType.equals(CompanyConstants.AUTH_TYPE_ID)) {
-				login = String.valueOf(userId);
-			}
-
-			AuthenticatedSessionManagerUtil.login(
-				request, response, login, password1, false, null);
-
 			UserLocalServiceUtil.updatePasswordReset(userId, false);
 		}
-		else if (PropsValues.SESSION_STORE_PASSWORD) {
-			HttpSession session = request.getSession();
 
-			session.setAttribute(WebKeys.USER_PASSWORD, password1);
+		User user = UserLocalServiceUtil.getUser(userId);
+
+		Company company = CompanyLocalServiceUtil.getCompanyById(
+			user.getCompanyId());
+
+		String login = null;
+
+		String authType = company.getAuthType();
+
+		if (authType.equals(CompanyConstants.AUTH_TYPE_EA)) {
+			login = user.getEmailAddress();
 		}
-	}
+		else if (authType.equals(CompanyConstants.AUTH_TYPE_SN)) {
+			login = user.getScreenName();
+		}
+		else if (authType.equals(CompanyConstants.AUTH_TYPE_ID)) {
+			login = String.valueOf(userId);
+		}
 
-	private void _setPasswordModifiedDateSession(
-			HttpServletRequest request, Date date)
-		throws PortalException {
-
-		HttpServletRequest originalRequest =
-			PortalUtil.getOriginalServletRequest(request);
-
-		HttpSession session = originalRequest.getSession(false);
-
-		session.setAttribute("DATE_PASSWORD_CHANGED", date);
+		AuthenticatedSessionManagerUtil.login(
+			request, response, login, password1, false, null);
 	}
 
 }
