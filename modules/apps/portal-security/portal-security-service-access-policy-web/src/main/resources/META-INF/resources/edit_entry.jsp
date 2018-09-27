@@ -284,26 +284,26 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 			function(item, index) {
 				var row = rowTemplate.clone();
 
-					var actionMethodNameInput = row.one('.action-method-name');
-					var serviceClassNameInput = row.one('.service-class-name');
+				var actionMethodNameInput = row.one('.action-method-name');
+				var serviceClassNameInput = row.one('.service-class-name');
 
-					item = item.split('#');
+				item = item.split('#');
 
-					var serviceClassName = item[0];
+				var serviceClassName = item[0];
 
-					serviceClassNameInput.val(serviceClassName);
+				serviceClassNameInput.val(serviceClassName);
 
-					serviceClassNameInput.attr('data-service-class-name', serviceClassName);
+				serviceClassNameInput.attr('data-service-class-name', serviceClassName);
 
-					var actionMethodName = item[1];
+				var actionMethodName = item[1];
 
-					if (actionMethodName) {
-						actionMethodNameInput.val(actionMethodName);
-					}
+				if (actionMethodName) {
+					actionMethodNameInput.val(actionMethodName);
+				}
 
-					initAutoCompleteRow(row);
+				initAutoCompleteRow(row);
 
-					contentBox.append(row);
+				contentBox.append(row);
 			}
 		);
 	};
