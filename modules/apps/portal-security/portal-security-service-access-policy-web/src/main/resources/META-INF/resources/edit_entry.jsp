@@ -280,46 +280,34 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 
 		entries = A.Array.dedupe(entries);
 
-		if (entries.length == 1 && entries[0] == '') {
-			var row = rowTemplate.clone();
+		entries.forEach(
+			function(item, index) {
+				var row = rowTemplate.clone();
 
-			var actionMethodNameInput = row.one('.action-method-name');
-			var serviceClassNameInput = row.one('.service-class-name');
+				if (item) {
+					var actionMethodNameInput = row.one('.action-method-name');
+					var serviceClassNameInput = row.one('.service-class-name');
 
-			initAutoCompleteRow(row);
+					item = item.split('#');
 
-			contentBox.append(row);
-		}
-		else {
-			entries.forEach(
-				function(item, index) {
-					var row = rowTemplate.clone();
+					var serviceClassName = item[0];
 
-					if (item) {
-						var actionMethodNameInput = row.one('.action-method-name');
-						var serviceClassNameInput = row.one('.service-class-name');
+					serviceClassNameInput.val(serviceClassName);
 
-						item = item.split('#');
+					serviceClassNameInput.attr('data-service-class-name', serviceClassName);
 
-						var serviceClassName = item[0];
+					var actionMethodName = item[1];
 
-						serviceClassNameInput.val(serviceClassName);
-
-						serviceClassNameInput.attr('data-service-class-name', serviceClassName);
-
-						var actionMethodName = item[1];
-
-						if (actionMethodName) {
-							actionMethodNameInput.val(actionMethodName);
-						}
-
-						initAutoCompleteRow(row);
-
-						contentBox.append(row);
+					if (actionMethodName) {
+						actionMethodNameInput.val(actionMethodName);
 					}
+
+					initAutoCompleteRow(row);
+
+					contentBox.append(row);
 				}
-			);
-		}
+			}
+		);
 	};
 
 	new Liferay.AutoFields(
