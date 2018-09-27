@@ -284,7 +284,6 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 			function(item, index) {
 				var row = rowTemplate.clone();
 
-				if (item) {
 					var actionMethodNameInput = row.one('.action-method-name');
 					var serviceClassNameInput = row.one('.service-class-name');
 
@@ -305,7 +304,6 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 					initAutoCompleteRow(row);
 
 					contentBox.append(row);
-				}
 			}
 		);
 	};
