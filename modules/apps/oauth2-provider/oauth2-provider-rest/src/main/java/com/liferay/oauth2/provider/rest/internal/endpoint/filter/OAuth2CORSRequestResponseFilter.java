@@ -61,7 +61,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 	service = {ContainerRequestFilter.class, ContainerResponseFilter.class}
 )
 @PreMatching
-@Priority(Priorities.HEADER_DECORATOR - 8)
+@Priority(OAuth2CORSRequestResponseFilter.PRIORITY - 8)
 public class OAuth2CORSRequestResponseFilter
 	implements ContainerRequestFilter, ContainerResponseFilter {
 
@@ -186,6 +186,8 @@ public class OAuth2CORSRequestResponseFilter
 
 		return false;
 	}
+
+	protected static final int PRIORITY = Priorities.HEADER_DECORATOR;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OAuth2CORSRequestResponseFilter.class);
