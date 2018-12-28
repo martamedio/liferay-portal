@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.TemplateResourceLoader;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.template.BaseSingleTemplateManager;
 import com.liferay.portal.template.RestrictedTemplate;
 import com.liferay.portal.template.TemplateContextHelper;
@@ -65,8 +66,10 @@ import java.lang.reflect.Method;
 
 import java.net.URL;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -296,6 +299,11 @@ public class FreeMarkerManager extends BaseSingleTemplateManager {
 		if (isEnableDebuggerService()) {
 			DebuggerService.getBreakpoints("*");
 		}
+
+		Map<String, List<String>> restrictedClassPropertiesMap =
+			_getRestrictedClassPropertiesMap(
+				_freeMarkerEngineConfiguration.restrictedClassProperties());
+
 	}
 
 	@Reference(unbind = "-")
@@ -457,6 +465,33 @@ public class FreeMarkerManager extends BaseSingleTemplateManager {
 		}
 
 		return sb.toString();
+	}
+
+	private Map<String, List<String>> _getRestrictedClassPropertiesMap(
+		String[] restrictedClassProperties) {
+
+		Map<String, List<String>> restrictedClassPropertiesMap =
+			new HashMap<>();
+
+		for (String restrictedClassProperty : restrictedClassProperties) {
+			String className = StringUtil.extractFirst(
+				restrictedClassProperty.trim(), StringPool.EQUAL);
+			String propertyName = StringUtil.extractLast(
+				restrictedClassProperty.trim(), StringPool.EQUAL);
+
+			if (restrictedClassPropertiesMap.containsKey(className)) {
+				List<String> properties = restrictedClassPropertiesMap.get(
+					className);
+
+				properties.add(propertyName);
+			}
+			else {
+				restrictedClassPropertiesMap.put(
+					className.trim(), Arrays.asList(propertyName));
+			}
+		}
+
+		return restrictedClassPropertiesMap;
 	}
 
 	private static final Class<?>[] _INTERFACES = {ServletContext.class};
