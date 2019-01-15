@@ -14,6 +14,7 @@
 
 package com.liferay.oauth2.provider.rest.internal.endpoint.access.token;
 
+import com.liferay.oauth2.provider.rest.internal.cors.CORSSupport;
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
 
 import java.net.InetAddress;
@@ -23,8 +24,16 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.rs.security.oauth2.common.Client;
@@ -35,6 +44,36 @@ import org.apache.cxf.rs.security.oauth2.services.AccessTokenService;
  */
 @Path("/token")
 public class LiferayAccessTokenService extends AccessTokenService {
+
+	public LiferayAccessTokenService() {
+		_corsSupport = new CORSSupport();
+
+		_corsSupport.setHeader("Access-Control-Allow-Methods", HttpMethod.POST);
+	}
+
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Override
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response handleTokenRequest(MultivaluedMap<String, String> params) {
+		Response response = super.handleTokenRequest(params);
+
+		Client client = super.authenticateClientIfNeeded(params);
+
+		if (_corsSupport.isValidCORSRequest(
+				name -> _httpHeaders.getHeaderString(name),
+				client.getRedirectUris())) {
+
+			MultivaluedMap<String, Object> responseHeaders =
+				response.getHeaders();
+
+			_corsSupport.writeResponseHeaders(
+				name -> _httpHeaders.getHeaderString(name),
+				(name, value) -> responseHeaders.add(name, value));
+		}
+
+		return response;
+	}
 
 	@Override
 	protected Client authenticateClientIfNeeded(
@@ -70,5 +109,10 @@ public class LiferayAccessTokenService extends AccessTokenService {
 
 		return client;
 	}
+
+	private final CORSSupport _corsSupport;
+
+	@Context
+	private HttpHeaders _httpHeaders;
 
 }

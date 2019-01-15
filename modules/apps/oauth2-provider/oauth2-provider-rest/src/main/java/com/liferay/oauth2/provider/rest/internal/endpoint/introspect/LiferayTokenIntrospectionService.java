@@ -15,9 +15,11 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.introspect;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.rest.internal.cors.CORSSupport;
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
 import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDataProvider;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
@@ -30,6 +32,8 @@ import javax.ws.rs.Encoded;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -57,6 +61,11 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 
 		setCanSupportPublicClients(canSupportPublicClients);
 		setDataProvider(liferayOAuthDataProvider);
+
+		_corsSupport = new CORSSupport();
+
+		_corsSupport.setHeader(
+			"Access-Control-Allow-Methods", HttpMethods.POST);
 	}
 
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -67,48 +76,21 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 
 		Client client = authenticateClientIfNeeded(params);
 
-		String tokenId = params.getFirst(OAuthConstants.TOKEN_ID);
-		String tokenTypeHint = params.getFirst(OAuthConstants.TOKEN_TYPE_HINT);
+		Response response = doGetTokenIntrospection(client, params);
 
-		if (tokenTypeHint == null) {
-			ServerAccessToken serverAccessToken =
-				_liferayOAuthDataProvider.getAccessToken(tokenId);
+		if (_corsSupport.isValidCORSRequest(
+				name -> _httpHeaders.getHeaderString(name),
+				client.getRedirectUris())) {
 
-			if (serverAccessToken != null) {
-				return handleAccessToken(client, serverAccessToken);
-			}
+			MultivaluedMap<String, Object> responseHeaders =
+				response.getHeaders();
 
-			RefreshToken refreshToken =
-				_liferayOAuthDataProvider.getRefreshToken(tokenId);
-
-			if (refreshToken != null) {
-				return handleRefreshToken(client, refreshToken);
-			}
-		}
-		else if (OAuthConstants.ACCESS_TOKEN.equals(tokenTypeHint)) {
-			ServerAccessToken serverAccessToken =
-				_liferayOAuthDataProvider.getAccessToken(tokenId);
-
-			if (serverAccessToken != null) {
-				return handleAccessToken(client, serverAccessToken);
-			}
-		}
-		else if (OAuthConstants.REFRESH_TOKEN.equals(tokenTypeHint)) {
-			RefreshToken refreshToken =
-				_liferayOAuthDataProvider.getRefreshToken(tokenId);
-
-			if (refreshToken != null) {
-				return handleRefreshToken(client, refreshToken);
-			}
-		}
-		else {
-			return createErrorResponseFromErrorCode(
-				OAuthConstants.UNSUPPORTED_TOKEN_TYPE);
+			_corsSupport.writeResponseHeaders(
+				name -> _httpHeaders.getHeaderString(name),
+				(name, value) -> responseHeaders.add(name, value));
 		}
 
-		return Response.ok(
-			new TokenIntrospection(false)
-		).build();
+		return response;
 	}
 
 	protected boolean clientsMatch(Client client1, Client client2) {
@@ -182,6 +164,53 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 		tokenIntrospection.setTokenType(serverAccessToken.getTokenType());
 
 		return tokenIntrospection;
+	}
+
+	protected Response doGetTokenIntrospection(
+		Client client, MultivaluedMap<String, String> params) {
+
+		String tokenId = params.getFirst(OAuthConstants.TOKEN_ID);
+		String tokenTypeHint = params.getFirst(OAuthConstants.TOKEN_TYPE_HINT);
+
+		if (tokenTypeHint == null) {
+			ServerAccessToken serverAccessToken =
+				_liferayOAuthDataProvider.getAccessToken(tokenId);
+
+			if (serverAccessToken != null) {
+				return handleAccessToken(client, serverAccessToken);
+			}
+
+			RefreshToken refreshToken =
+				_liferayOAuthDataProvider.getRefreshToken(tokenId);
+
+			if (refreshToken != null) {
+				return handleRefreshToken(client, refreshToken);
+			}
+		}
+		else if (OAuthConstants.ACCESS_TOKEN.equals(tokenTypeHint)) {
+			ServerAccessToken serverAccessToken =
+				_liferayOAuthDataProvider.getAccessToken(tokenId);
+
+			if (serverAccessToken != null) {
+				return handleAccessToken(client, serverAccessToken);
+			}
+		}
+		else if (OAuthConstants.REFRESH_TOKEN.equals(tokenTypeHint)) {
+			RefreshToken refreshToken =
+				_liferayOAuthDataProvider.getRefreshToken(tokenId);
+
+			if (refreshToken != null) {
+				return handleRefreshToken(client, refreshToken);
+			}
+		}
+		else {
+			return createErrorResponseFromErrorCode(
+				OAuthConstants.UNSUPPORTED_TOKEN_TYPE);
+		}
+
+		return Response.ok(
+			new TokenIntrospection(false)
+		).build();
 	}
 
 	protected Response handleAccessToken(
@@ -291,6 +320,11 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 
 		return true;
 	}
+
+	private final CORSSupport _corsSupport;
+
+	@Context
+	private HttpHeaders _httpHeaders;
 
 	private final LiferayOAuthDataProvider _liferayOAuthDataProvider;
 
