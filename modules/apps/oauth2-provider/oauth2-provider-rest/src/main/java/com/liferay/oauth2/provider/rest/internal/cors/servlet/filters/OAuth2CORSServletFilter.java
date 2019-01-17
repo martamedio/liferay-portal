@@ -15,15 +15,12 @@
 package com.liferay.oauth2.provider.rest.internal.cors.servlet.filters;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
-import com.liferay.oauth2.provider.rest.internal.cors.CORSSupport;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
-import com.liferay.portal.kernel.servlet.BaseFilter;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Map;
 
@@ -34,22 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Tomas Polesovsky
  */
-public class OAuth2CORSServletFilter extends BaseFilter {
-
-	@Override
-	public boolean isFilterEnabled(
-		HttpServletRequest request, HttpServletResponse response) {
-
-		if (Validator.isBlank(request.getHeader("Origin"))) {
-			return false;
-		}
-
-		return super.isFilterEnabled(request, response);
-	}
-
-	public void setHeaders(Map<String, String> headers) {
-		_corsSupport.setHeaders(headers);
-	}
+public class OAuth2CORSServletFilter extends OAuth2CORSServletBaseFilter {
 
 	@Override
 	protected Log getLog() {
@@ -100,14 +82,14 @@ public class OAuth2CORSServletFilter extends BaseFilter {
 			return;
 		}
 
-		if (!_corsSupport.isValidCORSRequest(
+		if (!corsSupport.isValidCORSRequest(
 				name -> request.getHeader(name),
 				oAuth2Application.getRedirectURIsList())) {
 
 			return;
 		}
 
-		_corsSupport.writeResponseHeaders(
+		corsSupport.writeResponseHeaders(
 			name -> request.getHeader(name),
 			(name, value) -> response.setHeader(name, value));
 
@@ -116,7 +98,5 @@ public class OAuth2CORSServletFilter extends BaseFilter {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OAuth2CORSServletFilter.class);
-
-	private final CORSSupport _corsSupport = new CORSSupport();
 
 }

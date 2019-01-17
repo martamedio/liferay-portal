@@ -14,15 +14,10 @@
 
 package com.liferay.oauth2.provider.rest.internal.cors.servlet.filters;
 
-import com.liferay.oauth2.provider.rest.internal.cors.CORSSupport;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Tomas Polesovsky
  */
-public class OAuth2CORSPreflightServletFilter extends BaseFilter {
+public class OAuth2CORSPreflightServletFilter
+	extends OAuth2CORSServletBaseFilter {
 
 	@Override
 	public boolean isFilterEnabled(
@@ -41,15 +37,7 @@ public class OAuth2CORSPreflightServletFilter extends BaseFilter {
 			return false;
 		}
 
-		if (Validator.isBlank(request.getHeader("Origin"))) {
-			return false;
-		}
-
 		return super.isFilterEnabled(request, response);
-	}
-
-	public void setHeaders(Map<String, String> headers) {
-		_corsSupport.setHeaders(headers);
 	}
 
 	@Override
@@ -63,10 +51,10 @@ public class OAuth2CORSPreflightServletFilter extends BaseFilter {
 			FilterChain filterChain)
 		throws Exception {
 
-		if (_corsSupport.isValidCORSPreflightRequest(
+		if (corsSupport.isValidCORSPreflightRequest(
 				name -> request.getHeader(name))) {
 
-			_corsSupport.writeResponseHeaders(
+			corsSupport.writeResponseHeaders(
 				name -> request.getHeader(name),
 				(name, value) -> response.setHeader(name, value));
 
@@ -78,7 +66,5 @@ public class OAuth2CORSPreflightServletFilter extends BaseFilter {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OAuth2CORSPreflightServletFilter.class);
-
-	private final CORSSupport _corsSupport = new CORSSupport();
 
 }
