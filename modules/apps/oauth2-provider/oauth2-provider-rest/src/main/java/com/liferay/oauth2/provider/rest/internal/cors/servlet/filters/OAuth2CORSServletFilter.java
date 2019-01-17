@@ -83,15 +83,13 @@ public class OAuth2CORSServletFilter extends OAuth2CORSServletBaseFilter {
 		}
 
 		if (!corsSupport.isValidCORSRequest(
-				name -> request.getHeader(name),
-				oAuth2Application.getRedirectURIsList())) {
+				request::getHeader, oAuth2Application.getRedirectURIsList())) {
 
 			return;
 		}
 
 		corsSupport.writeResponseHeaders(
-			name -> request.getHeader(name),
-			(name, value) -> response.setHeader(name, value));
+			request::getHeader, response::setHeader);
 
 		super.processFilter(request, response, filterChain);
 	}

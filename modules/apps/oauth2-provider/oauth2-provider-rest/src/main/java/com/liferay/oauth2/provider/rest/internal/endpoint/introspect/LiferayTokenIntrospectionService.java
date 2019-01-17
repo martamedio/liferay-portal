@@ -79,15 +79,13 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 		Response response = doGetTokenIntrospection(client, params);
 
 		if (_corsSupport.isValidCORSRequest(
-				name -> _httpHeaders.getHeaderString(name),
-				client.getRedirectUris())) {
+				_httpHeaders::getHeaderString, client.getRedirectUris())) {
 
 			MultivaluedMap<String, Object> responseHeaders =
 				response.getHeaders();
 
 			_corsSupport.writeResponseHeaders(
-				name -> _httpHeaders.getHeaderString(name),
-				(name, value) -> responseHeaders.add(name, value));
+				_httpHeaders::getHeaderString, responseHeaders::add);
 		}
 
 		return response;

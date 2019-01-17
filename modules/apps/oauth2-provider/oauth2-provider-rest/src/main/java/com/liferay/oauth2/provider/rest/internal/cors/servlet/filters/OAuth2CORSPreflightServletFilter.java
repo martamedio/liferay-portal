@@ -51,12 +51,9 @@ public class OAuth2CORSPreflightServletFilter
 			FilterChain filterChain)
 		throws Exception {
 
-		if (corsSupport.isValidCORSPreflightRequest(
-				name -> request.getHeader(name))) {
-
+		if (corsSupport.isValidCORSPreflightRequest(request::getHeader)) {
 			corsSupport.writeResponseHeaders(
-				name -> request.getHeader(name),
-				(name, value) -> response.setHeader(name, value));
+				request::getHeader, response::setHeader);
 
 			return;
 		}
