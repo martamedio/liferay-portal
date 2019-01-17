@@ -51,8 +51,6 @@ public class OAuth2CORSFiltersPublisher {
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		_bundleContext = bundleContext;
-
 		OAuth2CORSConfiguration oAuth2CORSConfiguration =
 			ConfigurableUtil.createConfigurable(
 				OAuth2CORSConfiguration.class, properties);
@@ -98,7 +96,7 @@ public class OAuth2CORSFiltersPublisher {
 		filterProperties.put(
 			"url-pattern", oAuth2CORSConfiguration.filterMappingURLPatterns());
 
-		_preflightFilterServiceRegistration = _bundleContext.registerService(
+		_preflightFilterServiceRegistration = bundleContext.registerService(
 			Filter.class, oAuth2CORSPreflightServletFilter, filterProperties);
 
 		OAuth2CORSServletFilter oAuth2CORSServletFilter =
@@ -117,7 +115,7 @@ public class OAuth2CORSFiltersPublisher {
 		filterProperties.put(
 			"url-pattern", oAuth2CORSConfiguration.filterMappingURLPatterns());
 
-		_corsFilterServiceRegistration = _bundleContext.registerService(
+		_corsFilterServiceRegistration = bundleContext.registerService(
 			Filter.class, oAuth2CORSServletFilter, filterProperties);
 	}
 
@@ -138,7 +136,6 @@ public class OAuth2CORSFiltersPublisher {
 	private static final Log _log = LogFactoryUtil.getLog(
 		OAuth2CORSFiltersPublisher.class);
 
-	private BundleContext _bundleContext;
 	private ServiceRegistration<Filter> _corsFilterServiceRegistration;
 	private ServiceRegistration<Filter> _preflightFilterServiceRegistration;
 
