@@ -36,15 +36,15 @@ import java.util.function.Function;
 public class CORSSupport {
 
 	public boolean isValidCORSPreflightRequest(
-		Function<String, String> requestHeadersAccessor) {
+		Function<String, String> requestHeaderAccessorFunction) {
 
-		String origin = requestHeadersAccessor.apply("Origin");
+		String origin = requestHeaderAccessorFunction.apply("Origin");
 
 		if (Validator.isBlank(origin)) {
 			return false;
 		}
 
-		String accessControlRequestMethod = requestHeadersAccessor.apply(
+		String accessControlRequestMethod = requestHeaderAccessorFunction.apply(
 			"Access-Control-Request-Method");
 
 		if (Validator.isBlank(accessControlRequestMethod)) {
@@ -67,10 +67,10 @@ public class CORSSupport {
 	}
 
 	public boolean isValidCORSRequest(
-		Function<String, String> requestHeadersAccessor,
+		Function<String, String> requestHeaderAccessorFunction,
 		List<String> redirectURIs) {
 
-		String origin = requestHeadersAccessor.apply("Origin");
+		String origin = requestHeaderAccessorFunction.apply("Origin");
 
 		if (Validator.isBlank(origin)) {
 			return false;
