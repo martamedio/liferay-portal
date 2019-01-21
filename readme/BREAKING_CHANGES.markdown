@@ -197,3 +197,33 @@ A limited number of portlets use this property; there are better ways to achieve
 the same results.
 
 ---------------------------------------
+
+### Deprecated NTLM in Portal Distribution
+- **Date:** 2019-Jan-21
+- **JIRA Ticket:** LPS-88300(https://issues.liferay.com/browse/LPS-88300)
+
+#### What changed?
+
+Four NTLM modules have been moved from `portal-security-sso` to a
+new module named `portal-security-sso-ntlm`. This new module
+is deprecated and will be available for download in the 
+Liferay marketplace.
+
+#### Who is affected?
+
+This affects anyone using NTLM as authentication system.
+
+#### How should I update my code?
+
+If you want to continue using NTLM as an authentication system, 
+you must download the corresponding modules from the marketplace.
+Although we recommend the migration to Kerberos (no changes needed 
+and compatible with versions 7.0 onwards).
+
+#### Why was this change made?
+
+This deprecation was made to avoid continuing using an old properitary 
+solution (NTLM) and in favour of the use of Kerberos: a standard protocol
+and more secure method of authentication.
+
+---------------------------------------
