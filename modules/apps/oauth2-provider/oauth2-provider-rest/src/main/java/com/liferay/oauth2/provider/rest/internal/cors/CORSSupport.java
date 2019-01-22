@@ -38,7 +38,7 @@ public class CORSSupport {
 	public boolean isCORSRequest(
 		Function<String, String> requestHeaderAccessorFunction) {
 
-		String origin = requestHeaderAccessorFunction.apply("Origin");
+		String origin = requestHeaderAccessorFunction.apply(_ORIGIN);
 
 		if (Validator.isBlank(origin)) {
 			return false;
@@ -50,7 +50,7 @@ public class CORSSupport {
 	public boolean isValidCORSPreflightRequest(
 		Function<String, String> requestHeaderAccessorFunction) {
 
-		String origin = requestHeaderAccessorFunction.apply("Origin");
+		String origin = requestHeaderAccessorFunction.apply(_ORIGIN);
 
 		if (!isValidOrigin(origin)) {
 			return false;
@@ -82,7 +82,7 @@ public class CORSSupport {
 		Function<String, String> requestHeaderAccessorFunction,
 		List<String> redirectURIs) {
 
-		String origin = requestHeaderAccessorFunction.apply("Origin");
+		String origin = requestHeaderAccessorFunction.apply(_ORIGIN);
 
 		if (!isValidOrigin(origin)) {
 			return false;
@@ -131,7 +131,7 @@ public class CORSSupport {
 		}
 
 		String accessControlAllowOrigin = _headers.get(
-			"Access-Control-Allow-Origin");
+			_ACCESS_CONTROL_ALLOW_ORIGIN);
 
 		if (Validator.isBlank(accessControlAllowOrigin)) {
 			return true;
@@ -162,20 +162,25 @@ public class CORSSupport {
 		Function<String, String> requestHeadersAccessor,
 		BiConsumer<String, String> responseHeadersConsumer) {
 
-		String origin = requestHeadersAccessor.apply("Origin");
+		String origin = requestHeadersAccessor.apply(_ORIGIN);
 
-		responseHeadersConsumer.accept("Access-Control-Allow-Origin", origin);
+		responseHeadersConsumer.accept(_ACCESS_CONTROL_ALLOW_ORIGIN, origin);
 
 		for (Map.Entry<String, String> entry : _headers.entrySet()) {
 			String key = entry.getKey();
 
-			if (StringUtil.equals(key, "Access-Control-Allow-Origin")) {
+			if (StringUtil.equals(key, _ACCESS_CONTROL_ALLOW_ORIGIN)) {
 				continue;
 			}
 
 			responseHeadersConsumer.accept(key, entry.getValue());
 		}
 	}
+
+	private static final String _ACCESS_CONTROL_ALLOW_ORIGIN =
+		"Access-Control-Allow-Origin";
+
+	private static final String _ORIGIN = "Origin";
 
 	private static final Log _log = LogFactoryUtil.getLog(CORSSupport.class);
 
