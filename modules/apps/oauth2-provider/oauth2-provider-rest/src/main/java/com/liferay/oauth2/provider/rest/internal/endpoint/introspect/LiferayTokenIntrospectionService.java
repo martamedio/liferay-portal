@@ -76,19 +76,11 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 
 		Client client = authenticateClientIfNeeded(params);
 
-		Response response = doGetTokenIntrospection(client, params);
-
-		if (_corsSupport.isValidCORSRequest(
-				_httpHeaders::getHeaderString, client.getRedirectUris())) {
-
-			MultivaluedMap<String, Object> responseHeaders =
-				response.getHeaders();
-
-			_corsSupport.writeResponseHeaders(
-				_httpHeaders::getHeaderString, responseHeaders::add);
+		if (_corsSupport.isCORSRequest(_httpHeaders::getHeaderString)) {
+			return getCORSTokenIntrospection(client, params);
 		}
 
-		return response;
+		return doGetTokenIntrospection(client, params);
 	}
 
 	protected boolean clientsMatch(Client client1, Client client2) {
@@ -209,6 +201,27 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 		return Response.ok(
 			new TokenIntrospection(false)
 		).build();
+	}
+
+	protected Response getCORSTokenIntrospection(
+		Client client, MultivaluedMap<String, String> params) {
+
+		if (!_corsSupport.isValidCORSRequest(
+				_httpHeaders::getHeaderString, client)) {
+
+			return Response.status(
+				Response.Status.FORBIDDEN
+			).build();
+		}
+
+		Response response = doGetTokenIntrospection(client, params);
+
+		MultivaluedMap<String, Object> responseHeaders = response.getHeaders();
+
+		_corsSupport.writeResponseHeaders(
+			_httpHeaders::getHeaderString, responseHeaders::add);
+
+		return response;
 	}
 
 	protected Response handleAccessToken(

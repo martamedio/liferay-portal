@@ -56,21 +56,11 @@ public class LiferayAccessTokenService extends AccessTokenService {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response handleTokenRequest(MultivaluedMap<String, String> params) {
-		Response response = super.handleTokenRequest(params);
-
-		Client client = super.authenticateClientIfNeeded(params);
-
-		if (_corsSupport.isValidCORSRequest(
-				_httpHeaders::getHeaderString, client.getRedirectUris())) {
-
-			MultivaluedMap<String, Object> responseHeaders =
-				response.getHeaders();
-
-			_corsSupport.writeResponseHeaders(
-				_httpHeaders::getHeaderString, responseHeaders::add);
+		if (_corsSupport.isCORSRequest(_httpHeaders::getHeaderString)) {
+			return handleCORSTokenRequest(params);
 		}
 
-		return response;
+		return super.handleTokenRequest(params);
 	}
 
 	@Override
@@ -106,6 +96,29 @@ public class LiferayAccessTokenService extends AccessTokenService {
 			remoteHost);
 
 		return client;
+	}
+
+	protected Response handleCORSTokenRequest(
+		MultivaluedMap<String, String> params) {
+
+		Client client = super.authenticateClientIfNeeded(params);
+
+		if (!_corsSupport.isValidCORSRequest(
+				_httpHeaders::getHeaderString, client)) {
+
+			return Response.status(
+				Response.Status.FORBIDDEN
+			).build();
+		}
+
+		Response response = super.handleTokenRequest(params);
+
+		MultivaluedMap<String, Object> responseHeaders = response.getHeaders();
+
+		_corsSupport.writeResponseHeaders(
+			_httpHeaders::getHeaderString, responseHeaders::add);
+
+		return response;
 	}
 
 	private final CORSSupport _corsSupport;

@@ -83,7 +83,9 @@ public class OAuth2CORSServletFilter extends OAuth2CORSServletBaseFilter {
 		}
 
 		if (!corsSupport.isValidCORSRequest(
-				request::getHeader, oAuth2Application.getRedirectURIsList())) {
+				request::getHeader, oAuth2Application)) {
+
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
 			return;
 		}

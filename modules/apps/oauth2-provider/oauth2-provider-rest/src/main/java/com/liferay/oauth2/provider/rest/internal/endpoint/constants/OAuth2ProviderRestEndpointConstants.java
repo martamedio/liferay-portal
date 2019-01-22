@@ -25,6 +25,8 @@ public class OAuth2ProviderRestEndpointConstants {
 	public static final String AUTHORIZATION_CODE_PKCE_GRANT =
 		"authorization_code_pkce";
 
+	public static final String PROPERTY_KEY_CLIENT_FEATURE_CORS = "cors";
+
 	public static final String PROPERTY_KEY_CLIENT_FEATURE_PREFIX = "feature.";
 
 	public static final String PROPERTY_KEY_CLIENT_FEATURE_TOKEN_INTROSPECTION =

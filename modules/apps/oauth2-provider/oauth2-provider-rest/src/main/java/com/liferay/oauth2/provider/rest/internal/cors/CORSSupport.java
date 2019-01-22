@@ -14,6 +14,8 @@
 
 package com.liferay.oauth2.provider.rest.internal.cors;
 
+import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -29,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import org.apache.cxf.rs.security.oauth2.common.Client;
 
 /**
  * @author Tomas Polesovsky
@@ -79,12 +83,22 @@ public class CORSSupport {
 	}
 
 	public boolean isValidCORSRequest(
-		Function<String, String> requestHeaderAccessorFunction,
-		List<String> redirectURIs) {
+		Function<String, String> requestHeaderAccessorFunction, Client client) {
 
 		String origin = requestHeaderAccessorFunction.apply(_ORIGIN);
 
 		if (!isValidOrigin(origin)) {
+			return false;
+		}
+
+		Map<String, String> properties = client.getProperties();
+
+		if (!properties.containsKey(
+			OAuth2ProviderRestEndpointConstants.
+				PROPERTY_KEY_CLIENT_FEATURE_PREFIX +
+					OAuth2ProviderRestEndpointConstants.
+						PROPERTY_KEY_CLIENT_FEATURE_CORS)) {
+
 			return false;
 		}
 
@@ -103,7 +117,7 @@ public class CORSSupport {
 
 		String originHost = originURI.getHost();
 
-		for (String redirect : redirectURIs) {
+		for (String redirect : client.getRedirectUris()) {
 			try {
 				URI redirectURI = new URI(redirect);
 
@@ -123,6 +137,32 @@ public class CORSSupport {
 		}
 
 		return false;
+	}
+
+	public boolean isValidCORSRequest(
+		Function<String, String> requestHeaderAccessorFunction,
+		OAuth2Application oAuth2Application) {
+
+		String origin = requestHeaderAccessorFunction.apply(_ORIGIN);
+
+		if (!isValidOrigin(origin)) {
+			return false;
+		}
+
+		if (oAuth2Application == null) {
+			return false;
+		}
+
+		List<String> featuresList = oAuth2Application.getFeaturesList();
+
+		if (!featuresList.contains(
+				OAuth2ProviderRestEndpointConstants.
+					PROPERTY_KEY_CLIENT_FEATURE_CORS)) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	public boolean isValidOrigin(String origin) {
