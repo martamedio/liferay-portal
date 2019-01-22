@@ -16,7 +16,6 @@ package com.liferay.oauth2.provider.rest.internal.cors.servlet.filters;
 
 import com.liferay.oauth2.provider.rest.internal.cors.CORSSupport;
 import com.liferay.portal.kernel.servlet.BaseFilter;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public abstract class OAuth2CORSServletBaseFilter extends BaseFilter {
 	public boolean isFilterEnabled(
 		HttpServletRequest request, HttpServletResponse response) {
 
-		if (Validator.isBlank(request.getHeader("Origin"))) {
+		if (!corsSupport.isCORSRequest(request::getHeader)) {
 			return false;
 		}
 

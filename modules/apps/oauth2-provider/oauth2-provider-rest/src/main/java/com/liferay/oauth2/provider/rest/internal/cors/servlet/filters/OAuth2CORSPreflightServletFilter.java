@@ -58,7 +58,7 @@ public class OAuth2CORSPreflightServletFilter
 			return;
 		}
 
-		super.processFilter(request, response, filterChain);
+		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -35,12 +35,24 @@ import java.util.function.Function;
  */
 public class CORSSupport {
 
-	public boolean isValidCORSPreflightRequest(
+	public boolean isCORSRequest(
 		Function<String, String> requestHeaderAccessorFunction) {
 
 		String origin = requestHeaderAccessorFunction.apply("Origin");
 
 		if (Validator.isBlank(origin)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean isValidCORSPreflightRequest(
+		Function<String, String> requestHeaderAccessorFunction) {
+
+		String origin = requestHeaderAccessorFunction.apply("Origin");
+
+		if (!isValidOrigin(origin)) {
 			return false;
 		}
 
@@ -72,7 +84,7 @@ public class CORSSupport {
 
 		String origin = requestHeaderAccessorFunction.apply("Origin");
 
-		if (Validator.isBlank(origin)) {
+		if (!isValidOrigin(origin)) {
 			return false;
 		}
 
@@ -113,6 +125,31 @@ public class CORSSupport {
 		return false;
 	}
 
+	public boolean isValidOrigin(String origin) {
+		if (Validator.isBlank(origin)) {
+			return false;
+		}
+
+		String accessControlAllowOrigin = _headers.get(
+			"Access-Control-Allow-Origin");
+
+		if (Validator.isBlank(accessControlAllowOrigin)) {
+			return true;
+		}
+
+		if (StringUtil.equals(accessControlAllowOrigin, StringPool.STAR)) {
+			return true;
+		}
+
+		if (ArrayUtil.contains(
+				StringUtil.split(accessControlAllowOrigin), origin)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public void setHeader(String key, String value) {
 		_headers.put(key, value);
 	}
@@ -130,7 +167,13 @@ public class CORSSupport {
 		responseHeadersConsumer.accept("Access-Control-Allow-Origin", origin);
 
 		for (Map.Entry<String, String> entry : _headers.entrySet()) {
-			responseHeadersConsumer.accept(entry.getKey(), entry.getValue());
+			String key = entry.getKey();
+
+			if (StringUtil.equals(key, "Access-Control-Allow-Origin")) {
+				continue;
+			}
+
+			responseHeadersConsumer.accept(key, entry.getValue());
 		}
 	}
 

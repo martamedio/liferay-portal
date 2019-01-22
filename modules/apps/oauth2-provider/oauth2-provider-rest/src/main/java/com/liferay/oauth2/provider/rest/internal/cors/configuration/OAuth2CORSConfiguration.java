@@ -50,7 +50,7 @@ public interface OAuth2CORSConfiguration {
 	public String[] filterMappingURLPatterns();
 
 	@Meta.AD(
-		deflt = "Access-Control-Allow-Credentials: true|Access-Control-Allow-Headers: *|Access-Control-Allow-Methods: *",
+		deflt = "Access-Control-Allow-Credentials: true|Access-Control-Allow-Headers: *|Access-Control-Allow-Methods: *|Access-Control-Allow-Origin: *",
 		description = "oauth2-cors-configuration-cors-headers-description",
 		name = "oauth2-cors-configuration-cors-headers", required = false
 	)
