@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.security.service.access.policy.ServiceAccessPol
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
@@ -35,8 +36,11 @@ import java.util.Dictionary;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Configuration;
@@ -89,16 +93,7 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 			applicationClass.getName());
 
 		featureContext.register(
-			new AbstractContextContainerRequestFilter() {
-
-				@Override
-				public void filter(ContainerRequestContext requestContext) {
-					_scopeContext.setApplicationName(osgiJAXRSName);
-					_scopeContext.setBundle(_bundle);
-					_scopeContext.setCompanyId(getCompanyId());
-				}
-
-			},
+			new ScopeContextContainerRequestFilter(osgiJAXRSName),
 			Priorities.AUTHORIZATION - 10);
 
 		featureContext.register(
@@ -273,6 +268,31 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 
 		private final String _osgiJAXRSName;
 		private final ServiceTracker<?, ResourceBundleLoader> _serviceTracker;
+
+	}
+
+	private class ScopeContextContainerRequestFilter
+		implements ContainerRequestFilter {
+
+		public ScopeContextContainerRequestFilter(String osgiJAXRSName) {
+			_osgiJAXRSName = osgiJAXRSName;
+		}
+
+		@Override
+		public void filter(ContainerRequestContext requestContext) {
+			_scopeContext.setApplicationName(_osgiJAXRSName);
+			_scopeContext.setBundle(_bundle);
+			_scopeContext.setCompanyId(getCompanyId());
+		}
+
+		public long getCompanyId() {
+			return PortalUtil.getCompanyId(httpServletRequest);
+		}
+
+		@Context
+		protected HttpServletRequest httpServletRequest;
+
+		private final String _osgiJAXRSName;
 
 	}
 
