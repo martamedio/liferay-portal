@@ -17,6 +17,7 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.introspect;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
 import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDataProvider;
+import com.liferay.oauth2.provider.rest.internal.jaxrs.cors.CORS;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -60,6 +61,7 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 	}
 
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@CORS(allowMethods = "POST")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTokenIntrospection(

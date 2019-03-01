@@ -23,9 +23,15 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
+import com.liferay.oauth2.provider.rest.internal.jaxrs.cors.CORS;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.apache.cxf.rs.security.oauth2.services.AccessTokenService;
@@ -35,6 +41,15 @@ import org.apache.cxf.rs.security.oauth2.services.AccessTokenService;
  */
 @Path("/token")
 public class LiferayAccessTokenService extends AccessTokenService {
+
+	@CORS(allowMethods = "POST")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Override
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response handleTokenRequest(MultivaluedMap<String, String> params) {
+		return super.handleTokenRequest(params);
+	}
 
 	@Override
 	protected Client authenticateClientIfNeeded(
