@@ -15,6 +15,7 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.access.token;
 
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
+import com.liferay.portal.remote.cors.annotation.CORS;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,8 +24,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.rs.security.oauth2.common.Client;
@@ -35,6 +41,15 @@ import org.apache.cxf.rs.security.oauth2.services.AccessTokenService;
  */
 @Path("/token")
 public class LiferayAccessTokenService extends AccessTokenService {
+
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@CORS(allowMethods = "POST")
+	@Override
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response handleTokenRequest(MultivaluedMap<String, String> params) {
+		return super.handleTokenRequest(params);
+	}
 
 	@Override
 	protected Client authenticateClientIfNeeded(

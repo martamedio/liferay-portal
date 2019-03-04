@@ -20,6 +20,7 @@ import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDa
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.remote.cors.annotation.CORS;
 
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,7 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 	}
 
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@CORS(allowMethods = "POST")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTokenIntrospection(
