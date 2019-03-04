@@ -133,6 +133,12 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			return;
 		}
 
+		if (_isCorsPreflightRequest(request)) {
+			Class<?> clazz = getClass();
+
+			processFilter(clazz.getName(), request, response, filterChain);
+		}
+
 		AccessControlUtil.initAccessControlContext(
 			request, response, _initParametersMap);
 
@@ -253,6 +259,16 @@ public class AuthVerifierFilter extends BasePortalFilter {
 		response.sendRedirect(sb.toString());
 
 		return true;
+	}
+
+	private boolean _isCorsPreflightRequest(HttpServletRequest request) {
+		if (StringUtil.equals(request.getMethod(), "OPTIONS") &&
+			Validator.isNotNull(request.getHeader("Origin"))) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
