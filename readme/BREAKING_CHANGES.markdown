@@ -445,3 +445,32 @@ is now recommended, which is a standard protocol and a more secure method of
 authentication compared to NTLM.
 
 ---------------------------------------
+
+### Deprecated Google SSO in Portal Distribution
+- **Date:** 2019-Jan-21
+- **JIRA Ticket:** [LPS-88905](https://issues.liferay.com/browse/LPS-88905)
+
+#### What changed?
+
+Three Google SSO modules have been moved from the `portal-security-sso` project to a
+new project named `portal-security-sso-google`. Same applies to the settings module,
+now named `portal-settings-authentication-google`.
+Those new projects are deprecated and available to download from Liferay Marketplace.
+
+#### Who is affected?
+
+This affects anyone using Google SSO as an authentication system.
+
+#### How should I update my code?
+
+If you want to continue using Google SSO as an authentication system, you must
+download the corresponding modules from Liferay Marketplace. Alternatively, you can use
+OpenID Connect.
+
+#### Why was this change made?
+
+This change was made to avoid using an old solution for authentication (Google SSO).
+OpenID Connect is the recommended specification to use Google implementation for
+authentication.
+
+---------------------------------------
