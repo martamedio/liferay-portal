@@ -14,8 +14,6 @@
 
 package com.liferay.portal.template.freemarker.internal;
 
-import org.hamcrest.CoreMatchers;
-
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -32,6 +30,7 @@ import com.liferay.portal.test.rule.AdviseWith;
 import com.liferay.portal.test.rule.AspectJNewEnvTestRule;
 
 import freemarker.ext.beans.EnumerationModel;
+import freemarker.ext.beans.InvalidPropertyException;
 import freemarker.ext.beans.MapModel;
 import freemarker.ext.beans.ResourceBundleModel;
 import freemarker.ext.beans.StringModel;
@@ -46,7 +45,6 @@ import freemarker.template.Version;
 import java.lang.reflect.Field;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -55,6 +53,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
+import org.hamcrest.CoreMatchers;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -139,23 +139,6 @@ public class LiferayObjectWrapperTest {
 		finally {
 			thread.setContextClassLoader(contextClassLoader);
 		}
-	}
-
-	@Test
-	public void testCheckClassPropertyIsRestricted() throws Exception {
-		Map<String, List<String>> restrictedClassProperties = new HashMap<>();
-
-		restrictedClassProperties.put(
-			TestLiferayPropertyObject.class.getName(), Arrays.asList("name"));
-
-		LiferayObjectWrapper liferayObjectWrapper = new LiferayObjectWrapper(
-			null, null, restrictedClassProperties);
-
-		TemplateModel model = liferayObjectWrapper.wrap(
-			new TestLiferayPropertyObject("name"));
-
-		Assert.assertThat(
-			model, CoreMatchers.instanceOf(LiferayFreeMarkerBeanModel.class));
 	}
 
 	@Test
@@ -322,6 +305,53 @@ public class LiferayObjectWrapperTest {
 	}
 
 	@Test
+	public void testRestrictedMethodNames() throws Exception {
+		LiferayObjectWrapper liferayObjectWrapper = new LiferayObjectWrapper(
+			null, null,
+			new String[] {
+				TestLiferayMethodObject.class.getName() + "#getName"
+			});
+
+		TemplateModel model = liferayObjectWrapper.wrap(
+			new TestLiferayMethodObject("name"));
+
+		Assert.assertThat(
+			model, CoreMatchers.instanceOf(LiferayFreeMarkerBeanModel.class));
+
+		LiferayFreeMarkerBeanModel liferayFreeMarkerBeanModel =
+			(LiferayFreeMarkerBeanModel)model;
+
+		_testRestrictedMethodNames(liferayFreeMarkerBeanModel, "name");
+		_testRestrictedMethodNames(liferayFreeMarkerBeanModel, "Name");
+		_testRestrictedMethodNames(liferayFreeMarkerBeanModel, "getName");
+		_testRestrictedMethodNames(liferayFreeMarkerBeanModel, "getname");
+	}
+
+	@Test
+	public void testRestrictedMethodNamesIncorrectSyntax() throws Exception {
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					LiferayObjectWrapper.class.getName(), Level.INFO)) {
+
+			String methodName =
+				TestLiferayMethodObject.class.getName() + ".getName";
+
+			new LiferayObjectWrapper(null, null, new String[] {methodName});
+
+			List<LogRecord> logRecords = captureHandler.getLogRecords();
+
+			Assert.assertEquals(logRecords.toString(), 1, logRecords.size());
+
+			LogRecord logRecord = logRecords.get(0);
+
+			Assert.assertEquals(
+				"Invalid syntax of " + methodName +
+					". Expecting className#methodName",
+				logRecord.getMessage());
+		}
+	}
+
+	@Test
 	public void testWrap() throws Exception {
 		_testWrap(new LiferayObjectWrapper(null, null, null));
 		_testWrap(
@@ -342,20 +372,19 @@ public class LiferayObjectWrapperTest {
 				new String[] {StringPool.BLANK},
 				new String[] {StringPool.BLANK}, null));
 
-		Map<String, List<String>> restrictedClassProperties = new HashMap<>();
+		_testWrap(
+			new LiferayObjectWrapper(
+				new String[] {StringPool.BLANK},
+				new String[] {StringPool.BLANK},
+				new String[] {StringPool.BLANK}));
 
 		_testWrap(
 			new LiferayObjectWrapper(
 				new String[] {StringPool.BLANK},
-				new String[] {StringPool.BLANK}, restrictedClassProperties));
-
-		restrictedClassProperties.put(
-			TestLiferayPropertyObject.class.getName(), Arrays.asList("name"));
-
-		_testWrap(
-			new LiferayObjectWrapper(
 				new String[] {StringPool.BLANK},
-				new String[] {StringPool.BLANK}, restrictedClassProperties));
+				new String[] {
+					TestLiferayMethodObject.class.getName() + "#getName"
+				}));
 	}
 
 	private void _assertModelFactoryCache(
@@ -401,6 +430,24 @@ public class LiferayObjectWrapperTest {
 
 			Assert.assertEquals(
 				exceptionMessage, templateModelException.getMessage());
+		}
+	}
+
+	private void _testRestrictedMethodNames(
+		LiferayFreeMarkerBeanModel liferayFreeMarkerBeanModel, String key) {
+
+		try {
+			liferayFreeMarkerBeanModel.get(key);
+
+			Assert.assertNull("Should throw TemplateModelException for " + key);
+		}
+		catch (TemplateModelException tme) {
+			Assert.assertSame(InvalidPropertyException.class, tme.getClass());
+
+			Assert.assertEquals(
+				"Forbbiden access to method or field " + key + " of " +
+					TestLiferayMethodObject.class.toString(),
+				tme.getMessage());
 		}
 	}
 
@@ -495,22 +542,7 @@ public class LiferayObjectWrapperTest {
 
 	}
 
-	private class TestLiferayObject {
-
-		@Override
-		public String toString() {
-			return _name;
-		}
-
-		private TestLiferayObject(String name) {
-			_name = name;
-		}
-
-		private final String _name;
-
-	}
-
-	private class TestLiferayPropertyObject {
+	private class TestLiferayMethodObject {
 
 		public String getName() {
 			return _name;
@@ -525,11 +557,26 @@ public class LiferayObjectWrapperTest {
 			return _name;
 		}
 
-		private TestLiferayPropertyObject(String name) {
+		private TestLiferayMethodObject(String name) {
 			_name = name;
 		}
 
 		private String _name;
+
+	}
+
+	private class TestLiferayObject {
+
+		@Override
+		public String toString() {
+			return _name;
+		}
+
+		private TestLiferayObject(String name) {
+			_name = name;
+		}
+
+		private final String _name;
 
 	}
 
