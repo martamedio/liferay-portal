@@ -14,6 +14,7 @@
 
 package com.liferay.portal.template.velocity.internal;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.AggregateClassLoader;
@@ -23,9 +24,12 @@ import com.liferay.portal.util.PortalImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -80,12 +84,41 @@ public class LiferaySecureUberspector extends SecureUberspector {
 			}
 		}
 
-		String[] restrictedClassProperties = (String[])extendedProperties.get(
+		String[] restrictedMethodNames = (String[])extendedProperties.get(
 			"liferay." + RuntimeConstants.INTROSPECTOR_RESTRICT_CLASSES +
-				".properties");
+				".methods");
 
-		_restrictedClassProperties = _getRestrictedClassPropertiesMap(
-			restrictedClassProperties);
+		if (restrictedMethodNames == null) {
+			_restrictedMethodNamesMap = Collections.emptyMap();
+		}
+		else {
+			_restrictedMethodNamesMap = new HashMap<>(
+				restrictedMethodNames.length);
+
+			for (String restrictedMethodName : restrictedMethodNames) {
+				int pos = restrictedMethodName.indexOf(CharPool.POUND);
+
+				if (pos < 0) {
+					super.log.error(
+						"Invalid syntax of " + restrictedMethodName +
+							". Expecting className#methodName");
+
+					continue;
+				}
+
+				String className = StringUtil.trim(
+					restrictedMethodName.substring(0, pos));
+
+				String methodName = StringUtil.trim(
+					restrictedMethodName.substring(pos + 1));
+
+				Set<String> methodNames =
+					_restrictedMethodNamesMap.computeIfAbsent(
+						className, key -> new HashSet<>());
+
+				methodNames.add(StringUtil.toLowerCase(methodName));
+			}
+		}
 
 		String[] restrictedPackageNames = extendedProperties.getStringArray(
 			RuntimeConstants.INTROSPECTOR_RESTRICT_PACKAGES);
@@ -219,7 +252,7 @@ public class LiferaySecureUberspector extends SecureUberspector {
 	private final Map<String, ClassRestrictionInformation>
 		_classRestrictionInformations = new ConcurrentHashMap<>();
 	private List<Class<?>> _restrictedClasses;
-	private Map<String, List<String>> _restrictedClassProperties;
+	private Map<String, Set<String>> _restrictedMethodNamesMap;
 	private List<String> _restrictedPackageNames;
 	private RuntimeServices _runtimeServices;
 

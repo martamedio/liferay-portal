@@ -17,6 +17,7 @@ package com.liferay.portal.template.freemarker.internal;
 import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
 import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
@@ -53,6 +54,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.w3c.dom.Node;
@@ -64,7 +66,7 @@ public class LiferayObjectWrapper extends DefaultObjectWrapper {
 
 	public LiferayObjectWrapper(
 		String[] allowedClassNames, String[] restrictedClassNames,
-		Map<String, List<String>> restrictedClassProperties) {
+		String[] restrictedMethodNames) {
 
 		super(Configuration.getVersion());
 
@@ -115,21 +117,35 @@ public class LiferayObjectWrapper extends DefaultObjectWrapper {
 			}
 		}
 
-		if ((restrictedClassProperties == null) ||
-			restrictedClassProperties.isEmpty()) {
-
-			_restrictedClassPropertiesMap = Collections.emptyMap();
+		if (restrictedMethodNames == null) {
+			_restrictedMethodNamesMap = Collections.emptyMap();
 		}
 		else {
-			_restrictedClassPropertiesMap = new HashMap<>();
+			_restrictedMethodNamesMap = new HashMap<>(
+				restrictedMethodNames.length);
 
-			for (Map.Entry<String, List<String>> entry :
-					restrictedClassProperties.entrySet()) {
+			for (String restrictedMethodName : restrictedMethodNames) {
+				int pos = restrictedMethodName.indexOf(CharPool.POUND);
 
-				String className = entry.getKey();
-				List<String> properties = entry.getValue();
+				if (pos < 0) {
+					_log.error(
+						"Invalid syntax of " + restrictedMethodName +
+							". Expecting className#methodName");
 
-				_restrictedClassPropertiesMap.put(className, properties);
+					continue;
+				}
+
+				String className = StringUtil.trim(
+					restrictedMethodName.substring(0, pos));
+
+				String methodName = StringUtil.trim(
+					restrictedMethodName.substring(pos + 1));
+
+				Set<String> methodNames =
+					_restrictedMethodNamesMap.computeIfAbsent(
+						className, key -> new HashSet<>());
+
+				methodNames.add(StringUtil.toLowerCase(methodName));
 			}
 		}
 
@@ -202,15 +218,13 @@ public class LiferayObjectWrapper extends DefaultObjectWrapper {
 			_checkClassIsRestricted(clazz);
 		}
 
-		if (_restrictedClassPropertiesMap.containsKey(className)) {
+		if (_restrictedMethodNamesMap.containsKey(className)) {
 			LiferayFreeMarkerBeanModel templateModel =
-				(LiferayFreeMarkerBeanModel)
-					_LIFERAY_MODEL_FACTORY.create(object, this);
+				(LiferayFreeMarkerBeanModel)_LIFERAY_MODEL_FACTORY.create(
+					object, this);
 
-			List<String> restrictedProperties =
-				_restrictedClassPropertiesMap.get(className);
-
-			templateModel.setRestrictedProperties(restrictedProperties);
+			templateModel.setRestrictedMethodNames(
+				_restrictedMethodNamesMap.get(className));
 
 			return templateModel;
 		}
@@ -411,7 +425,7 @@ public class LiferayObjectWrapper extends DefaultObjectWrapper {
 	private final Map<String, ClassRestrictionInformation>
 		_classRestrictionInformations = new ConcurrentHashMap<>();
 	private final List<Class<?>> _restrictedClasses;
-	private final Map<String, List<String>> _restrictedClassPropertiesMap;
+	private final Map<String, Set<String>> _restrictedMethodNamesMap;
 	private final List<String> _restrictedPackageNames;
 
 	private static class ClassRestrictionInformation {
