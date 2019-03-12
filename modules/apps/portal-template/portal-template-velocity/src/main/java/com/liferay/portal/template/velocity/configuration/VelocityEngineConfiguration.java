@@ -48,11 +48,10 @@ public interface VelocityEngineConfiguration {
 	public String[] restrictedClasses();
 
 	@Meta.AD(
-		deflt = "com.liferay.portal.model.impl.CompanyImpl=key",
-		description = "enter-class-name-property-file-syntax",
-		name = "restricted-class-properties", required = false
+		deflt = "com.liferay.portal.model.impl.CompanyImpl#getKey",
+		name = "restricted-methods", required = false
 	)
-	public String[] restrictedClassProperties();
+	public String[] restrictedMethods();
 
 	@Meta.AD(
 		deflt = "java.lang.reflect", name = "restricted-packages",
