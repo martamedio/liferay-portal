@@ -15,6 +15,7 @@
 package com.liferay.portal.template.freemarker.internal;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import freemarker.ext.beans.BeanModel;
 import freemarker.ext.beans.BeansWrapper;
@@ -23,7 +24,7 @@ import freemarker.ext.beans.InvalidPropertyException;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Marta Medio
@@ -36,17 +37,13 @@ public class LiferayFreeMarkerBeanModel extends BeanModel {
 
 	@Override
 	public TemplateModel get(String key) throws TemplateModelException {
-		if (key.startsWith("get")) {
-			String property = key.substring(3);
+		String methodOrFieldName = StringUtil.toLowerCase(key);
 
-			property =
-				Character.toLowerCase(property.charAt(0)) +
-					property.substring(1);
-
-			if (_restrictedProperties.contains(property)) {
+		for (String restrictedMethodName : _restrictedMethodNames) {
+			if (restrictedMethodName.endsWith(methodOrFieldName)) {
 				throw new InvalidPropertyException(
 					StringBundler.concat(
-						"Forbbiden access to property ", key, " of ",
+						"Forbbiden access to method or field ", key, " of ",
 						object.getClass()));
 			}
 		}
@@ -54,10 +51,10 @@ public class LiferayFreeMarkerBeanModel extends BeanModel {
 		return super.get(key);
 	}
 
-	public void setRestrictedProperties(List<String> restrictedProperties) {
-		_restrictedProperties = restrictedProperties;
+	public void setRestrictedMethodNames(Set<String> restrictedMethodNames) {
+		_restrictedMethodNames = restrictedMethodNames;
 	}
 
-	private List<String> _restrictedProperties;
+	private Set<String> _restrictedMethodNames;
 
 }

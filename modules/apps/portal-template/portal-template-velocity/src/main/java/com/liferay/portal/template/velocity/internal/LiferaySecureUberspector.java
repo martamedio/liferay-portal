@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PortalImpl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -196,54 +195,19 @@ public class LiferaySecureUberspector extends SecureUberspector {
 		}
 	}
 
-	private void _checkClassPropertyIsRestricted(
-		Class clazz, String methodName) {
-
+	private void _checkMethodIsRestricted(Class clazz, String methodName) {
 		String className = clazz.getName();
 
-		if (_restrictedClassProperties.containsKey(className)) {
-			List<String> properties = _restrictedClassProperties.get(className);
+		if (_restrictedMethodNamesMap.containsKey(className)) {
+			Set<String> methodNames = _restrictedMethodNamesMap.get(className);
 
-			if (methodName.startsWith("get")) {
-				String property = methodName.substring(3);
-
-				if (properties.contains(property)) {
-					throw new IllegalArgumentException(
-						StringBundler.concat(
-							"Forbbiden access to property ", property, " of ",
-							clazz.getName()));
-				}
+			if (methodNames.contains(StringUtil.toLowerCase(methodName))) {
+				throw new IllegalArgumentException(
+					StringBundler.concat(
+						"Forbbiden access to method ", methodName, " of ",
+						clazz.getName()));
 			}
 		}
-	}
-
-	private Map<String, List<String>> _getRestrictedClassPropertiesMap(
-		String[] restrictedClassProperties) {
-
-		Map<String, List<String>> restrictedClassPropertiesMap =
-			new HashMap<>();
-
-		if (restrictedClassProperties != null) {
-			for (String restrictedClassProperty : restrictedClassProperties) {
-				String className = StringUtil.extractFirst(
-					restrictedClassProperty.trim(), StringPool.EQUAL);
-				String propertyName = StringUtil.extractLast(
-					restrictedClassProperty.trim(), StringPool.EQUAL);
-
-				if (restrictedClassPropertiesMap.containsKey(className)) {
-					List<String> properties = restrictedClassPropertiesMap.get(
-						className);
-
-					properties.add(propertyName);
-				}
-				else {
-					restrictedClassPropertiesMap.put(
-						className.trim(), Arrays.asList(propertyName));
-				}
-			}
-		}
-
-		return restrictedClassPropertiesMap;
 	}
 
 	private static final ClassRestrictionInformation _nullInstance =
@@ -294,7 +258,7 @@ public class LiferaySecureUberspector extends SecureUberspector {
 
 			_checkClassIsRestricted(clazz);
 
-			_checkClassPropertyIsRestricted(clazz, methodName);
+			_checkMethodIsRestricted(clazz, methodName);
 
 			return true;
 		}
