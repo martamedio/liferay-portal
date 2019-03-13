@@ -12,10 +12,10 @@
  * details.
  */
 
-package com.liferay.portal.settings.authentication.ntlm.web.internal.portlet.action;
+package com.liferay.portal.security.sso.ntlm.settings.authentication.web.internal.portlet.action;
 
 import com.liferay.portal.security.sso.ntlm.constants.NtlmConstants;
-import com.liferay.portal.settings.authentication.ntlm.web.internal.constants.PortalSettingsNtlmConstants;
+import com.liferay.portal.security.sso.ntlm.settings.authentication.web.internal.constants.PortalSettingsNtlmConstants;
 import com.liferay.portal.settings.portlet.action.PortalSettingsFormContributor;
 
 import java.util.Optional;
