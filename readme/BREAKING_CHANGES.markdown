@@ -495,12 +495,9 @@ since it runs on top of OAuth.
 
 #### What changed?
 
-Three Google SSO modules have been moved from the `portal-security-sso` project
-to a new project named `portal-security-sso-google`. Similarly, the settings
-module (`portal-settings-authentication-google-web`) was moved from the
-`portal-settings` project to a new project named
-`portal-settings-authentication-google`. These new projects are deprecated and
-available to download from Liferay Marketplace.
+Google SSO modules have been moved from the `portal-security-sso` project
+to a new project named `portal-security-sso-google`.
+This new projects is deprecated and available to download from Liferay Marketplace.
 
 #### Who is affected?
 
@@ -509,7 +506,7 @@ This affects anyone using Google SSO as an authentication system.
 #### How should I update my code?
 
 If you want to continue using Google SSO as an authentication system, you must
-download the corresponding modules from Liferay Marketplace. Alternatively, you
+download the corresponding module from Liferay Marketplace. Alternatively, you
 can use OpenID Connect.
 
 #### Why was this change made?
