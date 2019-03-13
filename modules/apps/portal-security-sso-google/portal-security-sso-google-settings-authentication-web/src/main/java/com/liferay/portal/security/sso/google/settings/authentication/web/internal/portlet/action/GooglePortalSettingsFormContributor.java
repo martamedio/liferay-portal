@@ -12,12 +12,12 @@
  * details.
  */
 
-package com.liferay.portal.settings.authentication.google.web.internal.portlet.action;
+package com.liferay.portal.security.sso.google.settings.authentication.web.internal.portlet.action;
 
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.google.constants.GoogleConstants;
-import com.liferay.portal.settings.authentication.google.web.internal.constants.PortalSettingsGoogleConstants;
+import com.liferay.portal.security.sso.google.settings.authentication.web.internal.constants.PortalSettingsGoogleConstants;
 import com.liferay.portal.settings.portlet.action.PortalSettingsFormContributor;
 import com.liferay.portal.settings.portlet.action.PortalSettingsParameterUtil;
 

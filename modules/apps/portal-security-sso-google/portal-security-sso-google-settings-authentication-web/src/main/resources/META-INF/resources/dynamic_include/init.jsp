@@ -27,7 +27,7 @@ page import="com.liferay.portal.kernel.settings.ParameterMapSettingsLocator" %><
 page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.security.sso.google.configuration.GoogleAuthorizationConfiguration" %><%@
 page import="com.liferay.portal.security.sso.google.constants.GoogleConstants" %><%@
-page import="com.liferay.portal.settings.authentication.google.web.internal.constants.PortalSettingsGoogleConstants" %>
+page import="com.liferay.portal.security.sso.google.settings.authentication.web.internal.constants.PortalSettingsGoogleConstants" %>
 
 <%@ page import="javax.portlet.ActionRequest" %>
 

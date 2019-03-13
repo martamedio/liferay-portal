@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.settings.authentication.google.web.internal.constants;
+package com.liferay.portal.security.sso.google.settings.authentication.web.internal.constants;
 
 /**
  * @author Jose A. Jimenez
