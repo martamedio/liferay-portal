@@ -435,10 +435,9 @@ the chance of package version lock down.
 
 #### What changed?
 
-Three NTLM modules have been moved from the `portal-security-sso` project to a
-new project named `portal-security-sso-ntlm`. Same applies to the settings module,
-now named `portal-settings-authentication-ntlm`.
-Those new projects are deprecated and available to download from Liferay Marketplace.
+NTLM modules have been moved from the `portal-security-sso` project to a
+new project named `portal-security-sso-ntlm`.
+This new project is deprecated and available to download from Liferay Marketplace.
 
 #### Who is affected?
 
