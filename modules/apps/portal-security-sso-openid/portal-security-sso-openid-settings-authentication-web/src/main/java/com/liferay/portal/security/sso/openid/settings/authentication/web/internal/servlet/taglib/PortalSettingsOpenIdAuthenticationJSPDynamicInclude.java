@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.settings.authentication.openid.web.internal.servlet.taglib;
+package com.liferay.portal.security.sso.openid.settings.authentication.web.internal.servlet.taglib;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;

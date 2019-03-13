@@ -12,10 +12,10 @@
  * details.
  */
 
-package com.liferay.portal.settings.authentication.openid.web.internal.portlet.action;
+package com.liferay.portal.security.sso.openid.settings.authentication.web.internal.portlet.action;
 
 import com.liferay.portal.security.sso.openid.constants.OpenIdConstants;
-import com.liferay.portal.settings.authentication.openid.web.internal.constants.PortalSettingsOpenIdConstants;
+import com.liferay.portal.security.sso.openid.settings.authentication.web.internal.constants.PortalSettingsOpenIdConstants;
 import com.liferay.portal.settings.portlet.action.PortalSettingsFormContributor;
 
 import java.util.Optional;
