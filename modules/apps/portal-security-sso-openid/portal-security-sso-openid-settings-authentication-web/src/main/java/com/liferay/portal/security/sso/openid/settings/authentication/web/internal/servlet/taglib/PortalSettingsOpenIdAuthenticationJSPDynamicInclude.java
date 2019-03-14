@@ -50,7 +50,7 @@ public class PortalSettingsOpenIdAuthenticationJSPDynamicInclude
 
 	@Override
 	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.portal.settings.authentication.openid.web)",
+		target = "(osgi.web.symbolicname=com.liferay.portal.security.sso.openid.settings.authentication.web)",
 		unbind = "-"
 	)
 	protected void setServletContext(ServletContext servletContext) {
