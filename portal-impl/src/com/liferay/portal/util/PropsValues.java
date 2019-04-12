@@ -1118,6 +1118,13 @@ public class PropsValues {
 	public static String DL_WEBDAV_SUBSTITUTION_CHAR = PropsUtil.get(
 		PropsKeys.DL_WEBDAV_SUBSTITUTION_CHAR);
 
+	public static final int DNS_SECURITY_ADDRESS_TIMEOUT_SECONDS =
+		GetterUtil.getInteger(
+			PropsUtil.get(PropsKeys.DNS_SECURITY_ADDRESS_TIMEOUT_SECONDS));
+
+	public static final int DNS_SECURITY_THREAD_LIMIT = GetterUtil.getInteger(
+		PropsUtil.get(PropsKeys.DNS_SECURITY_THREAD_LIMIT));
+
 	public static final String[] DYNAMIC_RESOURCE_SERVLET_ALLOWED_PATHS =
 		PropsUtil.getArray(PropsKeys.DYNAMIC_RESOURCE_SERVLET_ALLOWED_PATHS);
 
