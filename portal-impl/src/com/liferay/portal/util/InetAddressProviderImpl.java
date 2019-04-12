@@ -40,6 +40,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class InetAddressProviderImpl implements InetAddressProvider {
 
+	public InetAddressProviderImpl() {
+		_executorService = Executors.newFixedThreadPool(
+			PropsValues.DNS_SECURITY_THREAD_LIMIT);
+	}
+
+	public void destroy() {
+		_executorService.shutdown();
+	}
+
 	public InetAddress getInetAddressByName(String domain)
 		throws UnknownHostException {
 
@@ -131,9 +140,8 @@ public class InetAddressProviderImpl implements InetAddressProvider {
 	private static final Log _log = LogFactoryUtil.getLog(
 		InetAddressProviderImpl.class);
 
-	private static final AtomicInteger _atomicInteger = new AtomicInteger(
+	private final AtomicInteger _atomicInteger = new AtomicInteger(
 		PropsValues.DNS_SECURITY_THREAD_LIMIT);
-	private static final ExecutorService _executorService =
-		Executors.newFixedThreadPool(PropsValues.DNS_SECURITY_THREAD_LIMIT);
+	private final ExecutorService _executorService;
 
 }
