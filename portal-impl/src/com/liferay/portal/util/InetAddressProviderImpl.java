@@ -46,7 +46,7 @@ public class InetAddressProviderImpl implements InetAddressProvider {
 		InetAddress inetAddress = null;
 
 		try {
-			if (_atomicInteger.decrementAndGet() > 0) {
+			if (_atomicInteger.getAndDecrement() > 0) {
 				Future<InetAddress> result = _executorService.submit(
 					() -> InetAddress.getByName(domain));
 
