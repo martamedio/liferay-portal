@@ -12,15 +12,26 @@
  * details.
  */
 
-package com.liferay.portal.kernel.internal.security.access.control;
+package com.liferay.portal.security.access.control;
+
+import com.liferay.portal.kernel.internal.security.access.control.AllowedIPAddressesValidator;
+import com.liferay.portal.kernel.internal.security.access.control.AllowedIPAddressesValidatorFactory;
+import com.liferay.portal.kernel.util.InetAddressUtil;
+import com.liferay.portal.util.InetAddressProviderImpl;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author Mariano Álvaro Sáiz
  */
 public class AllowedIPAddressesValidatorTest {
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		InetAddressUtil.setInetAddressProvider(new InetAddressProviderImpl());
+	}
 
 	@Test
 	public void testIPv4AddressDoesNotMatchIPv6Address() {
