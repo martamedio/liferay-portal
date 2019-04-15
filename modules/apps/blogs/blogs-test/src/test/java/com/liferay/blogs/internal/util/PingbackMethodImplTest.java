@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.xmlrpc.Fault;
 import com.liferay.portal.kernel.xmlrpc.XmlRpc;
 import com.liferay.portal.kernel.xmlrpc.XmlRpcConstants;
 import com.liferay.portal.kernel.xmlrpc.XmlRpcUtil;
+import com.liferay.portal.util.InetAddressProviderImpl;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.registry.collections.ServiceTrackerCollections;
 import com.liferay.registry.collections.ServiceTrackerMap;
@@ -79,10 +80,10 @@ import org.powermock.reflect.Whitebox;
 @PrepareForTest(
 	{
 		BlogsEntryLocalServiceUtil.class, BlogsUtil.class,
-		InetAddressUtil.class, PingbackMethodImpl.class,
-		PortletLocalServiceUtil.class, PortletProviderUtil.class,
-		PropsValues.class, ServiceTrackerCollections.class,
-		UserLocalServiceUtil.class
+		InetAddressUtil.class, InetAddressProviderImpl.class,
+		PingbackMethodImpl.class, PortletLocalServiceUtil.class,
+		PortletProviderUtil.class, PropsValues.class,
+		ServiceTrackerCollections.class, UserLocalServiceUtil.class
 	}
 )
 @RunWith(PowerMockRunner.class)
@@ -465,6 +466,8 @@ public class PingbackMethodImplTest extends PowerMockito {
 	}
 
 	protected void setUpInetAddress() throws Exception {
+		InetAddressUtil.setInetAddressProvider(new InetAddressProviderImpl());
+
 		_localAddresses = new InetAddress[] {
 			InetAddress.getByAddress(new byte[] {0, 0, 0, 0}),
 			InetAddress.getByAddress(new byte[] {10, 0, 0, 1}),

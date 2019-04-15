@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.SocketUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.impl.PortletImpl;
+import com.liferay.portal.util.InetAddressProviderImpl;
 import com.liferay.portal.util.PropsImpl;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.registry.BasicRegistryImpl;
@@ -99,6 +100,8 @@ public class HttpClientSPIAgentTest {
 
 	@Before
 	public void setUp() {
+		InetAddressUtil.setInetAddressProvider(new InetAddressProviderImpl());
+
 		RegistryUtil.setRegistry(new BasicRegistryImpl());
 
 		PropsUtil.setProps(new PropsImpl());
