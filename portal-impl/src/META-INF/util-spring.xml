@@ -374,7 +374,7 @@
 	<bean class="com.liferay.portal.kernel.util.HttpUtil" id="com.liferay.portal.kernel.util.HttpUtil">
 		<property name="http" ref="com.liferay.portal.util.HttpImpl" />
 	</bean>
-	<bean class="com.liferay.portal.kernel.util.InetAddressUtil" id="com.liferay.portal.kernel.util.InetAddressUtil">
+	<bean class="com.liferay.portal.kernel.util.InetAddressProviderUtil" id="com.liferay.portal.kernel.util.InetAddressProviderUtil">
 		<property name="inetAddressProvider" ref="com.liferay.portal.util.InetAddressProviderImpl" />
 	</bean>
 	<bean class="com.liferay.portal.kernel.util.LocalizationUtil" id="com.liferay.portal.kernel.util.LocalizationUtil">

@@ -18,33 +18,40 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- * @author Michael C. Han
- * @author Shuyang Zhou
  * @author Marta Medio
- * @deprecated As of Mueller (7.2.x), Replaced by {@link
- *             InetAddressProviderUtil}
  */
-@Deprecated
-public class InetAddressUtil {
+public class InetAddressProviderUtil {
 
 	public static InetAddress getInetAddressByName(String domain)
 		throws UnknownHostException {
 
-		return InetAddressProviderUtil.getInetAddressByName(domain);
+		return getInetAddressProvider().getInetAddressByName(domain);
+	}
+
+	public static InetAddressProvider getInetAddressProvider() {
+		return _inetAddressProvider;
 	}
 
 	public static String getLocalHostName() throws Exception {
-		return InetAddressProviderUtil.getLocalHostName();
+		return getInetAddressProvider().getLocalHostName();
 	}
 
 	public static InetAddress getLoopbackInetAddress()
 		throws UnknownHostException {
 
-		return InetAddressProviderUtil.getLoopbackInetAddress();
+		return getInetAddressProvider().getLoopbackInetAddress();
 	}
 
 	public static boolean isLocalInetAddress(InetAddress inetAddress) {
-		return InetAddressProviderUtil.isLocalInetAddress(inetAddress);
+		return getInetAddressProvider().isLocalInetAddress(inetAddress);
 	}
+
+	public static void setInetAddressProvider(
+		InetAddressProvider inetAddressProvider) {
+
+		_inetAddressProvider = inetAddressProvider;
+	}
+
+	private static InetAddressProvider _inetAddressProvider;
 
 }
