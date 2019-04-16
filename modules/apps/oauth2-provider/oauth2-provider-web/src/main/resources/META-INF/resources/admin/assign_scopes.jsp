@@ -133,13 +133,13 @@ if (oAuth2Application.getOAuth2ApplicationScopeAliasesId() > 0) {
 
 					for (var i = 0; i < scopeAliases.length; i++) {
 						document.querySelectorAll('#<portlet:namespace />globalAccordion .panel[data-master]').forEach(
-							function(globalAccordianPanel) {
-								var masterScopeAliases = globalAccordianPanel.getAttribute("data-master");
+							function(globalAccordionPanel) {
+								var masterScopeAliases = globalAccordionPanel.getAttribute("data-master");
 
 								var array = masterScopeAliases.split(" ");
 
 								if (array.indexOf(scopeAliases[i]) >= 0) {
-									globalAccordianPanel.classList.remove('hide');
+									globalAccordionPanel.classList.remove('hide');
 								}
 							});
 					}
