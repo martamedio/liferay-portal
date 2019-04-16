@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.resiliency.spi.agent.AcceptorServlet;
 import com.liferay.portal.kernel.resiliency.spi.agent.SPIAgent;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
 import com.liferay.portal.kernel.servlet.ReadOnlyServletResponse;
-import com.liferay.portal.kernel.util.InetAddressUtil;
+import com.liferay.portal.kernel.util.InetAddressProviderUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -66,7 +66,7 @@ public class HttpClientSPIAgent implements SPIAgent {
 		this.registrationReference = registrationReference;
 
 		socketAddress = new InetSocketAddress(
-			InetAddressUtil.getLoopbackInetAddress(),
+			InetAddressProviderUtil.getLoopbackInetAddress(),
 			spiConfiguration.getConnectorPort());
 		socketBlockingQueue = new ArrayBlockingQueue<>(
 			PropsValues.PORTAL_RESILIENCY_SPI_AGENT_CLIENT_POOL_MAX_SIZE);

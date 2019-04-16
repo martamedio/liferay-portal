@@ -14,7 +14,7 @@
 
 package com.liferay.portal.template.xsl.internal;
 
-import com.liferay.portal.kernel.util.InetAddressUtil;
+import com.liferay.portal.kernel.util.InetAddressProviderUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.xsl.XSLURIResolver;
 
@@ -50,8 +50,9 @@ public class XSLSecureURIResolver implements XSLURIResolver {
 		try {
 			URL url = new URL(href);
 
-			if (InetAddressUtil.isLocalInetAddress(
-					InetAddressUtil.getInetAddressByName(url.getHost()))) {
+			if (InetAddressProviderUtil.isLocalInetAddress(
+					InetAddressProviderUtil.getInetAddressByName(
+						url.getHost()))) {
 
 				throw new TransformerException(
 					StringBundler.concat(

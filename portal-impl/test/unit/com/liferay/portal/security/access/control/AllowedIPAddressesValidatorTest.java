@@ -16,7 +16,7 @@ package com.liferay.portal.security.access.control;
 
 import com.liferay.portal.kernel.internal.security.access.control.AllowedIPAddressesValidator;
 import com.liferay.portal.kernel.internal.security.access.control.AllowedIPAddressesValidatorFactory;
-import com.liferay.portal.kernel.util.InetAddressUtil;
+import com.liferay.portal.kernel.util.InetAddressProviderUtil;
 import com.liferay.portal.util.InetAddressProviderImpl;
 
 import org.junit.Assert;
@@ -30,7 +30,8 @@ public class AllowedIPAddressesValidatorTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		InetAddressUtil.setInetAddressProvider(new InetAddressProviderImpl());
+		InetAddressProviderUtil.setInetAddressProvider(
+			new InetAddressProviderImpl());
 	}
 
 	@Test

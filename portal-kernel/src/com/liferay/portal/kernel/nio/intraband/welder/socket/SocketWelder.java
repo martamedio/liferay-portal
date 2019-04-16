@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.nio.intraband.Intraband;
 import com.liferay.portal.kernel.nio.intraband.RegistrationReference;
 import com.liferay.portal.kernel.nio.intraband.welder.BaseWelder;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.InetAddressUtil;
+import com.liferay.portal.kernel.util.InetAddressProviderUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SocketUtil;
@@ -54,7 +54,7 @@ public class SocketWelder extends BaseWelder {
 		tcpNoDelay = Configuration.tcpNoDelay;
 
 		serverSocketChannel = SocketUtil.createServerSocketChannel(
-			InetAddressUtil.getLoopbackInetAddress(),
+			InetAddressProviderUtil.getLoopbackInetAddress(),
 			Configuration.serverStartPort,
 			new SocketWelderServerSocketConfigurator());
 
@@ -78,7 +78,7 @@ public class SocketWelder extends BaseWelder {
 
 		socketChannel.connect(
 			new InetSocketAddress(
-				InetAddressUtil.getLoopbackInetAddress(), serverPort));
+				InetAddressProviderUtil.getLoopbackInetAddress(), serverPort));
 
 		return intraband.registerChannel(socketChannel);
 	}
