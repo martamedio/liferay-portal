@@ -125,11 +125,11 @@ if (oAuth2Application.getOAuth2ApplicationScopeAliasesId() > 0) {
 
 					var scopeAliases = currentTarget.attr("data-slave").split(" ");
 
-					var globalAccordionPanel = document.querySelector('#<portlet:namespace />globalAccordion .panel');
-
-					if (globalAccordionPanel) {
-						globalAccordionPanel.classList.add('hide');
-					}
+					document.querySelectorAll('#<portlet:namespace />globalAccordion .panel').forEach(
+						function(globalAccordionPanel) {
+							globalAccordionPanel.classList.add('hide');
+						}
+					);
 
 					for (var i = 0; i < scopeAliases.length; i++) {
 						document.querySelectorAll('#<portlet:namespace />globalAccordion .panel[data-master]').forEach(
@@ -158,11 +158,11 @@ if (oAuth2Application.getOAuth2ApplicationScopeAliasesId() > 0) {
 						function() {
 							modal.hide();
 
-							var globalAccordionPanel = document.querySelector('#<portlet:namespace />globalAccordion .panel');
-
-							if (globalAccordionPanel) {
-								globalAccordionPanel.classList.remove('hide');
-							}
+							document.querySelectorAll('#<portlet:namespace />globalAccordion .panel').forEach(
+								function(globalAccordionPanel) {
+									globalAccordionPanel.classList.remove('hide');
+								}
+							);
 
 							var globalAccordion = document.getElementById('<portlet:namespace />globalAccordion');
 							var navGlobalScopes = document.getElementById('<portlet:namespace />navGlobalScopes');
