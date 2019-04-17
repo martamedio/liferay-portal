@@ -17,7 +17,7 @@ package com.liferay.network.utilities.web.internal.util;
 import com.liferay.network.utilities.web.internal.model.DNSLookup;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.InetAddressProviderUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.webcache.WebCacheException;
 import com.liferay.portal.kernel.webcache.WebCacheItem;
@@ -47,7 +47,7 @@ public class DNSLookupWebCacheItem implements WebCacheItem {
 			for (char c : array) {
 				if ((c != '.') && !Character.isDigit(c)) {
 					InetAddress inetAddress =
-						InetAddressProviderUtil.getInetAddressByName(_domain);
+						InetAddressUtil.getInetAddressByName(_domain);
 
 					results = inetAddress.getHostAddress();
 

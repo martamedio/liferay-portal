@@ -18,7 +18,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.InetAddressProviderUtil;
 import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -45,13 +44,13 @@ public final class AllowedIPAddressesValidatorFactory {
 		try {
 			if (Validator.isIPv4Address(ipAddressAndNetmask[0])) {
 				return new V4AllowedIPAddressesValidator(
-					InetAddressProviderUtil.getInetAddressByName(
+					InetAddressUtil.getInetAddressByName(
 						ipAddressAndNetmask[0]),
 					ipAddressAndNetmask);
 			}
 			else if (Validator.isIPv6Address(ipAddressAndNetmask[0])) {
 				return new V6AllowedIPAddressesValidator(
-					InetAddressProviderUtil.getInetAddressByName(
+					InetAddressUtil.getInetAddressByName(
 						ipAddressAndNetmask[0]),
 					ipAddressAndNetmask);
 			}
@@ -85,8 +84,7 @@ public final class AllowedIPAddressesValidatorFactory {
 			InetAddress inetAddress = null;
 
 			try {
-				inetAddress = InetAddressProviderUtil.getInetAddressByName(
-					ipAddress);
+				inetAddress = InetAddressUtil.getInetAddressByName(ipAddress);
 			}
 			catch (UnknownHostException uhe) {
 				return false;

@@ -15,7 +15,7 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.access.token;
 
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
-import com.liferay.portal.kernel.util.InetAddressProviderUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.remote.cors.annotation.CORS;
 
 import java.net.InetAddress;
@@ -70,8 +70,8 @@ public class LiferayAccessTokenService extends AccessTokenService {
 		String remoteHost = httpServletRequest.getRemoteHost();
 
 		try {
-			InetAddress inetAddress =
-				InetAddressProviderUtil.getInetAddressByName(remoteAddr);
+			InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
+				remoteAddr);
 
 			remoteHost = inetAddress.getCanonicalHostName();
 		}

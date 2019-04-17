@@ -35,7 +35,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.InetAddressProviderUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -375,8 +375,8 @@ public class PingbackMethodImpl implements Method {
 		try {
 			URL url = new URL(_sourceURI);
 
-			return InetAddressProviderUtil.isLocalInetAddress(
-				InetAddressProviderUtil.getInetAddressByName(url.getHost()));
+			return InetAddressUtil.isLocalInetAddress(
+				InetAddressUtil.getInetAddressByName(url.getHost()));
 		}
 		catch (Exception e) {
 			if (_log.isDebugEnabled()) {

@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ContactConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.InetAddressProviderUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -415,8 +415,8 @@ public class JabberImpl implements Jabber {
 		String jabberHost = _chatGroupServiceConfiguration.jabberHost();
 
 		if (!Validator.isIPAddress(jabberHost)) {
-			InetAddress inetAddress =
-				InetAddressProviderUtil.getInetAddressByName(jabberHost);
+			InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
+				jabberHost);
 
 			jabberHost = inetAddress.getHostAddress();
 		}

@@ -37,14 +37,13 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.InetAddressProviderUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.xmlrpc.Fault;
 import com.liferay.portal.kernel.xmlrpc.XmlRpc;
 import com.liferay.portal.kernel.xmlrpc.XmlRpcConstants;
 import com.liferay.portal.kernel.xmlrpc.XmlRpcUtil;
-import com.liferay.portal.util.InetAddressProviderImpl;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.registry.collections.ServiceTrackerCollections;
 import com.liferay.registry.collections.ServiceTrackerMap;
@@ -80,10 +79,10 @@ import org.powermock.reflect.Whitebox;
 @PrepareForTest(
 	{
 		BlogsEntryLocalServiceUtil.class, BlogsUtil.class,
-		InetAddressProviderUtil.class, InetAddressProviderImpl.class,
-		PingbackMethodImpl.class, PortletLocalServiceUtil.class,
-		PortletProviderUtil.class, PropsValues.class,
-		ServiceTrackerCollections.class, UserLocalServiceUtil.class
+		InetAddressUtil.class, PingbackMethodImpl.class,
+		PortletLocalServiceUtil.class, PortletProviderUtil.class,
+		PropsValues.class, ServiceTrackerCollections.class,
+		UserLocalServiceUtil.class
 	}
 )
 @RunWith(PowerMockRunner.class)
@@ -466,9 +465,6 @@ public class PingbackMethodImplTest extends PowerMockito {
 	}
 
 	protected void setUpInetAddress() throws Exception {
-		InetAddressProviderUtil.setInetAddressProvider(
-			new InetAddressProviderImpl());
-
 		_localAddresses = new InetAddress[] {
 			InetAddress.getByAddress(new byte[] {0, 0, 0, 0}),
 			InetAddress.getByAddress(new byte[] {10, 0, 0, 1}),

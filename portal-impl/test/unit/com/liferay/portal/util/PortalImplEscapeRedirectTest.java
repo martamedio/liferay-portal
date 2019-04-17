@@ -16,7 +16,6 @@ package com.liferay.portal.util;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.InetAddressProviderUtil;
 
 import java.util.Set;
 
@@ -34,9 +33,6 @@ public class PortalImplEscapeRedirectTest {
 		HttpUtil httpUtil = new HttpUtil();
 
 		httpUtil.setHttp(new HttpImpl());
-
-		InetAddressProviderUtil.setInetAddressProvider(
-			new InetAddressProviderImpl());
 	}
 
 	@Test

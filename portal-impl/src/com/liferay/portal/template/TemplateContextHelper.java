@@ -70,7 +70,7 @@ import com.liferay.portal.kernel.util.GetterUtil_IW;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.InetAddressProviderUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListMergeable;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -1373,9 +1373,8 @@ public class TemplateContextHelper {
 			if (_disableLocalNetworkAccess) {
 				URL url = new URL(location);
 
-				if (InetAddressProviderUtil.isLocalInetAddress(
-						InetAddressProviderUtil.getInetAddressByName(
-							url.getHost()))) {
+				if (InetAddressUtil.isLocalInetAddress(
+						InetAddressUtil.getInetAddressByName(url.getHost()))) {
 
 					return true;
 				}
