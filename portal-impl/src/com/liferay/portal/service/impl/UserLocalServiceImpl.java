@@ -6125,6 +6125,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			user.getCompanyId(), PropsKeys.ADMIN_EMAIL_FROM_NAME);
 		String fromAddress = PrefsPropsUtil.getString(
 			user.getCompanyId(), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
+		String passwordResetURL = StringPool.BLANK;
 
 		PortletPreferences companyPortletPreferences =
 			PrefsPropsUtil.getPreferences(user.getCompanyId(), true);
@@ -6136,15 +6137,32 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		final Map<Locale, String> localizedBodyMap;
 
-		if (Validator.isNotNull(password)) {
-			localizedBodyMap = LocalizationUtil.getLocalizationMap(
-				companyPortletPreferences, "adminEmailUserAddedBody",
-				PropsKeys.ADMIN_EMAIL_USER_ADDED_BODY);
-		}
-		else {
+		if (PropsValues.LOGIN_CREATE_ACCOUNT_ALLOW_CUSTOM_PASSWORD) {
 			localizedBodyMap = LocalizationUtil.getLocalizationMap(
 				companyPortletPreferences, "adminEmailUserAddedNoPasswordBody",
 				PropsKeys.ADMIN_EMAIL_USER_ADDED_NO_PASSWORD_BODY);
+		}
+		else {
+			Ticket ticket = ticketLocalService.addDistinctTicket(
+				user.getCompanyId(), User.class.getName(), user.getUserId(),
+				TicketConstants.TYPE_PASSWORD, null, null, serviceContext);
+
+			StringBundler sb = new StringBundler(7);
+
+			sb.append(serviceContext.getPortalURL());
+			sb.append(serviceContext.getPathMain());
+			sb.append("/portal/update_password?p_l_id=");
+			sb.append(serviceContext.getPlid());
+			sb.append("&ticketKey=");
+			sb.append(ticket.getKey());
+			sb.append("&silentUpdate=true");
+
+			passwordResetURL = sb.toString();
+
+			localizedBodyMap = LocalizationUtil.getLocalizationMap(
+				companyPortletPreferences,
+				"adminEmailUserAddedResetPasswordBody",
+				PropsKeys.ADMIN_EMAIL_USER_ADDED_RESET_PASSWORD_BODY);
 		}
 
 		String subject = _getLocalizedValue(
@@ -6182,6 +6200,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			"[$USER_PASSWORD$]", HtmlUtil.escape(password));
 		mailTemplateContextBuilder.put(
 			"[$USER_SCREENNAME$]", HtmlUtil.escape(user.getScreenName()));
+		mailTemplateContextBuilder.put(
+			"[$PASSWORD_SETUP_URL$]", passwordResetURL);
 
 		MailTemplateContext mailTemplateContext =
 			mailTemplateContextBuilder.build();
