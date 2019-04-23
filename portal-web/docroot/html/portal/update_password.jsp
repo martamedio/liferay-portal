@@ -21,6 +21,8 @@ String currentURL = PortalUtil.getCurrentURL(request);
 
 String referer = ParamUtil.getString(request, WebKeys.REFERER, currentURL);
 
+Boolean silentUpdate = ParamUtil.getBoolean(request, "silentUpdate");
+
 Ticket ticket = (Ticket)request.getAttribute(WebKeys.TICKET);
 
 String ticketKey = ParamUtil.getString(request, "ticketKey");
@@ -85,6 +87,7 @@ if (referer.startsWith(themeDisplay.getPathMain() + "/portal/update_password") &
 					<aui:input name="doAsUserId" type="hidden" value="<%= themeDisplay.getDoAsUserId() %>" />
 					<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 					<aui:input name="<%= WebKeys.REFERER %>" type="hidden" value="<%= referer %>" />
+					<aui:input name="silentUpdate" type="hidden" value="<%= silentUpdate %>" />
 					<aui:input name="ticketKey" type="hidden" value="<%= ticketKey %>" />
 
 					<c:if test="<%= !SessionErrors.isEmpty(request) %>">
