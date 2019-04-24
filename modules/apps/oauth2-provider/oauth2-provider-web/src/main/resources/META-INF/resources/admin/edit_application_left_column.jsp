@@ -18,6 +18,8 @@
 
 <%
 OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2Application();
+
+SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayContext(request, renderRequest, renderResponse);
 %>
 
 <aui:model-context bean="<%= oAuth2Application %>" model="<%= OAuth2Application.class %>" />
@@ -96,6 +98,49 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 
 					<div class="allowedGrantType <%= cssClassesStr %>">
 						<aui:input checked="<%= checked %>" data="<%= data %>" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" />
+
+						<c:if test="<%= grantType.equals(GrantType.CLIENT_CREDENTIALS) %>">
+							<div class="main-content-body" id="<portlet:namespace />userSelection">
+								<aui:input name="clientCredentialUserId" type="hidden" />
+								<span class="h6"><liferay-ui:message key="screen-name" /></span><aui:input disabled="<%= true %>" label="" name="clientCredentialUserName" type="text" />
+
+								<div class="button-holder">
+									<aui:button cssClass="modify-link" id="selectUserButton" value="select" />
+								</div>
+							</div>
+
+							<aui:script use="aui-base,aui-io">
+								Liferay.Util.toggleBoxes('<portlet:namespace /><%= name %>', '<portlet:namespace />userSelection');
+
+								var selectUserButton = document.getElementById('<portlet:namespace />selectUserButton');
+
+								if (selectUserButton) {
+									selectUserButton.addEventListener(
+										'click',
+										function(event) {
+											Liferay.Util.selectEntity(
+												{
+													dialog: {
+														modal: true,
+														destroyOnHide: true
+													},
+													eventName: '<%= selectUsersDisplayContext.getEventName() %>',
+													id: '<%= selectUsersDisplayContext.getEventName() %>',
+													title: '<liferay-ui:message key="users" />',
+													uri: '<%= selectUsersDisplayContext.getPortletURL() %>'
+												},
+												function(event) {
+													A.one('#<portlet:namespace />clientCredentialUserId').val(event.userid);
+													A.one('#<portlet:namespace />clientCredentialUserName').val(event.screenname);
+
+												}
+											);
+										}
+									);
+								}
+
+							</aui:script>
+						</c:if>
 					</div>
 
 					<%
