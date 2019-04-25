@@ -6155,7 +6155,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			sb.append(serviceContext.getPlid());
 			sb.append("&ticketKey=");
 			sb.append(ticket.getKey());
-			sb.append("&silentUpdate=true");
 
 			passwordResetURL = sb.toString();
 
