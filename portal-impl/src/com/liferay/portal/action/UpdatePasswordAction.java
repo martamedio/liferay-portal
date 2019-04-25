@@ -80,10 +80,6 @@ public class UpdatePasswordAction implements Action {
 
 		request.setAttribute(WebKeys.TICKET, ticket);
 
-		String silentUpdate = ParamUtil.getString(request, "silentUpdate");
-
-		request.setAttribute("silentUpdate", silentUpdate);
-
 		String cmd = ParamUtil.getString(request, Constants.CMD);
 
 		if (Validator.isNull(cmd)) {
@@ -246,15 +242,13 @@ public class UpdatePasswordAction implements Action {
 
 		boolean previousValidate = PwdToolkitUtilThreadLocal.isValidate();
 
-		boolean silentUpdate = ParamUtil.getBoolean(request, "silentUpdate");
-
 		try {
 			boolean currentValidate = isValidatePassword(request);
 
 			PwdToolkitUtilThreadLocal.setValidate(currentValidate);
 
 			UserLocalServiceUtil.updatePassword(
-				userId, password1, password2, passwordReset, silentUpdate);
+				userId, password1, password2, passwordReset);
 		}
 		finally {
 			PwdToolkitUtilThreadLocal.setValidate(previousValidate);
