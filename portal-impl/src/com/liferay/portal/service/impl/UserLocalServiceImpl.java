@@ -6147,16 +6147,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				user.getCompanyId(), User.class.getName(), user.getUserId(),
 				TicketConstants.TYPE_PASSWORD, null, null, serviceContext);
 
-			StringBundler sb = new StringBundler(7);
-
-			sb.append(serviceContext.getPortalURL());
-			sb.append(serviceContext.getPathMain());
-			sb.append("/portal/update_password?p_l_id=");
-			sb.append(serviceContext.getPlid());
-			sb.append("&ticketKey=");
-			sb.append(ticket.getKey());
-
-			passwordResetURL = sb.toString();
+			passwordResetURL = StringBundler.concat(
+				serviceContext.getPortalURL(), serviceContext.getPathMain(),
+				"/portal/update_password?p_l_id=",
+				String.valueOf(serviceContext.getPlid()), "&ticketKey=",
+				ticket.getKey());
 
 			localizedBodyMap = LocalizationUtil.getLocalizationMap(
 				companyPortletPreferences,
