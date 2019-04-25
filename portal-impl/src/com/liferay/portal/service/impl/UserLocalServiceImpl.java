@@ -3756,9 +3756,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 
-		String newPassword = StringPool.BLANK;
-		String passwordResetURL = StringPool.BLANK;
-
 		if (company.isSendPasswordResetLink()) {
 			Date expirationDate = null;
 
@@ -3784,9 +3781,17 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			sb.append("&ticketKey=");
 			sb.append(ticket.getKey());
 
-			passwordResetURL = sb.toString();
+			String passwordResetURL = sb.toString();
+
+			sendPasswordNotification(
+				user, companyId, null, passwordResetURL, fromName, fromAddress,
+				subject, body, serviceContext);
+
+			return true;
 		}
-		else {
+		else if (company.isSendPassword()) {
+			String newPassword = StringPool.BLANK;
+
 			if (!Objects.equals(
 					PasswordEncryptorUtil.getDefaultPasswordAlgorithmType(),
 					PasswordEncryptorUtil.TYPE_NONE)) {
@@ -3838,13 +3843,15 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			else {
 				newPassword = user.getPassword();
 			}
+
+			sendPasswordNotification(
+				user, companyId, newPassword, null, fromName, fromAddress,
+				subject, body, serviceContext);
+
+			return true;
 		}
 
-		sendPasswordNotification(
-			user, companyId, newPassword, passwordResetURL, fromName,
-			fromAddress, subject, body, serviceContext);
-
-		return company.isSendPassword();
+		return false;
 	}
 
 	/**
