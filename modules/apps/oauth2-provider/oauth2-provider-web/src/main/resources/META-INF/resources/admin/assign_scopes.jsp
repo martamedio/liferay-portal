@@ -304,6 +304,23 @@ AssignScopesDisplayContext assignScopesDisplayContext = (AssignScopesDisplayCont
 					document.<portlet:namespace/>fm.submit();
 				}
 			);
+
+			A.all('#<portlet:namespace />appsAccordion .panel').filter(
+				function() {
+					return this.one('input:checked');
+				}
+			).each(
+				function() {
+
+					var panelHeaderElement = this.one('*[data-toggle="collapse"]');
+
+					panelHeaderElement.attr('aria-expanded', 'true')
+					panelHeaderElement.removeClass('collapsed');
+
+					var panelBodyElement = this.one('.collapse');
+
+					panelBodyElement.addClass('show');
+				});
 		}
 	);
 </aui:script>
