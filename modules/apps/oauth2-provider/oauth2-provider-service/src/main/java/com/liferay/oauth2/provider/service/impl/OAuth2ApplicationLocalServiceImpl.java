@@ -509,6 +509,7 @@ public class OAuth2ApplicationLocalServiceImpl
 
 		User clientCredentialUser = _userLocalService.getUser(
 			clientCredentialUserId);
+
 		User user = _userLocalService.getUser(userId);
 
 		PermissionChecker permissionChecker =
