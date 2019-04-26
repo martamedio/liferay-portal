@@ -35,9 +35,11 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.InputStream;
 
@@ -116,6 +118,13 @@ public class UpdateOAuth2ApplicationMVCActionCommand
 		}
 
 		String clientId = ParamUtil.get(request, "clientId", StringPool.BLANK);
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		long clientCredentialUserId = ParamUtil.get(
+			request, "clientCredentialUserId", themeDisplay.getUserId());
+
 		String clientSecret = ParamUtil.get(
 			request, "clientSecret", StringPool.BLANK);
 		String description = ParamUtil.get(
@@ -151,7 +160,8 @@ public class UpdateOAuth2ApplicationMVCActionCommand
 						allowedGrantTypesList, clientId, clientProfile.id(),
 						clientSecret, description, featuresList, homePageURL, 0,
 						name, privacyPolicyURL, redirectURIsList,
-						scopeAliasesList, serviceContext);
+						scopeAliasesList, clientCredentialUserId,
+						serviceContext);
 
 				response.setRenderParameter(
 					"oAuth2ApplicationId",
@@ -171,7 +181,7 @@ public class UpdateOAuth2ApplicationMVCActionCommand
 					clientProfile.id(), clientSecret, description, featuresList,
 					homePageURL, iconFileEntryId, name, privacyPolicyURL,
 					redirectURIsList, oAuth2ApplicationScopeAliasesId,
-					serviceContext);
+					clientCredentialUserId, serviceContext);
 
 				long fileEntryId = ParamUtil.getLong(request, "fileEntryId");
 
