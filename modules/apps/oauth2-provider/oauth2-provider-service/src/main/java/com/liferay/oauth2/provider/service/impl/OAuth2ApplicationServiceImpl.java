@@ -50,6 +50,30 @@ public class OAuth2ApplicationServiceImpl
 			int clientProfile, String clientSecret, String description,
 			List<String> featuresList, String homePageURL, long iconFileEntryId,
 			String name, String privacyPolicyURL, List<String> redirectURIsList,
+			List<String> scopeAliasesList, long clientCredentialUserId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		ModelResourcePermissionHelper.check(
+			_oAuth2ApplicationModelResourcePermission, getPermissionChecker(),
+			0, 0, OAuth2ProviderActionKeys.ACTION_ADD_APPLICATION);
+
+		User user = getUser();
+
+		return oAuth2ApplicationLocalService.addOAuth2Application(
+			user.getCompanyId(), user.getUserId(), user.getFullName(),
+			allowedGrantTypesList, clientId, clientProfile, clientSecret,
+			description, featuresList, homePageURL, iconFileEntryId, name,
+			privacyPolicyURL, redirectURIsList, scopeAliasesList,
+			clientCredentialUserId, serviceContext);
+	}
+
+	@Override
+	public OAuth2Application addOAuth2Application(
+			List<GrantType> allowedGrantTypesList, String clientId,
+			int clientProfile, String clientSecret, String description,
+			List<String> featuresList, String homePageURL, long iconFileEntryId,
+			String name, String privacyPolicyURL, List<String> redirectURIsList,
 			List<String> scopeAliasesList, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -165,6 +189,31 @@ public class OAuth2ApplicationServiceImpl
 			String description, List<String> featuresList, String homePageURL,
 			long iconFileEntryId, String name, String privacyPolicyURL,
 			List<String> redirectURIsList, long auth2ApplicationScopeAliasesId,
+			long clientCredentialUserId, ServiceContext serviceContext)
+		throws PortalException {
+
+		OAuth2Application oAuth2Application =
+			oAuth2ApplicationLocalService.getOAuth2Application(
+				oAuth2ApplicationId);
+
+		_oAuth2ApplicationModelResourcePermission.check(
+			getPermissionChecker(), oAuth2Application, ActionKeys.UPDATE);
+
+		return oAuth2ApplicationLocalService.updateOAuth2Application(
+			oAuth2ApplicationId, allowedGrantTypesList, clientId, clientProfile,
+			clientSecret, description, featuresList, homePageURL,
+			iconFileEntryId, name, privacyPolicyURL, redirectURIsList,
+			auth2ApplicationScopeAliasesId, clientCredentialUserId,
+			serviceContext);
+	}
+
+	@Override
+	public OAuth2Application updateOAuth2Application(
+			long oAuth2ApplicationId, List<GrantType> allowedGrantTypesList,
+			String clientId, int clientProfile, String clientSecret,
+			String description, List<String> featuresList, String homePageURL,
+			long iconFileEntryId, String name, String privacyPolicyURL,
+			List<String> redirectURIsList, long auth2ApplicationScopeAliasesId,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -179,7 +228,8 @@ public class OAuth2ApplicationServiceImpl
 			oAuth2ApplicationId, allowedGrantTypesList, clientId, clientProfile,
 			clientSecret, description, featuresList, homePageURL,
 			iconFileEntryId, name, privacyPolicyURL, redirectURIsList,
-			auth2ApplicationScopeAliasesId, serviceContext);
+			auth2ApplicationScopeAliasesId,
+			oAuth2Application.getClientCredentialUserId(), serviceContext);
 	}
 
 	@Override

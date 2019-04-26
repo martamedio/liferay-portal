@@ -20,6 +20,7 @@ import com.liferay.document.library.kernel.store.Store;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.constants.OAuth2ProviderConstants;
 import com.liferay.oauth2.provider.exception.DuplicateOAuth2ApplicationClientIdException;
+import com.liferay.oauth2.provider.exception.InvalidClientCredentialUserIdException;
 import com.liferay.oauth2.provider.exception.NoSuchOAuth2ApplicationException;
 import com.liferay.oauth2.provider.exception.OAuth2ApplicationClientGrantTypeException;
 import com.liferay.oauth2.provider.exception.OAuth2ApplicationHomePageURLException;
@@ -49,12 +50,18 @@ import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.RepositoryFactory;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -110,7 +117,8 @@ public class OAuth2ApplicationLocalServiceImpl
 			int clientProfile, String clientSecret, String description,
 			List<String> featuresList, String homePageURL, long iconFileEntryId,
 			String name, String privacyPolicyURL, List<String> redirectURIsList,
-			List<String> scopeAliasesList, ServiceContext serviceContext)
+			List<String> scopeAliasesList, long clientCredentialUserId,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		if (allowedGrantTypesList == null) {
@@ -137,12 +145,14 @@ public class OAuth2ApplicationLocalServiceImpl
 		}
 
 		validate(
-			companyId, allowedGrantTypesList, clientId, clientProfile,
-			clientSecret, homePageURL, name, privacyPolicyURL,
-			redirectURIsList);
+			companyId, userId, allowedGrantTypesList, clientId, clientProfile,
+			clientSecret, homePageURL, name, privacyPolicyURL, redirectURIsList,
+			clientCredentialUserId);
 
 		long oAuth2ApplicationId = counterLocalService.increment(
 			OAuth2Application.class.getName());
+
+		User user = _userLocalService.getUser(clientCredentialUserId);
 
 		OAuth2Application oAuth2Application =
 			oAuth2ApplicationPersistence.create(oAuth2ApplicationId);
@@ -153,6 +163,8 @@ public class OAuth2ApplicationLocalServiceImpl
 		oAuth2Application.setCreateDate(new Date());
 		oAuth2Application.setModifiedDate(new Date());
 		oAuth2Application.setAllowedGrantTypesList(allowedGrantTypesList);
+		oAuth2Application.setClientCredentialUserId(user.getUserId());
+		oAuth2Application.setClientCredentialUserName(user.getScreenName());
 		oAuth2Application.setClientId(clientId);
 		oAuth2Application.setClientProfile(clientProfile);
 		oAuth2Application.setClientSecret(clientSecret);
@@ -182,6 +194,23 @@ public class OAuth2ApplicationLocalServiceImpl
 			oAuth2Application.getOAuth2ApplicationId(), false, false, false);
 
 		return oAuth2ApplicationPersistence.update(oAuth2Application);
+	}
+
+	@Override
+	public OAuth2Application addOAuth2Application(
+			long companyId, long userId, String userName,
+			List<GrantType> allowedGrantTypesList, String clientId,
+			int clientProfile, String clientSecret, String description,
+			List<String> featuresList, String homePageURL, long iconFileEntryId,
+			String name, String privacyPolicyURL, List<String> redirectURIsList,
+			List<String> scopeAliasesList, ServiceContext serviceContext)
+		throws PortalException {
+
+		return addOAuth2Application(
+			companyId, userId, userName, allowedGrantTypesList, clientId,
+			clientProfile, clientSecret, description, featuresList, homePageURL,
+			iconFileEntryId, name, privacyPolicyURL, redirectURIsList,
+			scopeAliasesList, userId, serviceContext);
 	}
 
 	@Override
@@ -340,7 +369,7 @@ public class OAuth2ApplicationLocalServiceImpl
 			String description, List<String> featuresList, String homePageURL,
 			long iconFileEntryId, String name, String privacyPolicyURL,
 			List<String> redirectURIsList, long auth2ApplicationScopeAliasesId,
-			ServiceContext serviceContext)
+			long clientCredentialUserId, ServiceContext serviceContext)
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
@@ -356,14 +385,19 @@ public class OAuth2ApplicationLocalServiceImpl
 		}
 
 		validate(
-			oAuth2Application.getCompanyId(), oAuth2ApplicationId,
-			allowedGrantTypesList, clientId, clientProfile, clientSecret,
-			homePageURL, name, privacyPolicyURL, redirectURIsList);
+			oAuth2Application.getCompanyId(), oAuth2Application.getUserId(),
+			oAuth2ApplicationId, allowedGrantTypesList, clientId, clientProfile,
+			clientSecret, homePageURL, name, privacyPolicyURL, redirectURIsList,
+			clientCredentialUserId);
+
+		User user = _userLocalService.getUser(clientCredentialUserId);
 
 		oAuth2Application.setModifiedDate(new Date());
 		oAuth2Application.setOAuth2ApplicationScopeAliasesId(
 			auth2ApplicationScopeAliasesId);
 		oAuth2Application.setAllowedGrantTypesList(allowedGrantTypesList);
+		oAuth2Application.setClientCredentialUserId(user.getUserId());
+		oAuth2Application.setClientCredentialUserName(user.getScreenName());
 		oAuth2Application.setClientId(clientId);
 		oAuth2Application.setClientProfile(clientProfile);
 		oAuth2Application.setClientSecret(clientSecret);
@@ -436,23 +470,24 @@ public class OAuth2ApplicationLocalServiceImpl
 	}
 
 	protected void validate(
-			long companyId, List<GrantType> allowedGrantTypesList,
+			long companyId, long userId, List<GrantType> allowedGrantTypesList,
 			String clientId, int clientProfile, String clientSecret,
 			String homePageURL, String name, String privacyPolicyURL,
-			List<String> redirectURIsList)
+			List<String> redirectURIsList, long clientCredentialUserId)
 		throws PortalException {
 
 		validate(
-			companyId, 0, allowedGrantTypesList, clientId, clientProfile,
-			clientSecret, homePageURL, name, privacyPolicyURL,
-			redirectURIsList);
+			companyId, userId, 0, allowedGrantTypesList, clientId,
+			clientProfile, clientSecret, homePageURL, name, privacyPolicyURL,
+			redirectURIsList, clientCredentialUserId);
 	}
 
 	protected void validate(
-			long companyId, long oAuth2ApplicationId,
+			long companyId, long userId, long oAuth2ApplicationId,
 			List<GrantType> allowedGrantTypesList, String clientId,
 			int clientProfile, String clientSecret, String homePageURL,
-			String name, String privacyPolicyURL, List<String> redirectURIsList)
+			String name, String privacyPolicyURL, List<String> redirectURIsList,
+			long clientCredentialUserId)
 		throws PortalException {
 
 		if (!Validator.isBlank(clientSecret)) {
@@ -470,6 +505,22 @@ public class OAuth2ApplicationLocalServiceImpl
 						grantType.name());
 				}
 			}
+		}
+
+		User clientCredentialUser = _userLocalService.getUser(
+			clientCredentialUserId);
+		User user = _userLocalService.getUser(userId);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(user);
+
+		if ((clientCredentialUserId != userId) &&
+			!UserPermissionUtil.contains(
+				permissionChecker, clientCredentialUser.getUserId(),
+				clientCredentialUser.getOrganizationIds(),
+				ActionKeys.IMPERSONATE)) {
+
+			throw new InvalidClientCredentialUserIdException();
 		}
 
 		if (!Validator.isBlank(clientId)) {
@@ -643,5 +694,8 @@ public class OAuth2ApplicationLocalServiceImpl
 
 	@Reference(target = "(current.store=true)")
 	private Store _store;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
