@@ -15,10 +15,12 @@
 package com.liferay.oauth2.provider.internal.upgrade;
 
 import com.liferay.oauth2.provider.internal.upgrade.v1_2_0.util.OAuth2AuthorizationTable;
+import com.liferay.oauth2.provider.internal.upgrade.v1_3_0.util.OAuth2ApplicationTable;
 import com.liferay.oauth2.provider.internal.upgrade.v2_0_0.UpgradeOAuth2ApplicationScopeAliases;
 import com.liferay.oauth2.provider.internal.upgrade.v2_0_0.util.OAuth2ApplicationScopeAliasesTable;
 import com.liferay.oauth2.provider.internal.upgrade.v2_0_0.util.OAuth2ScopeGrantTable;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -51,10 +53,23 @@ public class OAuth2ServiceUpgrade implements UpgradeStepRegistrator {
 		registry.register(
 			"1.2.0", "1.3.0",
 			getAddColumnsUpgradeProcess(
+				OAuth2ApplicationTable.class, "clientCredentialUserId long"),
+			getAddColumnsUpgradeProcess(
+				OAuth2ApplicationTable.class,
+				"clientCredentialUserName VARCHAR(255) null"),
+			getRunSQLUpgradeProcess(
+				StringBundler.concat(
+					"update OAuth2Application set ",
+					"clientCredentialUserId=userId, clientCredentialUserName=",
+					"userName")));
+
+		registry.register(
+			"1.3.0", "1.4.0",
+			getAddColumnsUpgradeProcess(
 				OAuth2ScopeGrantTable.class, "scopeAliases TEXT null"));
 
 		registry.register(
-			"1.3.0", "2.0.0",
+			"1.4.0", "2.0.0",
 			new UpgradeOAuth2ApplicationScopeAliases(
 				_companyLocalService, _scopeLocator),
 			getDropColumnsUpgradeProcess(
@@ -88,6 +103,17 @@ public class OAuth2ServiceUpgrade implements UpgradeStepRegistrator {
 				alter(
 					tableClass,
 					_getAlterables(AlterTableDropColumn::new, tableNames));
+			}
+
+		};
+	}
+
+	protected UpgradeProcess getRunSQLUpgradeProcess(String sql) {
+		return new UpgradeProcess() {
+
+			@Override
+			protected void doUpgrade() throws Exception {
+				runSQL(sql);
 			}
 
 		};
