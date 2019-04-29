@@ -57,83 +57,83 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 
 	<div class="row">
 		<div class="col-lg-6">
-	<aui:fieldset label="allowed-grant-types">
-		<aui:field-wrapper>
-			<div id="<portlet:namespace />allowedGrantTypes">
+			<aui:fieldset label="allowed-grant-types">
+				<aui:field-wrapper>
+					<div id="<portlet:namespace />allowedGrantTypes">
 
-				<%
-				List<GrantType> allowedGrantTypesList = new ArrayList<>();
+						<%
+						List<GrantType> allowedGrantTypesList = new ArrayList<>();
 
-				if (oAuth2Application != null) {
-					allowedGrantTypesList = oAuth2Application.getAllowedGrantTypesList();
-				}
-
-				List<GrantType> oAuth2Grants = oAuth2AdminPortletDisplayContext.getGrantTypes(portletPreferences);
-
-				for (GrantType grantType : oAuth2Grants) {
-					Set<String> cssClasses = new HashSet<>();
-
-					for (ClientProfile clientProfile : ClientProfile.values()) {
-						if (clientProfile.grantTypes().contains(grantType)) {
-							cssClasses.add("client-profile-" + clientProfile.id());
+						if (oAuth2Application != null) {
+							allowedGrantTypesList = oAuth2Application.getAllowedGrantTypesList();
 						}
-					}
 
-					String cssClassesStr = StringUtil.merge(cssClasses, StringPool.SPACE);
+						List<GrantType> oAuth2Grants = oAuth2AdminPortletDisplayContext.getGrantTypes(portletPreferences);
 
-					boolean checked = false;
+						for (GrantType grantType : oAuth2Grants) {
+							Set<String> cssClasses = new HashSet<>();
 
-					if ((oAuth2Application == null) || allowedGrantTypesList.contains(grantType)) {
-						checked = true;
-					}
-
-					String name = "grant-" + grantType.name();
-
-					checked = ParamUtil.getBoolean(request, name, checked);
-
-					Map<String, Object> data = new HashMap<>();
-
-					data.put("isredirect", grantType.isRequiresRedirectURI());
-					data.put("issupportsconfidentialclients", grantType.isSupportsConfidentialClients());
-					data.put("issupportspublicclients", grantType.isSupportsPublicClients());
-				%>
-
-					<div class="allowedGrantType <%= cssClassesStr %>">
-						<c:choose>
-							<c:when test="<%= grantType.equals(GrantType.CLIENT_CREDENTIALS) %>">							
-								<aui:input checked="<%= checked %>" data="<%= data %>" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" helpMessage="the-client-will-impersonate-the-default-user"/>
-							</c:when>
-							<c:otherwise>
-								<aui:input checked="<%= checked %>" data="<%= data %>" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" />
-							</c:otherwise>
-						</c:choose>
-					</div>
-
-					<%
-					if (grantType.isRequiresRedirectURI()) {
-					%>
-
-						<script>
-							var allowedAuthorizationTypeCheckbox = document.getElementById('<portlet:namespace /><%= name %>');
-
-							if (allowedAuthorizationTypeCheckbox) {
-								allowedAuthorizationTypeCheckbox.addEventListener(
-									'click',
-									function(event) {
-										<portlet:namespace />requiredRedirectURIs();
-									}
-								);
+							for (ClientProfile clientProfile : ClientProfile.values()) {
+								if (clientProfile.grantTypes().contains(grantType)) {
+									cssClasses.add("client-profile-" + clientProfile.id());
+								}
 							}
-						</script>
 
-				<%
-					}
-				}
-				%>
+							String cssClassesStr = StringUtil.merge(cssClasses, StringPool.SPACE);
 
-			</div>
-		</aui:field-wrapper>
-	</aui:fieldset>
+							boolean checked = false;
+
+							if ((oAuth2Application == null) || allowedGrantTypesList.contains(grantType)) {
+								checked = true;
+							}
+
+							String name = "grant-" + grantType.name();
+
+							checked = ParamUtil.getBoolean(request, name, checked);
+
+							Map<String, Object> data = new HashMap<>();
+
+							data.put("isredirect", grantType.isRequiresRedirectURI());
+							data.put("issupportsconfidentialclients", grantType.isSupportsConfidentialClients());
+							data.put("issupportspublicclients", grantType.isSupportsPublicClients());
+						%>
+
+							<div class="allowedGrantType <%= cssClassesStr %>">
+								<c:choose>
+									<c:when test="<%= grantType.equals(GrantType.CLIENT_CREDENTIALS) %>">
+										<aui:input checked="<%= checked %>" data="<%= data %>" helpMessage="the-client-will-impersonate-the-default-user" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" />
+									</c:when>
+									<c:otherwise>
+										<aui:input checked="<%= checked %>" data="<%= data %>" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" />
+									</c:otherwise>
+								</c:choose>
+							</div>
+
+							<%
+							if (grantType.isRequiresRedirectURI()) {
+							%>
+
+								<script>
+									var allowedAuthorizationTypeCheckbox = document.getElementById('<portlet:namespace /><%= name %>');
+
+									if (allowedAuthorizationTypeCheckbox) {
+										allowedAuthorizationTypeCheckbox.addEventListener(
+											'click',
+											function(event) {
+												<portlet:namespace />requiredRedirectURIs();
+											}
+										);
+									}
+								</script>
+
+						<%
+							}
+						}
+						%>
+
+					</div>
+				</aui:field-wrapper>
+			</aui:fieldset>
 		</div>
 
 		<c:if test="<%= oAuth2Application != null %>">
