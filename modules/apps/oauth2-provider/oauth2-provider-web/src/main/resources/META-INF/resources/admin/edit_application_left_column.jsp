@@ -55,6 +55,8 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 
 	</aui:select>
 
+	<div class="row">
+		<div class="col-lg-6">
 	<aui:fieldset label="allowed-grant-types">
 		<aui:field-wrapper>
 			<div id="<portlet:namespace />allowedGrantTypes">
@@ -97,50 +99,14 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 				%>
 
 					<div class="allowedGrantType <%= cssClassesStr %>">
-						<aui:input checked="<%= checked %>" data="<%= data %>" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" />
-
-						<c:if test="<%= grantType.equals(GrantType.CLIENT_CREDENTIALS) %>">
-							<div class="main-content-body" id="<portlet:namespace />userSelection">
-								<aui:input name="clientCredentialUserId" type="hidden" />
-								<span class="h6"><liferay-ui:message key="screen-name" /></span><aui:input disabled="<%= true %>" label="" name="clientCredentialUserName" type="text" />
-
-								<div class="button-holder">
-									<aui:button cssClass="modify-link" id="selectUserButton" value="select" />
-								</div>
-							</div>
-
-							<aui:script use="aui-base,aui-io">
-								Liferay.Util.toggleBoxes('<portlet:namespace /><%= name %>', '<portlet:namespace />userSelection');
-
-								var selectUserButton = document.getElementById('<portlet:namespace />selectUserButton');
-
-								if (selectUserButton) {
-									selectUserButton.addEventListener(
-										'click',
-										function(event) {
-											Liferay.Util.selectEntity(
-												{
-													dialog: {
-														modal: true,
-														destroyOnHide: true
-													},
-													eventName: '<%= selectUsersDisplayContext.getEventName() %>',
-													id: '<%= selectUsersDisplayContext.getEventName() %>',
-													title: '<liferay-ui:message key="users" />',
-													uri: '<%= selectUsersDisplayContext.getPortletURL() %>'
-												},
-												function(event) {
-													A.one('#<portlet:namespace />clientCredentialUserId').val(event.userid);
-													A.one('#<portlet:namespace />clientCredentialUserName').val(event.screenname);
-
-												}
-											);
-										}
-									);
-								}
-
-							</aui:script>
-						</c:if>
+						<c:choose>
+							<c:when test="<%= grantType.equals(GrantType.CLIENT_CREDENTIALS) %>">							
+								<aui:input checked="<%= checked %>" data="<%= data %>" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" helpMessage="the-client-will-impersonate-the-default-user"/>
+							</c:when>
+							<c:otherwise>
+								<aui:input checked="<%= checked %>" data="<%= data %>" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" />
+							</c:otherwise>
+						</c:choose>
 					</div>
 
 					<%
@@ -168,6 +134,57 @@ SelectUsersDisplayContext selectUsersDisplayContext = new SelectUsersDisplayCont
 			</div>
 		</aui:field-wrapper>
 	</aui:fieldset>
+		</div>
+
+		<c:if test="<%= oAuth2Application != null %>">
+			<div class="col-lg-6">
+				<aui:fieldset helpMessage="the-user-to-impersonate-when-the-authorization-type-has-no-user-context" label="default-user">
+					<div id="<portlet:namespace />userSelection">
+						<aui:input name="clientCredentialUserId" type="hidden" />
+						<aui:input disabled="<%= true %>" label="" name="clientCredentialUserName" type="text" />
+
+						<div class="button-holder">
+							<aui:button cssClass="modify-link" id="selectUserButton" value="select" />
+						</div>
+					</div>
+
+					<aui:script use="aui-base,aui-io">
+						if (1 == 0) {
+							Liferay.Util.toggleBoxes('<portlet:namespace /><%= "name" %>', '<portlet:namespace />userSelection');
+						}
+
+						var selectUserButton = document.getElementById('<portlet:namespace />selectUserButton');
+
+						if (selectUserButton) {
+							selectUserButton.addEventListener(
+								'click',
+								function(event) {
+									Liferay.Util.selectEntity(
+										{
+											dialog: {
+												modal: true,
+												destroyOnHide: true
+											},
+											eventName: '<%= selectUsersDisplayContext.getEventName() %>',
+											id: '<%= selectUsersDisplayContext.getEventName() %>',
+											title: '<liferay-ui:message key="users" />',
+											uri: '<%= selectUsersDisplayContext.getPortletURL() %>'
+										},
+										function(event) {
+											A.one('#<portlet:namespace />clientCredentialUserId').val(event.userid);
+											A.one('#<portlet:namespace />clientCredentialUserName').val(event.screenname);
+
+										}
+									);
+								}
+							);
+						}
+
+					</aui:script>
+				</aui:fieldset>
+			</div>
+		</c:if>
+	</div>
 
 	<c:if test="<%= oAuth2Application != null %>">
 		<aui:fieldset label="supported-features">
