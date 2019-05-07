@@ -235,6 +235,7 @@ AssignScopesDisplayContext assignScopesDisplayContext = (AssignScopesDisplayCont
 
 						if (logicalOR) {
 							slave.attr('checked', true);
+							slave.attr('disabled', true);
 							return;
 						}
 
@@ -243,6 +244,9 @@ AssignScopesDisplayContext assignScopesDisplayContext = (AssignScopesDisplayCont
 							slave.attr('checked', false);
 						}
 
+						if (slave.attr('name')) {
+							slave.attr('disabled', false);
+						}
 					}
 				);
 			}
