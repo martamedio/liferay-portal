@@ -49,7 +49,7 @@ AssignScopesDisplayContext assignScopesDisplayContext = (AssignScopesDisplayCont
 						</li>
 					</ul>
 
-					<div class="tab-content">
+					<div class="hidden tab-content" id="<portlet:namespace />navScopeTypesTabContents">
 						<div aria-labelledby="navResourceScopesTab" class="active fade show tab-pane" id="<portlet:namespace />navResourceScopes" role="tabpanel">
 							<%@ include file="/admin/assign_scopes_tab1.jspf" %>
 						</div>
@@ -80,6 +80,7 @@ AssignScopesDisplayContext assignScopesDisplayContext = (AssignScopesDisplayCont
 			if (A.all('#<portlet:namespace />navGlobalScopes .panel').size() > 0) {
 				A.one('#<portlet:namespace />navScopeTypes').toggleClass('hidden', false);
 			}
+			A.one('#<portlet:namespace />navScopeTypesTabContents').toggleClass('hidden', false);
 
 			var handle;
 
