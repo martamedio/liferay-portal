@@ -6122,8 +6122,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return;
 		}
 
-		boolean customPasswordAllowed = GetterUtil.getBoolean(
-			serviceContext.getAttribute("customPasswordAllowed"));
+		boolean autoPassword = GetterUtil.getBoolean(
+			serviceContext.getAttribute("autoPassword"));
 		Company company = null;
 		String fromName = PrefsPropsUtil.getString(
 			user.getCompanyId(), PropsKeys.ADMIN_EMAIL_FROM_NAME);
@@ -6151,7 +6151,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		final Map<Locale, String> localizedBodyMap;
 
-		if (customPasswordAllowed) {
+		if (!autoPassword) {
 			localizedBodyMap = LocalizationUtil.getLocalizationMap(
 				companyPortletPreferences, "adminEmailUserAddedNoPasswordBody",
 				PropsKeys.ADMIN_EMAIL_USER_ADDED_NO_PASSWORD_BODY);

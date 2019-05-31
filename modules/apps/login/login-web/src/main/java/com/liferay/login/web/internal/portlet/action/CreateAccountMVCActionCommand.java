@@ -158,8 +158,6 @@ public class CreateAccountMVCActionCommand extends BaseMVCActionCommand {
 
 			password1 = ParamUtil.getString(actionRequest, "password1");
 			password2 = ParamUtil.getString(actionRequest, "password2");
-
-			serviceContext.setAttribute("customPasswordAllowed", Boolean.TRUE);
 		}
 
 		boolean openIdPending = false;
