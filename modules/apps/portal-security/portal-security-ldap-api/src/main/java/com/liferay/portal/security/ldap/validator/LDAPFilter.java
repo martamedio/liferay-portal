@@ -270,14 +270,14 @@ public class LDAPFilter {
 		return new LDAPFilter(sb, arguments);
 	}
 
-	LDAPFilter(StringBundler filterSB, List<Object> arguments) {
-		_arguments = arguments;
-		_filterSB = filterSB;
-	}
-
 	@Override
 	public String toString() {
 		return StringBundler.concat(generateFilter(), " ", _arguments);
+	}
+
+	protected LDAPFilter(StringBundler filterSB, List<Object> arguments) {
+		_filterSB = filterSB;
+		_arguments = arguments;
 	}
 
 	private static StringBundler _concat(String key, String op, String value) {
