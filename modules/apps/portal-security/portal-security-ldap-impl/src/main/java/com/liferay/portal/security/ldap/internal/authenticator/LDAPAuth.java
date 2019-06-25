@@ -301,6 +301,10 @@ public class LDAPAuth implements Authenticator {
 				_ldapServerConfigurationProvider.getConfiguration(
 					companyId, ldapServerId);
 
+			if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+				return DNE;
+			}
+
 			LdapName baseDNLdapName = LDAPUtil.asLdapName(
 				ldapServerConfiguration.baseDN());
 
@@ -549,10 +553,8 @@ public class LDAPAuth implements Authenticator {
 			_ldapServerConfigurationProvider.getConfiguration(
 				companyId, ldapServerId);
 
-		String providerUrl = ldapServerConfiguration.baseProviderURL();
-
-		if (Validator.isNull(providerUrl)) {
-			return result;
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			return DNE;
 		}
 
 		result = authenticate(

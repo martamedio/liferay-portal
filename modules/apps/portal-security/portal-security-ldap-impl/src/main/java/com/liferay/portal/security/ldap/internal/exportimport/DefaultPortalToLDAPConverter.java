@@ -130,13 +130,17 @@ public class DefaultPortalToLDAPConverter implements PortalToLDAPConverter {
 			Properties groupMappings, Properties userMappings)
 		throws Exception {
 
-		Attributes attributes = new BasicAttributes(true);
-
-		Attribute objectClassAttribute = new BasicAttribute(_OBJECT_CLASS);
-
 		LDAPServerConfiguration ldapServerConfiguration =
 			_ldapServerConfigurationProvider.getConfiguration(
 				userGroup.getCompanyId(), ldapServerId);
+
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			return null;
+		}
+
+		Attributes attributes = new BasicAttributes(true);
+
+		Attribute objectClassAttribute = new BasicAttribute(_OBJECT_CLASS);
 
 		String[] defaultObjectClassNames =
 			ldapServerConfiguration.groupDefaultObjectClasses();
@@ -203,13 +207,17 @@ public class DefaultPortalToLDAPConverter implements PortalToLDAPConverter {
 	public Attributes getLDAPUserAttributes(
 		long ldapServerId, User user, Properties userMappings) {
 
-		Attributes attributes = new BasicAttributes(true);
-
-		Attribute objectClassAttribute = new BasicAttribute(_OBJECT_CLASS);
-
 		LDAPServerConfiguration ldapServerConfiguration =
 			_ldapServerConfigurationProvider.getConfiguration(
 				user.getCompanyId(), ldapServerId);
+
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			return null;
+		}
+
+		Attributes attributes = new BasicAttributes(true);
+
+		Attribute objectClassAttribute = new BasicAttribute(_OBJECT_CLASS);
 
 		String[] defaultObjectClassNames =
 			ldapServerConfiguration.userDefaultObjectClasses();
@@ -363,12 +371,11 @@ public class DefaultPortalToLDAPConverter implements PortalToLDAPConverter {
 			return LDAPUtil.asLdapName(groupBinding.getNameInNamespace());
 		}
 
-		String groupsDN = _portalLDAP.getGroupsDN(
-			ldapServerId, userGroup.getCompanyId());
-
 		String rdnType = GetterUtil.getString(
 			groupMappings.getProperty(GroupConverterKeys.GROUP_NAME),
 			_DEFAULT_DN);
+		String groupsDN = _portalLDAP.getGroupsDN(
+			ldapServerId, userGroup.getCompanyId());
 
 		return LDAPUtil.asLdapName(
 			rdnType, userGroup.getName(), LDAPUtil.asLdapName(groupsDN));
@@ -387,14 +394,12 @@ public class DefaultPortalToLDAPConverter implements PortalToLDAPConverter {
 			return LDAPUtil.asLdapName(userBinding.getNameInNamespace());
 		}
 
-		String usersDN = _portalLDAP.getUsersDN(
-			ldapServerId, user.getCompanyId());
-
 		String rdnType = GetterUtil.getString(
 			userMappings.getProperty(_userDNFieldName), _DEFAULT_DN);
-
 		String rdnValue = BeanPropertiesUtil.getStringSilent(
 			user, _userDNFieldName);
+		String usersDN = _portalLDAP.getUsersDN(
+			ldapServerId, user.getCompanyId());
 
 		return LDAPUtil.asLdapName(
 			rdnType, rdnValue, LDAPUtil.asLdapName(usersDN));
