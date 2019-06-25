@@ -140,6 +140,10 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			_ldapServerConfigurationProvider.getConfiguration(
 				companyId, ldapServerId);
 
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			return null;
+		}
+
 		LDAPImportContext ldapImportContext = getLDAPImportContext(
 			companyId,
 			_ldapSettings.getContactExpandoMappings(ldapServerId, companyId),
@@ -170,16 +174,20 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		NamingEnumeration<SearchResult> enu = null;
 
 		try {
-			LDAPServerConfiguration ldapServerConfiguration =
-				_ldapServerConfigurationProvider.getConfiguration(
-					companyId, ldapServerId);
-
 			safeLdapContext = _portalLDAP.getSafeLdapContext(
 				ldapServerId, companyId);
 
 			if (safeLdapContext == null) {
 				_log.error("Unable to bind to the LDAP server");
 
+				return null;
+			}
+
+			LDAPServerConfiguration ldapServerConfiguration =
+				_ldapServerConfigurationProvider.getConfiguration(
+					companyId, ldapServerId);
+
+			if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
 				return null;
 			}
 
@@ -435,6 +443,10 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		LDAPServerConfiguration ldapServerConfiguration =
 			_ldapServerConfigurationProvider.getConfiguration(
 				companyId, ldapServerId);
+
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			return;
+		}
 
 		String[] userIgnoreAttributes =
 			ldapServerConfiguration.userIgnoreAttributes();
@@ -693,6 +705,12 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				ldapImportContext.getCompanyId(),
 				ldapImportContext.getLdapServerId());
 
+		if (ldapServerConfiguration.ldapServerId() !=
+				ldapImportContext.getLdapServerId()) {
+
+			return null;
+		}
+
 		LDAPFilter ldapFilter = LDAPFilter.eq(
 			groupMappings.getProperty("groupName"), userGroup.getName());
 
@@ -917,16 +935,22 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			User user)
 		throws Exception {
 
+		LDAPServerConfiguration ldapServerConfiguration =
+			_ldapServerConfigurationProvider.getConfiguration(
+				ldapImportContext.getCompanyId(),
+				ldapImportContext.getLdapServerId());
+
+		if (ldapServerConfiguration.ldapServerId() !=
+				ldapImportContext.getLdapServerId()) {
+
+			return;
+		}
+
 		Properties groupMappings = ldapImportContext.getGroupMappings();
 
 		String groupMappingsUser = groupMappings.getProperty("user");
 
 		Set<Long> newUserGroupIds = new LinkedHashSet<>();
-
-		LDAPServerConfiguration ldapServerConfiguration =
-			_ldapServerConfigurationProvider.getConfiguration(
-				ldapImportContext.getCompanyId(),
-				ldapImportContext.getLdapServerId());
 
 		if (Validator.isNotNull(groupMappingsUser) &&
 			ldapServerConfiguration.groupSearchFilterEnabled()) {
@@ -1551,6 +1575,10 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		LDAPServerConfiguration ldapServerConfiguration =
 			_ldapServerConfigurationProvider.getConfiguration(
 				companyId, ldapServerId);
+
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			return user;
+		}
 
 		String[] userIgnoreAttributes =
 			ldapServerConfiguration.userIgnoreAttributes();
