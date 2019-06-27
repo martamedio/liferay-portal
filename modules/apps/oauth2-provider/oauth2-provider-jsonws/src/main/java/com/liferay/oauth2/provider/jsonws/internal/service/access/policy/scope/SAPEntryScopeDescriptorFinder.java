@@ -55,7 +55,7 @@ public class SAPEntryScopeDescriptorFinder
 				_log.warn("Unable to get SAP entry scope " + scope);
 			}
 
-			return scope;
+			return null;
 		}
 
 		return sapEntryScope.getTitle(locale);
