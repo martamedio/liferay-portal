@@ -51,8 +51,8 @@ public class SAPEntryScopeDescriptorFinder
 		SAPEntryScope sapEntryScope = _sapEntryScopesDescriptors.get(scope);
 
 		if (sapEntryScope == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to get SAP entry scope " + scope);
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to get SAP entry scope " + scope);
 			}
 
 			return null;
