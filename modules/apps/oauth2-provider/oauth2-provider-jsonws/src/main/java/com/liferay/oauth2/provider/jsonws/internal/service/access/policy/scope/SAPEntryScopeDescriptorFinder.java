@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Tomas Polesovsky
@@ -38,17 +39,16 @@ public class SAPEntryScopeDescriptorFinder
 			SAPEntry sapEntry = sapEntryScope.getSapEntry();
 
 			if (sapEntry.isEnabled()) {
-				_sapEntryScopes.put(sapEntryScope.getScope(), sapEntryScope);
+				_scopes.add(sapEntryScope.getScope());
 			}
 
-			_sapEntryScopesDescriptors.put(
-				sapEntryScope.getScope(), sapEntryScope);
+			_sapEntryScopes.put(sapEntryScope.getScope(), sapEntryScope);
 		}
 	}
 
 	@Override
 	public String describeScope(String scope, Locale locale) {
-		SAPEntryScope sapEntryScope = _sapEntryScopesDescriptors.get(scope);
+		SAPEntryScope sapEntryScope = _sapEntryScopes.get(scope);
 
 		if (sapEntryScope == null) {
 			if (_log.isDebugEnabled()) {
@@ -63,14 +63,13 @@ public class SAPEntryScopeDescriptorFinder
 
 	@Override
 	public Collection<String> findScopes() {
-		return new HashSet<>(_sapEntryScopes.keySet());
+		return new HashSet<>(_scopes);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SAPEntryScopeDescriptorFinder.class);
 
 	private final Map<String, SAPEntryScope> _sapEntryScopes = new HashMap<>();
-	private final Map<String, SAPEntryScope> _sapEntryScopesDescriptors =
-		new HashMap<>();
+	private final Set<String> _scopes = new HashSet<>();
 
 }
