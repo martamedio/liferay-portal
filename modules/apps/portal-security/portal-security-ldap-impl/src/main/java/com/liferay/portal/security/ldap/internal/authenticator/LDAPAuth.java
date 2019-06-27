@@ -310,10 +310,11 @@ public class LDAPAuth implements Authenticator {
 
 			//  Process LDAP auth search filter
 
-			LDAPFilter authSearchLDAPFilter = _ldapFilterValidator.validate(
-				ldapServerConfiguration.authSearchFilter(),
-				LDAPServerConfiguration.class.getSimpleName() +
-					".authSearchFilter");
+			LDAPFilter authSearchLDAPFilter =
+				_ldapFilterValidator.createLDAPFilter(
+					ldapServerConfiguration.authSearchFilter(),
+					LDAPServerConfiguration.class.getSimpleName() +
+						".authSearchFilter");
 
 			LDAPFilter ldapFilter = authSearchLDAPFilter.replace(
 				new String[] {

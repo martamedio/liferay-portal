@@ -274,12 +274,14 @@ public class PortalSettingsEditLDAPServerMVCActionCommand
 		String userFilter = ParamUtil.getString(
 			actionRequest, "importUserSearchFilter");
 
-		_ldapFilterValidator.validate(userFilter, "importUserSearchFilter");
+		_ldapFilterValidator.createLDAPFilter(
+			userFilter, "importUserSearchFilter");
 
 		String groupFilter = ParamUtil.getString(
 			actionRequest, "importGroupSearchFilter");
 
-		_ldapFilterValidator.validate(groupFilter, "importGroupSearchFilter");
+		_ldapFilterValidator.createLDAPFilter(
+			groupFilter, "importGroupSearchFilter");
 	}
 
 	private void _splitStringArrays(

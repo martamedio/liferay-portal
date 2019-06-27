@@ -204,10 +204,11 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				SearchControls.SUBTREE_SCOPE, 1, 0,
 				new String[] {userMappingsScreenName}, false, false);
 
-			LDAPFilter authSearchLDAPFilter = _ldapFilterValidator.validate(
-				ldapServerConfiguration.authSearchFilter(),
-				LDAPServerConfiguration.class.getSimpleName() +
-					".authSearchFilter");
+			LDAPFilter authSearchLDAPFilter =
+				_ldapFilterValidator.createLDAPFilter(
+					ldapServerConfiguration.authSearchFilter(),
+					LDAPServerConfiguration.class.getSimpleName() +
+						".authSearchFilter");
 
 			authSearchLDAPFilter = authSearchLDAPFilter.replace(
 				new String[] {
@@ -714,10 +715,11 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		LDAPFilter ldapFilter = LDAPFilter.eq(
 			groupMappings.getProperty("groupName"), userGroup.getName());
 
-		LDAPFilter groupSearchLDAPFilter = _ldapFilterValidator.validate(
-			ldapServerConfiguration.groupSearchFilter(),
-			LDAPServerConfiguration.class.getSimpleName() +
-				".groupSearchFilter");
+		LDAPFilter groupSearchLDAPFilter =
+			_ldapFilterValidator.createLDAPFilter(
+				ldapServerConfiguration.groupSearchFilter(),
+				LDAPServerConfiguration.class.getSimpleName() +
+					".groupSearchFilter");
 
 		if (groupSearchLDAPFilter != null) {
 			ldapFilter = ldapFilter.and(groupSearchLDAPFilter);
@@ -965,10 +967,11 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			LDAPFilter ldapFilter = LDAPFilter.eq(
 				groupMappingsUser, fullUserDN);
 
-			LDAPFilter groupSearchLDAPFilter = _ldapFilterValidator.validate(
-				ldapServerConfiguration.groupSearchFilter(),
-				LDAPServerConfiguration.class.getSimpleName() +
-					".groupSearchFilter");
+			LDAPFilter groupSearchLDAPFilter =
+				_ldapFilterValidator.createLDAPFilter(
+					ldapServerConfiguration.groupSearchFilter(),
+					LDAPServerConfiguration.class.getSimpleName() +
+						".groupSearchFilter");
 
 			if (groupSearchLDAPFilter != null) {
 				ldapFilter = ldapFilter.and(groupSearchLDAPFilter);
