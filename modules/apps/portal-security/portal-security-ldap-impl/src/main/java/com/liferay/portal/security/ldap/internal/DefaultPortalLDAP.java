@@ -90,8 +90,7 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 *             LDAPUtil#asLdapName(
-	 *             String)} for RDN escape and {@link
+	 *             LDAPUtil#asLdapName(String)} for RDN escape and {@link
 	 *             LDAPFilter#rfc2254Escape(String)} to escape attribute value
 	 *             inside a filter
 	 */
@@ -264,7 +263,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#getGroupAttributes(long, long, LdapContext, LdapName)}
+	 *             PortalLDAP#getGroupAttributes(long, long, LdapContext,
+	 *             LdapName)}
 	 */
 	@Deprecated
 	@Override
@@ -280,7 +280,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#getGroupAttributes(long, long, LdapContext, LdapName, boolean)}
+	 *             PortalLDAP#getGroupAttributes(long, long, LdapContext,
+	 *             LdapName, boolean)}
 	 */
 	@Deprecated
 	@Override
@@ -321,7 +322,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#getGroups(long, LdapContext, byte[], int, LdapName, LDAPFilter, List)}
+	 *             PortalLDAP#getGroups(long, LdapContext, byte[], int,
+	 *             LdapName, LDAPFilter, List)}
 	 */
 	@Deprecated
 	@Override
@@ -339,7 +341,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#getGroups(long, LdapContext, byte[], int, LdapName, LDAPFilter, String[], List)}
+	 *             PortalLDAP#getGroups(long, LdapContext, byte[], int,
+	 *             LdapName, LDAPFilter, String[], List)}
 	 */
 	@Deprecated
 	@Override
@@ -536,7 +539,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#getMultivaluedAttribute(long, LdapContext, LdapName, LDAPFilter, Attribute)}
+	 *             PortalLDAP#getMultivaluedAttribute(long, LdapContext,
+	 *             LdapName, LDAPFilter, Attribute)}
 	 */
 	@Deprecated
 	@Override
@@ -860,7 +864,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#getUserAttributes(long, long, LdapContext, LdapName)}
+	 *             PortalLDAP#getUserAttributes(long, long, LdapContext,
+	 *             LdapName)}
 	 */
 	@Deprecated
 	@Override
@@ -900,7 +905,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#getUsers(long, LdapContext, byte[], int, LdapName, LDAPFilter, List)}
+	 *             PortalLDAP#getUsers(long, LdapContext, byte[], int, LdapName,
+	 *             LDAPFilter, List)}
 	 */
 	@Deprecated
 	@Override
@@ -918,7 +924,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#getUsers(long, LdapContext, byte[], int, LdapName, LDAPFilter, String[], List)}
+	 *             PortalLDAP#getUsers(long, LdapContext, byte[], int, LdapName,
+	 *             LDAPFilter, String[], List)}
 	 */
 	@Deprecated
 	@Override
@@ -1251,7 +1258,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             PortalLDAP#searchLDAP(long, LdapContext, byte[], int, LdapName, LDAPFilter, String[], List)}
+	 *             PortalLDAP#searchLDAP(long, LdapContext, byte[], int,
+	 *             LdapName, LDAPFilter, String[], List)}
 	 */
 	@Deprecated
 	@Override
