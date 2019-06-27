@@ -71,7 +71,7 @@ String[] attributeIds = StringUtil.split(StringUtil.merge(groupMappings.values()
 List<SearchResult> searchResults = new ArrayList<SearchResult>();
 
 try {
-	PortalLDAPUtil.getInstance().getGroups(themeDisplay.getCompanyId(), safeLdapContext, new byte[0], 20, LDAPUtil.asLdapName(baseDN), LDAPFilterValidatorUtil.getInstance().validate(groupFilter), attributeIds, searchResults);
+	PortalLDAPUtil.getInstance().getGroups(themeDisplay.getCompanyId(), safeLdapContext, new byte[0], 20, LDAPUtil.asLdapName(baseDN), LDAPFilterValidatorUtil.getInstance().createLDAPFilter(groupFilter), attributeIds, searchResults);
 }
 catch (NameNotFoundException | InvalidNameException nnfe) {
 %>
@@ -110,7 +110,7 @@ catch (NameNotFoundException | InvalidNameException nnfe) {
 		}
 
 		if (attribute != null) {
-			LDAPFilter ldapFilter = LDAPFilterValidatorUtil.getInstance().validate(groupFilter).and(LDAPFilter.eq(groupMappings.getProperty("groupName"), name));
+			LDAPFilter ldapFilter = LDAPFilterValidatorUtil.getInstance().createLDAPFilter(groupFilter).and(LDAPFilter.eq(groupMappings.getProperty("groupName"), name));
 
 			attribute = PortalLDAPUtil.getInstance().getMultivaluedAttribute(themeDisplay.getCompanyId(), safeLdapContext, LDAPUtil.asLdapName(baseDN), ldapFilter, attribute);
 		}

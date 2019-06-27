@@ -171,7 +171,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 			LDAPFilter ldapFilter = LDAPFilter.eq(
 				groupMappings.getProperty("groupName"), groupName);
 
-			LDAPFilter groupLDAPFilter = _ldapFilterValidator.validate(
+			LDAPFilter groupLDAPFilter = _ldapFilterValidator.createLDAPFilter(
 				ldapServerConfiguration.groupSearchFilter(),
 				LDAPServerConfiguration.class.getSimpleName() +
 					".groupSearchFilter");
@@ -330,7 +330,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		return getGroups(
 			companyId, ldapContext, cookie, maxResults,
 			LDAPUtil.asLdapName(baseDN),
-			_ldapFilterValidator.validate(groupFilter), searchResults);
+			_ldapFilterValidator.createLDAPFilter(groupFilter), searchResults);
 	}
 
 	/**
@@ -348,7 +348,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		return getGroups(
 			companyId, ldapContext, cookie, maxResults,
 			LDAPUtil.asLdapName(baseDN),
-			_ldapFilterValidator.validate(groupFilter), attributeIds,
+			_ldapFilterValidator.createLDAPFilter(groupFilter), attributeIds,
 			searchResults);
 	}
 
@@ -368,7 +368,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 		LdapName baseDNLdapName = LDAPUtil.asLdapName(
 			ldapServerConfiguration.baseDN());
-		LDAPFilter ldapFilter = _ldapFilterValidator.validate(
+		LDAPFilter ldapFilter = _ldapFilterValidator.createLDAPFilter(
 			ldapServerConfiguration.groupSearchFilter());
 
 		return getGroups(
@@ -394,7 +394,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		LdapName baseDNLdapName = LDAPUtil.asLdapName(
 			ldapServerConfiguration.baseDN());
 
-		LDAPFilter ldapFilter = _ldapFilterValidator.validate(
+		LDAPFilter ldapFilter = _ldapFilterValidator.createLDAPFilter(
 			ldapServerConfiguration.groupSearchFilter(),
 			LDAPServerConfiguration.class.getSimpleName() +
 				".groupSearchFilter");
@@ -543,7 +543,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 		return getMultivaluedAttribute(
 			companyId, ldapContext, LDAPUtil.asLdapName(baseDN),
-			_ldapFilterValidator.validate(filter), attribute);
+			_ldapFilterValidator.createLDAPFilter(filter), attribute);
 	}
 
 	/**
@@ -727,10 +727,11 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 			LDAPFilter ldapFilter = LDAPFilter.eq(loginMapping, login);
 
-			LDAPFilter userSearchLDAPFilter = _ldapFilterValidator.validate(
-				ldapServerConfiguration.userSearchFilter(),
-				LDAPServerConfiguration.class.getSimpleName() +
-					".userSearchFilter");
+			LDAPFilter userSearchLDAPFilter =
+				_ldapFilterValidator.createLDAPFilter(
+					ldapServerConfiguration.userSearchFilter(),
+					LDAPServerConfiguration.class.getSimpleName() +
+						".userSearchFilter");
 
 			if (userSearchLDAPFilter != null) {
 				ldapFilter = ldapFilter.and(userSearchLDAPFilter);
@@ -908,7 +909,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		return getUsers(
 			companyId, ldapContext, cookie, maxResults,
 			LDAPUtil.asLdapName(baseDN),
-			_ldapFilterValidator.validate(userFilter), searchResults);
+			_ldapFilterValidator.createLDAPFilter(userFilter), searchResults);
 	}
 
 	/**
@@ -926,7 +927,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		return getUsers(
 			companyId, ldapContext, cookie, maxResults,
 			LDAPUtil.asLdapName(baseDN),
-			_ldapFilterValidator.validate(userFilter), attributeIds,
+			_ldapFilterValidator.createLDAPFilter(userFilter), attributeIds,
 			searchResults);
 	}
 
@@ -947,7 +948,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		LdapName baseDNLdapName = LDAPUtil.asLdapName(
 			ldapServerConfiguration.baseDN());
 
-		LDAPFilter userSearchFilter = _ldapFilterValidator.validate(
+		LDAPFilter userSearchFilter = _ldapFilterValidator.createLDAPFilter(
 			ldapServerConfiguration.userSearchFilter(),
 			LDAPServerConfiguration.class.getSimpleName() +
 				".userSearchFilter");
@@ -975,7 +976,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		LdapName baseDNLdapName = LDAPUtil.asLdapName(
 			ldapServerConfiguration.baseDN());
 
-		LDAPFilter userSearchFilter = _ldapFilterValidator.validate(
+		LDAPFilter userSearchFilter = _ldapFilterValidator.createLDAPFilter(
 			ldapServerConfiguration.userSearchFilter(),
 			LDAPServerConfiguration.class.getSimpleName() +
 				".userSearchFilter");
@@ -1257,8 +1258,9 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 		return searchLDAP(
 			companyId, ldapContext, cookie, maxResults,
-			LDAPUtil.asLdapName(baseDN), _ldapFilterValidator.validate(filter),
-			attributeIds, searchResults);
+			LDAPUtil.asLdapName(baseDN),
+			_ldapFilterValidator.createLDAPFilter(filter), attributeIds,
+			searchResults);
 	}
 
 	@Reference(

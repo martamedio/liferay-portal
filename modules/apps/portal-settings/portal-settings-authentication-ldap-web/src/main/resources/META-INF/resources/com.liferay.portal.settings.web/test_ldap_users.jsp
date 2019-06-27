@@ -83,7 +83,7 @@ List<SearchResult> searchResults = new ArrayList<SearchResult>();
 
 if (Validator.isNotNull(userFilter) && !userFilter.equals(StringPool.STAR)) {
 	try {
-		PortalLDAPUtil.getInstance().getUsers(themeDisplay.getCompanyId(), safeLdapContext, new byte[0], 20, LDAPUtil.asLdapName(baseDN), LDAPFilterValidatorUtil.getInstance().validate(userFilter), attributeIds, searchResults);
+		PortalLDAPUtil.getInstance().getUsers(themeDisplay.getCompanyId(), safeLdapContext, new byte[0], 20, LDAPUtil.asLdapName(baseDN), LDAPFilterValidatorUtil.getInstance().createLDAPFilter(userFilter), attributeIds, searchResults);
 	}
 	catch (NameNotFoundException | InvalidNameException nnfe) {
 %>

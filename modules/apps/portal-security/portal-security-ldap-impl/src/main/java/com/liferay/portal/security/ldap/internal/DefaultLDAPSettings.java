@@ -66,7 +66,7 @@ public class DefaultLDAPSettings implements LDAPSettings {
 
 		String filter = ldapServerConfiguration.authSearchFilter();
 
-		_ldapFilterValidator.validate(
+		_ldapFilterValidator.createLDAPFilter(
 			filter,
 			LDAPServerConfiguration.class.getSimpleName() +
 				".authSearchFilter");
@@ -87,7 +87,7 @@ public class DefaultLDAPSettings implements LDAPSettings {
 				LDAPFilter.rfc2254Escape(userId)
 			});
 
-		_ldapFilterValidator.validate(filter);
+		_ldapFilterValidator.createLDAPFilter(filter);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Search filter after transformation " + filter);
