@@ -15,6 +15,7 @@
 package com.liferay.portal.settings.authentication.ldap.web.internal.util;
 
 import com.liferay.portal.security.ldap.PortalLDAP;
+import com.liferay.portal.security.ldap.SafeLdapContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,6 +29,20 @@ public class PortalLDAPUtil {
 
 	public static PortalLDAP getInstance() {
 		return _portalLDAP;
+	}
+
+	public static SafeLdapContext getSafeLdapContext(
+		long ldapServerId, long companyId) {
+
+		return _portalLDAP.getSafeLdapContext(ldapServerId, companyId);
+	}
+
+	public static SafeLdapContext getSafeLdapContext(
+		long companyId, String providerURL, String principal,
+		String credentials) {
+
+		return _portalLDAP.getSafeLdapContext(
+			companyId, providerURL, principal, credentials);
 	}
 
 	@Reference(policyOption = ReferencePolicyOption.GREEDY, unbind = "-")
