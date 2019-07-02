@@ -50,10 +50,10 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public Object addToEnvironment(String propName, Object propVal)
+	public Object addToEnvironment(String propertyName, Object propertyValue)
 		throws NamingException {
 
-		return _ldapContext.addToEnvironment(propName, propVal);
+		return _ldapContext.addToEnvironment(propertyName, propertyValue);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public void bind(Name name, Object obj, Attributes attrs)
+	public void bind(Name name, Object obj, Attributes attributes)
 		throws NamingException {
 
 		if (!(name instanceof LdapName)) {
@@ -83,7 +83,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			}
 		}
 
-		_ldapContext.bind(name, obj, attrs);
+		_ldapContext.bind(name, obj, attributes);
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public void bind(String name, Object obj, Attributes attrs)
+	public void bind(String name, Object obj, Attributes attributes)
 		throws NamingException {
 
 		if (_log.isDebugEnabled()) {
@@ -109,7 +109,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			_log.warn("Unsafe LDAP method used");
 		}
 
-		_ldapContext.bind(LDAPUtil.asLdapName(name), obj, attrs);
+		_ldapContext.bind(LDAPUtil.asLdapName(name), obj, attributes);
 	}
 
 	@Override
@@ -118,8 +118,8 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public Name composeName(Name name, Name prefix) throws NamingException {
-		if (!(name instanceof LdapName) || !(prefix instanceof LdapName)) {
+	public Name composeName(Name name, Name prefixName) throws NamingException {
+		if (!(name instanceof LdapName) || !(prefixName instanceof LdapName)) {
 			if (_log.isDebugEnabled()) {
 				_log.debug("Unsafe LDAP parameter used", new Exception());
 			}
@@ -128,7 +128,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			}
 		}
 
-		return _ldapContext.composeName(name, prefix);
+		return _ldapContext.composeName(name, prefixName);
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public DirContext createSubcontext(Name name, Attributes attrs)
+	public DirContext createSubcontext(Name name, Attributes attributes)
 		throws NamingException {
 
 		if (!(name instanceof LdapName)) {
@@ -172,7 +172,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			}
 		}
 
-		return _ldapContext.createSubcontext(name, attrs);
+		return _ldapContext.createSubcontext(name, attributes);
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public DirContext createSubcontext(String name, Attributes attrs)
+	public DirContext createSubcontext(String name, Attributes attributes)
 		throws NamingException {
 
 		if (_log.isDebugEnabled()) {
@@ -198,7 +198,8 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			_log.warn("Unsafe LDAP method used");
 		}
 
-		return _ldapContext.createSubcontext(LDAPUtil.asLdapName(name), attrs);
+		return _ldapContext.createSubcontext(
+			LDAPUtil.asLdapName(name), attributes);
 	}
 
 	@Override
@@ -510,7 +511,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public void modifyAttributes(Name name, int modOp, Attributes attrs)
+	public void modifyAttributes(Name name, int modOp, Attributes attributes)
 		throws NamingException {
 
 		if (!(name instanceof LdapName)) {
@@ -522,7 +523,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			}
 		}
 
-		_ldapContext.modifyAttributes(name, modOp, attrs);
+		_ldapContext.modifyAttributes(name, modOp, attributes);
 	}
 
 	@Override
@@ -542,7 +543,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public void modifyAttributes(String name, int modOp, Attributes attrs)
+	public void modifyAttributes(String name, int modOp, Attributes attributes)
 		throws NamingException {
 
 		if (_log.isDebugEnabled()) {
@@ -552,7 +553,8 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			_log.warn("Unsafe LDAP method used");
 		}
 
-		_ldapContext.modifyAttributes(LDAPUtil.asLdapName(name), modOp, attrs);
+		_ldapContext.modifyAttributes(
+			LDAPUtil.asLdapName(name), modOp, attributes);
 	}
 
 	@Override
@@ -591,7 +593,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public void rebind(Name name, Object obj, Attributes attrs)
+	public void rebind(Name name, Object obj, Attributes attributes)
 		throws NamingException {
 
 		if (!(name instanceof LdapName)) {
@@ -603,7 +605,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			}
 		}
 
-		_ldapContext.rebind(name, obj, attrs);
+		_ldapContext.rebind(name, obj, attributes);
 	}
 
 	@Override
@@ -619,7 +621,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 	}
 
 	@Override
-	public void rebind(String name, Object obj, Attributes attrs)
+	public void rebind(String name, Object obj, Attributes attributes)
 		throws NamingException {
 
 		if (_log.isDebugEnabled()) {
@@ -629,7 +631,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 			_log.warn("Unsafe LDAP method used");
 		}
 
-		_ldapContext.rebind(LDAPUtil.asLdapName(name), obj, attrs);
+		_ldapContext.rebind(LDAPUtil.asLdapName(name), obj, attributes);
 	}
 
 	@Override
