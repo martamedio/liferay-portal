@@ -294,25 +294,25 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 	@Override
 	public byte[] getGroups(
 			long companyId, LdapContext ldapContext, byte[] cookie,
-			int maxResults, LdapName baseDNLdapName, LDAPFilter groupFilter,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter groupLDAPFilter,
 			List<SearchResult> searchResults)
 		throws Exception {
 
 		return searchLDAP(
 			companyId, ldapContext, cookie, maxResults, baseDNLdapName,
-			groupFilter, null, searchResults);
+			groupLDAPFilter, null, searchResults);
 	}
 
 	@Override
 	public byte[] getGroups(
 			long companyId, LdapContext ldapContext, byte[] cookie,
-			int maxResults, LdapName baseDNLdapName, LDAPFilter groupFilter,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter groupLDAPFilter,
 			String[] attributeIds, List<SearchResult> searchResults)
 		throws Exception {
 
 		return searchLDAP(
 			companyId, ldapContext, cookie, maxResults, baseDNLdapName,
-			groupFilter, attributeIds, searchResults);
+			groupLDAPFilter, attributeIds, searchResults);
 	}
 
 	/**
@@ -873,25 +873,25 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 	@Override
 	public byte[] getUsers(
 			long companyId, LdapContext ldapContext, byte[] cookie,
-			int maxResults, LdapName baseDNLdapName, LDAPFilter userFilter,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter userLDAPFilter,
 			List<SearchResult> searchResults)
 		throws Exception {
 
 		return searchLDAP(
 			companyId, ldapContext, cookie, maxResults, baseDNLdapName,
-			userFilter, null, searchResults);
+			userLDAPFilter, null, searchResults);
 	}
 
 	@Override
 	public byte[] getUsers(
 			long companyId, LdapContext ldapContext, byte[] cookie,
-			int maxResults, LdapName baseDNLdapName, LDAPFilter userFilter,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter userLDAPFilter,
 			String[] attributeIds, List<SearchResult> searchResults)
 		throws Exception {
 
 		return searchLDAP(
 			companyId, ldapContext, cookie, maxResults, baseDNLdapName,
-			userFilter, attributeIds, searchResults);
+			userLDAPFilter, attributeIds, searchResults);
 	}
 
 	/**
@@ -948,14 +948,14 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		LdapName baseDNLdapName = LDAPUtil.asLdapName(
 			ldapServerConfiguration.baseDN());
 
-		LDAPFilter userSearchFilter = _ldapFilterValidator.createLDAPFilter(
+		LDAPFilter userSearchLDAPFilter = _ldapFilterValidator.createLDAPFilter(
 			ldapServerConfiguration.userSearchFilter(),
 			LDAPServerConfiguration.class.getSimpleName() +
 				".userSearchFilter");
 
 		return getUsers(
 			companyId, ldapContext, cookie, maxResults, baseDNLdapName,
-			userSearchFilter, searchResults);
+			userSearchLDAPFilter, searchResults);
 	}
 
 	@Override
@@ -976,14 +976,14 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 		LdapName baseDNLdapName = LDAPUtil.asLdapName(
 			ldapServerConfiguration.baseDN());
 
-		LDAPFilter userSearchFilter = _ldapFilterValidator.createLDAPFilter(
+		LDAPFilter userSearchLDAPFilter = _ldapFilterValidator.createLDAPFilter(
 			ldapServerConfiguration.userSearchFilter(),
 			LDAPServerConfiguration.class.getSimpleName() +
 				".userSearchFilter");
 
 		return getUsers(
 			companyId, ldapContext, cookie, maxResults, baseDNLdapName,
-			userSearchFilter, attributeIds, searchResults);
+			userSearchLDAPFilter, attributeIds, searchResults);
 	}
 
 	@Override
@@ -1297,7 +1297,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 	}
 
 	private Attributes _getAttributes(
-			LdapContext ldapContext, LdapName fullDN, String[] attributeIds)
+			LdapContext ldapContext, LdapName fullDNLdapName,
+			String[] attributeIds)
 		throws Exception {
 
 		Attributes attributes = null;
@@ -1311,13 +1312,13 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 			// Get complete listing of LDAP attributes (slow)
 
-			attributes = ldapContext.getAttributes(fullDN);
+			attributes = ldapContext.getAttributes(fullDNLdapName);
 
 			NamingEnumeration<? extends Attribute> enu = null;
 
 			try {
 				Attributes auditAttributes = ldapContext.getAttributes(
-					fullDN, auditAttributeIds);
+					fullDNLdapName, auditAttributeIds);
 
 				enu = auditAttributes.getAll();
 
@@ -1345,7 +1346,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 				auditAttributeIds, 0, allAttributeIds, attributeIds.length,
 				auditAttributeIds.length);
 
-			attributes = ldapContext.getAttributes(fullDN, allAttributeIds);
+			attributes = ldapContext.getAttributes(
+				fullDNLdapName, allAttributeIds);
 		}
 
 		return attributes;
