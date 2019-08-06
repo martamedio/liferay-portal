@@ -338,9 +338,10 @@ public class PortalRequestProcessor {
 			}
 		}
 
-		StringBundler lastPathSB = new StringBundler(4);
+		StringBundler lastPathSB = new StringBundler(5);
 
 		lastPathSB.append(portalURL);
+		lastPathSB.append(PropsValues.PORTAL_PROXY_PATH);
 		lastPathSB.append(lastPath.getContextPath());
 		lastPathSB.append(lastPath.getPath());
 		lastPathSB.append(parameters);
