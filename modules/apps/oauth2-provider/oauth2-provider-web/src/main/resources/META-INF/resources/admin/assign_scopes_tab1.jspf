@@ -76,10 +76,13 @@
 										<c:otherwise>
 
 											<%
-											String scopeAliasesString = StringUtil.merge(scopeAliases, StringPool.SPACE);
+											String scopeAliasesString;
 
 											if (removedScope) {
-												scopeAliasesString = "removed-scope";
+												scopeAliasesString = StringUtil.merge(assignedScopeAliases, StringPool.SPACE);
+											}
+											else {
+												scopeAliasesString = StringUtil.merge(scopeAliases, StringPool.SPACE);
 											}
 											%>
 
