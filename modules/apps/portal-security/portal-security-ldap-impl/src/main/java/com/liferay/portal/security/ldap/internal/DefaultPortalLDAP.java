@@ -90,8 +90,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 *             LDAPUtil#asLdapName(
-	 *             String)} for RDN escape and {@link
+	 *             LDAPUtil#asLdapName(String)} for RDN escape and {@link
 	 *             LDAPFilter#rfc2254Escape(String)} to escape attribute value
 	 *             inside a filter
 	 */
@@ -261,7 +260,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #getGroupAttributes(long, long, LdapContext, LdapName)}
+	 *             SafePortalLDAP#getGroupAttributes(long, long, LdapContext,
+	 *             LdapName)}
 	 */
 	@Deprecated
 	public Attributes getGroupAttributes(
@@ -276,7 +276,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #getGroupAttributes(long, long, LdapContext, LdapName, boolean)}
+	 *             SafePortalLDAP#getGroupAttributes(long, long, LdapContext,
+	 *             LdapName, boolean)}
 	 */
 	@Deprecated
 	public Attributes getGroupAttributes(
@@ -316,8 +317,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #getGroups(long, LdapContext, byte[], int, LdapName, LDAPFilter,
-	 *             List)}
+	 *             SafePortalLDAP#getGroups(long, LdapContext, byte[], int,
+	 *             LdapName, LDAPFilter, List)}
 	 */
 	@Deprecated
 	public byte[] getGroups(
@@ -334,8 +335,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #getGroups(long, LdapContext, byte[], int, LdapName, LDAPFilter,
-	 *             String[], List)}
+	 *             SafePortalLDAP#getGroups(long, LdapContext, byte[], int,
+	 *             LdapName, LDAPFilter, String[], List)}
 	 */
 	@Deprecated
 	public byte[] getGroups(
@@ -392,6 +393,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 		LdapName baseDNLdapName = LDAPUtil.asLdapName(
 			ldapServerConfiguration.baseDN());
+
 		LDAPFilter ldapFilter = _ldapFilterValidator.validate(
 			ldapServerConfiguration.groupSearchFilter(),
 			LDAPServerConfiguration.class.getSimpleName() +
@@ -530,8 +532,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #getMultivaluedAttribute(long, LdapContext, LdapName, LDAPFilter,
-	 *             Attribute)}
+	 *             SafePortalLDAP#getMultivaluedAttribute(long, LdapContext,
+	 *             LdapName, LDAPFilter, Attribute)}
 	 */
 	@Deprecated
 	public Attribute getMultivaluedAttribute(
@@ -783,7 +785,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 	@Override
 	public Attributes getUserAttributes(
 			long ldapServerId, long companyId, LdapContext ldapContext,
-			LdapName fullDistinguishedLdapName)
+			LdapName fullDNLdapName)
 		throws Exception {
 
 		Properties userMappings = _ldapSettings.getUserMappings(
@@ -810,13 +812,12 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 			values.toArray(new Object[userMappings.size()]));
 
 		Attributes attributes = _getAttributes(
-			ldapContext, fullDistinguishedName, mappedUserAttributeIds);
+			ldapContext, fullDNLdapName, mappedUserAttributeIds);
 
 		if (_log.isDebugEnabled()) {
 			if ((attributes == null) || (attributes.size() == 0)) {
 				_log.debug(
-					"No LDAP user attributes found for:: " +
-						fullDistinguishedName);
+					"No LDAP user attributes found for:: " + fullDNLdapName);
 			}
 			else {
 				for (String attributeId : mappedUserAttributeIds) {
@@ -854,7 +855,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #getUserAttributes(long, long, LdapContext, LdapName)}
+	 *             SafePortalLDAP#getUserAttributes(long, long, LdapContext,
+	 *             LdapName)}
 	 */
 	@Deprecated
 	public Attributes getUserAttributes(
@@ -893,8 +895,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #getUsers(long, LdapContext, byte[], int, LdapName, LDAPFilter,
-	 *             List)}
+	 *             SafePortalLDAP#getUsers(long, LdapContext, byte[], int, LdapName,
+	 *             LDAPFilter, List)}
 	 */
 	@Deprecated
 	public byte[] getUsers(
@@ -911,8 +913,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #getUsers(long, LdapContext, byte[], int, LdapName, LDAPFilter,
-	 *             String[], List)}
+	 *             SafePortalLDAP#getUsers(long, LdapContext, byte[], int,
+	 *             LdapName, LDAPFilter, String[], List)}
 	 */
 	@Deprecated
 	public byte[] getUsers(
@@ -972,6 +974,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 		LdapName baseDNLdapName = LDAPUtil.asLdapName(
 			ldapServerConfiguration.baseDN());
+
 		LDAPFilter userSearchFilter = _ldapFilterValidator.validate(
 			ldapServerConfiguration.userSearchFilter(),
 			LDAPServerConfiguration.class.getSimpleName() +
@@ -1068,7 +1071,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #isGroupMember(long, long, LdapName, LdapName)}
+	 *             SafePortalLDAP#isGroupMember(long, long, LdapName, LdapName)}
 	 */
 	@Deprecated
 	public boolean isGroupMember(
@@ -1137,7 +1140,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #isUserGroupMember(long, long, LdapName, LdapName)}
+	 *             SafePortalLDAP#isUserGroupMember(long, long,
+	 *             LdapName, LdapName)}
 	 */
 	@Deprecated
 	public boolean isUserGroupMember(
@@ -1152,7 +1156,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 	@Override
 	public byte[] searchLDAP(
 			long companyId, LdapContext ldapContext, byte[] cookie,
-			int maxResults, LdapName baseDNLdapName, LDAPFilter ldapFilter,
+			int maxResults, LdapName baseDNName, LDAPFilter ldapFilter,
 			String[] attributeIds, List<SearchResult> searchResults)
 		throws Exception {
 
@@ -1186,12 +1190,15 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 				}
 
 				if (ldapContext instanceof SafeLdapContext) {
-					enu = ((SafeLdapContext)ldapContext).search(
-						baseDNLdapName, ldapFilter, searchControls);
+					SafeLdapContext safeLdapContext =
+						(SafeLdapContext)ldapContext;
+
+					enu = safeLdapContext.search(
+						baseDNName, ldapFilter, searchControls);
 				}
 				else {
 					enu = ldapContext.search(
-						baseDNLdapName, ldapFilter.generateFilter(),
+						baseDNName, ldapFilter.generateFilter(),
 						ldapFilter.getArguments(), searchControls);
 				}
 
@@ -1210,12 +1217,14 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 			ldapContext.setRequestControls(null);
 
 			if (ldapContext instanceof SafeLdapContext) {
-				enu = ((SafeLdapContext)ldapContext).search(
-					baseDNLdapName, ldapFilter, searchControls);
+				SafeLdapContext safeLdapContext = (SafeLdapContext)ldapContext;
+
+				enu = safeLdapContext.search(
+					baseDNName, ldapFilter, searchControls);
 			}
 			else {
 				enu = ldapContext.search(
-					baseDNLdapName, ldapFilter.generateFilter(),
+					baseDNName, ldapFilter.generateFilter(),
 					ldapFilter.getArguments(), searchControls);
 			}
 
@@ -1236,8 +1245,8 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 	/**
 	 * @deprecated As of Mueller (7.2.x), please use {@link
-	 *             #searchLDAP(long, LdapContext, byte[], int, LdapName, LDAPFilter,
-	 *             String[], List)}
+	 *             SafePortalLDAP#searchLDAP(long, LdapContext, byte[], int,
+	 *             LdapName, LDAPFilter, String[], List)}
 	 */
 	@Deprecated
 	public byte[] searchLDAP(
@@ -1286,8 +1295,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 	}
 
 	private Attributes _getAttributes(
-			LdapContext ldapContext, LdapName fullDNLdapName,
-			String[] attributeIds)
+			LdapContext ldapContext, LdapName fullDN, String[] attributeIds)
 		throws Exception {
 
 		Attributes attributes = null;
@@ -1301,13 +1309,13 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 
 			// Get complete listing of LDAP attributes (slow)
 
-			attributes = ldapContext.getAttributes(fullDNLdapName);
+			attributes = ldapContext.getAttributes(fullDN);
 
 			NamingEnumeration<? extends Attribute> enu = null;
 
 			try {
 				Attributes auditAttributes = ldapContext.getAttributes(
-					fullDNLdapName, auditAttributeIds);
+					fullDN, auditAttributeIds);
 
 				enu = auditAttributes.getAll();
 
@@ -1335,8 +1343,7 @@ public class DefaultPortalLDAP implements SafePortalLDAP {
 				auditAttributeIds, 0, allAttributeIds, attributeIds.length,
 				auditAttributeIds.length);
 
-			attributes = ldapContext.getAttributes(
-				fullDNLdapName, allAttributeIds);
+			attributes = ldapContext.getAttributes(fullDN, allAttributeIds);
 		}
 
 		return attributes;
