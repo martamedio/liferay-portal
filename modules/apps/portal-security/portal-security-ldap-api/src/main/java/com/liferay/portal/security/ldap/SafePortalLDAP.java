@@ -19,11 +19,11 @@ import com.liferay.portal.security.ldap.validator.LDAPFilter;
 import java.util.List;
 
 import javax.naming.Binding;
-import javax.naming.Name;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
+import javax.naming.ldap.LdapName;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -38,48 +38,48 @@ public interface SafePortalLDAP {
 		throws Exception;
 
 	public Attributes getGroupAttributes(
-		long ldapServerId, long companyId, LdapContext ldapContext,
-		Name userGroupDNName)
+			long ldapServerId, long companyId, LdapContext ldapContext,
+			LdapName userGroupDNLdapName)
 		throws Exception;
 
 	public Attributes getGroupAttributes(
-		long ldapServerId, long companyId, LdapContext ldapContext,
-		Name userGroupDNName, boolean includeReferenceAttributes)
+			long ldapServerId, long companyId, LdapContext ldapContext,
+			LdapName userGroupDNName, boolean includeReferenceAttributes)
 		throws Exception;
 
 	public byte[] getGroups(
-		long companyId, LdapContext ldapContext, byte[] cookie,
-		int maxResults, Name baseDN, LDAPFilter groupFilter,
-		List<SearchResult> searchResults)
+			long companyId, LdapContext ldapContext, byte[] cookie,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter groupFilter,
+			List<SearchResult> searchResults)
 		throws Exception;
 
 	public byte[] getGroups(
-		long companyId, LdapContext ldapContext, byte[] cookie,
-		int maxResults, Name baseDN, LDAPFilter groupFilter,
-		String[] attributeIds, List<SearchResult> searchResults)
+			long companyId, LdapContext ldapContext, byte[] cookie,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter groupFilter,
+			String[] attributeIds, List<SearchResult> searchResults)
 		throws Exception;
 
 	public byte[] getGroups(
-		long ldapServerId, long companyId, LdapContext ldapContext,
-		byte[] cookie, int maxResults, List<SearchResult> searchResults)
+			long ldapServerId, long companyId, LdapContext ldapContext,
+			byte[] cookie, int maxResults, List<SearchResult> searchResults)
 		throws Exception;
 
 	public byte[] getGroups(
-		long ldapServerId, long companyId, LdapContext ldapContext,
-		byte[] cookie, int maxResults, String[] attributeIds,
-		List<SearchResult> searchResults)
+			long ldapServerId, long companyId, LdapContext ldapContext,
+			byte[] cookie, int maxResults, String[] attributeIds,
+			List<SearchResult> searchResults)
 		throws Exception;
 
 	public String getGroupsDN(long ldapServerId, long companyId)
 		throws Exception;
 
 	public long getLdapServerId(
-		long companyId, String screenName, String emailAddress)
+			long companyId, String screenName, String emailAddress)
 		throws Exception;
 
 	public Attribute getMultivaluedAttribute(
-		long companyId, LdapContext ldapContext, Name baseDN,
-		LDAPFilter ldapFilter, Attribute attribute)
+			long companyId, LdapContext ldapContext, LdapName baseDNLdapName,
+			LDAPFilter ldapFilter, Attribute attribute)
 		throws Exception;
 
 	public SafeLdapContext getSafeLdapContext(
@@ -90,65 +90,65 @@ public interface SafePortalLDAP {
 		String credentials);
 
 	public Binding getUser(
-		long ldapServerId, long companyId, String screenName,
-		String emailAddress)
+			long ldapServerId, long companyId, String screenName,
+			String emailAddress)
 		throws Exception;
 
 	public Binding getUser(
-		long ldapServerId, long companyId, String screenName,
-		String emailAddress, boolean checkOriginalEmail)
+			long ldapServerId, long companyId, String screenName,
+			String emailAddress, boolean checkOriginalEmail)
 		throws Exception;
 
 	public Attributes getUserAttributes(
-		long ldapServerId, long companyId, LdapContext ldapContext,
-		Name fullDistinguishedName)
+			long ldapServerId, long companyId, LdapContext ldapContext,
+			LdapName fullDistinguishedLdapName)
 		throws Exception;
 
 	public byte[] getUsers(
-		long companyId, LdapContext ldapContext, byte[] cookie,
-		int maxResults, Name baseDN, LDAPFilter userFilter,
-		List<SearchResult> searchResults)
+			long companyId, LdapContext ldapContext, byte[] cookie,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter userFilter,
+			List<SearchResult> searchResults)
 		throws Exception;
 
 	public byte[] getUsers(
-		long companyId, LdapContext ldapContext, byte[] cookie,
-		int maxResults, Name baseDN, LDAPFilter userFilter,
-		String[] attributeIds, List<SearchResult> searchResults)
+			long companyId, LdapContext ldapContext, byte[] cookie,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter userFilter,
+			String[] attributeIds, List<SearchResult> searchResults)
 		throws Exception;
 
 	public byte[] getUsers(
-		long ldapServerId, long companyId, LdapContext ldapContext,
-		byte[] cookie, int maxResults, List<SearchResult> searchResults)
+			long ldapServerId, long companyId, LdapContext ldapContext,
+			byte[] cookie, int maxResults, List<SearchResult> searchResults)
 		throws Exception;
 
 	public byte[] getUsers(
-		long ldapServerId, long companyId, LdapContext ldapContext,
-		byte[] cookie, int maxResults, String[] attributeIds,
-		List<SearchResult> searchResults)
+			long ldapServerId, long companyId, LdapContext ldapContext,
+			byte[] cookie, int maxResults, String[] attributeIds,
+			List<SearchResult> searchResults)
 		throws Exception;
 
 	public String getUsersDN(long ldapServerId, long companyId)
 		throws Exception;
 
 	public boolean hasUser(
-		long ldapServerId, long companyId, String screenName,
-		String emailAddress)
+			long ldapServerId, long companyId, String screenName,
+			String emailAddress)
 		throws Exception;
 
 	public boolean isGroupMember(
-		long ldapServerId, long companyId, Name groupDNName,
-		Name userDNName)
+			long ldapServerId, long companyId, LdapName groupDNLdapName,
+			LdapName userDNLdapName)
 		throws Exception;
 
 	public boolean isUserGroupMember(
-		long ldapServerId, long companyId, Name groupDNName,
-		Name userDNName)
+			long ldapServerId, long companyId, LdapName groupDNLdapName,
+			LdapName userDNLdapName)
 		throws Exception;
 
 	public byte[] searchLDAP(
-		long companyId, LdapContext ldapContext, byte[] cookie,
-		int maxResults, Name baseDN, LDAPFilter filter,
-		String[] attributeIds, List<SearchResult> searchResults)
+			long companyId, LdapContext ldapContext, byte[] cookie,
+			int maxResults, LdapName baseDNLdapName, LDAPFilter filter,
+			String[] attributeIds, List<SearchResult> searchResults)
 		throws Exception;
 
 }

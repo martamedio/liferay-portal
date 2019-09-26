@@ -56,7 +56,6 @@ import java.util.Properties;
 
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
-import javax.naming.Name;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -64,6 +63,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
+import javax.naming.ldap.LdapName;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -301,7 +301,7 @@ public class LDAPAuth implements Authenticator {
 				_ldapServerConfigurationProvider.getConfiguration(
 					companyId, ldapServerId);
 
-			Name baseDNName = LDAPUtil.asLdapName(
+			LdapName baseDNLdapName = LDAPUtil.asLdapName(
 				ldapServerConfiguration.baseDN());
 
 			//  Process LDAP auth search filter
@@ -335,7 +335,7 @@ public class LDAPAuth implements Authenticator {
 				new String[] {userMappingsScreenName}, false, false);
 
 			enu = safeLdapContext.search(
-				baseDNName, ldapFilter, searchControls);
+				baseDNLdapName, ldapFilter, searchControls);
 
 			if (!enu.hasMoreElements()) {
 				if (_log.isDebugEnabled()) {
