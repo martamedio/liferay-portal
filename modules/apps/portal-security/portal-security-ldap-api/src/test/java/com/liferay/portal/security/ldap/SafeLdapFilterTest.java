@@ -43,8 +43,12 @@ public class SafeLdapFilterTest {
 		test(SafeLdapFilter.approx("key", "value"), "(key~={0})", "value");
 	}
 
-/*
-	Doesn't make sense anymore? We don't allow to mix template with non-tepmlate filter and apply replace in the end
+
+//  Doesn't compile anymore (ensured using type safety).
+//	Discuss:
+//  We don't allow to mix template with non-template filter and apply replace in the end.
+//	Should we allow to mix SafeLdapFilter with SafeLdapFilterTemplate and apply replacement at the very end?
+
  	@Test
 	public void testComplexScenario() throws LDAPFilterException {
 		SafeLdapFilter safeLdapFilter = SafeLdapFilter.validate(
@@ -86,7 +90,6 @@ public class SafeLdapFilterTest {
 				"value1", "value1", "value2", "invalid"
 			});
 	}
-*/
 
 	@Test
 	public void testReplaceInTemplateKey() {
