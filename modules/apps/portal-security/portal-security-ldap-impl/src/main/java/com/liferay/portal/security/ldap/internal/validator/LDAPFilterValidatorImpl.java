@@ -64,25 +64,6 @@ public class LDAPFilterValidatorImpl implements LDAPFilterValidator {
 		return true;
 	}
 
-	@Override
-	public void validate(String filter) throws LDAPFilterException {
-		if (!isValid(filter)) {
-			throw new LDAPFilterException("Invalid filter " + filter);
-		}
-	}
-
-	@Override
-	public void validate(String filter, String filterPropertyName)
-		throws LDAPFilterException {
-
-		if (!isValid(filter)) {
-			throw new LDAPFilterException(
-				StringBundler.concat(
-					"Invalid filter ", filter, " defined by ",
-					filterPropertyName));
-		}
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		LDAPFilterValidatorImpl.class);
 

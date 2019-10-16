@@ -62,7 +62,10 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.exportimport.UserImporter;
 import com.liferay.portal.security.ldap.ContactConverterKeys;
-import com.liferay.portal.security.ldap.PortalLDAP;
+import com.liferay.portal.security.ldap.SafeLdapContext;
+import com.liferay.portal.security.ldap.SafeLdapFilter;
+import com.liferay.portal.security.ldap.SafeLdapName;
+import com.liferay.portal.security.ldap.SafePortalLDAP;
 import com.liferay.portal.security.ldap.UserConverterKeys;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
@@ -72,6 +75,7 @@ import com.liferay.portal.security.ldap.exportimport.LDAPUser;
 import com.liferay.portal.security.ldap.exportimport.LDAPUserImporter;
 import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration;
 import com.liferay.portal.security.ldap.internal.UserImportTransactionThreadLocal;
+import com.liferay.portal.security.ldap.internal.validator.SafeLdapContextImpl;
 import com.liferay.portal.security.ldap.util.LDAPUtil;
 import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
 
@@ -127,9 +131,25 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		return _lastImportTime;
 	}
 
+	/**
+	 * @deprecated As of Mueller (7.2.x),  replaced by {@link
+	 *             #importUser(long, long, SafeLdapContext, Attributes, String)}
+	 */
+	@Deprecated
 	@Override
 	public User importUser(
 			long ldapServerId, long companyId, LdapContext ldapContext,
+			Attributes attributes, String password)
+		throws Exception {
+
+		return importUser(
+			ldapServerId, companyId, new SafeLdapContextImpl(ldapContext),
+			attributes, password);
+	}
+
+	@Override
+	public User importUser(
+			long ldapServerId, long companyId, SafeLdapContext safeLdapContext,
 			Attributes attributes, String password)
 		throws Exception {
 
@@ -137,12 +157,24 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			_ldapServerConfigurationProvider.getConfiguration(
 				companyId, ldapServerId);
 
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"LDAP server id ", ldapServerId,
+						" is no longer valid, company ", companyId,
+						" now uses ", ldapServerConfiguration.ldapServerId()));
+			}
+
+			return null;
+		}
+
 		LDAPImportContext ldapImportContext = getLDAPImportContext(
 			companyId,
 			_ldapSettings.getContactExpandoMappings(ldapServerId, companyId),
 			_ldapSettings.getContactMappings(ldapServerId, companyId),
 			_ldapSettings.getGroupMappings(ldapServerId, companyId),
-			ldapContext, ldapServerId,
+			safeLdapContext, ldapServerId,
 			new HashSet<>(
 				Arrays.asList(ldapServerConfiguration.userIgnoreAttributes())),
 			_ldapSettings.getUserExpandoMappings(ldapServerId, companyId),
@@ -162,7 +194,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			String screenName)
 		throws Exception {
 
-		LdapContext ldapContext = null;
+		SafeLdapContext safeLdapContext = null;
 
 		NamingEnumeration<SearchResult> enu = null;
 
@@ -171,39 +203,45 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				_ldapServerConfigurationProvider.getConfiguration(
 					companyId, ldapServerId);
 
-			ldapContext = _portalLDAP.getContext(ldapServerId, companyId);
+			safeLdapContext = _safePortalLDAP.getSafeLdapContext(
+				ldapServerId, companyId);
 
-			if (ldapContext == null) {
+			if (safeLdapContext == null) {
 				_log.error("Unable to bind to the LDAP server");
 
 				return null;
 			}
 
-			String baseDN = LDAPUtil.escapeCharacters(
-				ldapServerConfiguration.baseDN());
+			if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							"LDAP server id ", ldapServerId,
+							" is no longer valid, company ", companyId,
+							" now uses ",
+							ldapServerConfiguration.ldapServerId()));
+				}
 
-			String filter = ldapServerConfiguration.authSearchFilter();
-
-			if (_log.isDebugEnabled()) {
-				_log.debug("Search filter before transformation " + filter);
+				return null;
 			}
 
-			filter = StringUtil.replace(
-				filter,
+			SafeLdapFilter authSearchSafeLdapFilter =
+				LDAPUtil.getAuthSearchSafeLdapFilter(
+					ldapServerConfiguration, _ldapFilterValidator);
+
+			if (authSearchSafeLdapFilter == null) {
+				_log.error("Missing authSearchFilter");
+
+				return null;
+			}
+
+			authSearchSafeLdapFilter = authSearchSafeLdapFilter.replace(
 				new String[] {
 					"@company_id@", "@email_address@", "@screen_name@"
 				},
 				new String[] {
-					String.valueOf(companyId),
-					_portalLDAP.encodeFilterAttribute(emailAddress, false),
-					_portalLDAP.encodeFilterAttribute(screenName, false)
+					String.valueOf(companyId), emailAddress, screenName
 				});
-
-			_ldapFilterValidator.validate(filter);
-
-			if (_log.isDebugEnabled()) {
-				_log.debug("Search filter after transformation " + filter);
-			}
 
 			Properties userMappings = _ldapSettings.getUserMappings(
 				ldapServerId, companyId);
@@ -218,7 +256,9 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				SearchControls.SUBTREE_SCOPE, 1, 0,
 				new String[] {userMappingsScreenName}, false, false);
 
-			enu = ldapContext.search(baseDN, filter, searchControls);
+			enu = safeLdapContext.search(
+				LDAPUtil.getBaseDNSafeLdapName(ldapServerConfiguration),
+				authSearchSafeLdapFilter, searchControls);
 
 			if (enu.hasMoreElements()) {
 				if (_log.isDebugEnabled()) {
@@ -227,12 +267,12 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 
 				Binding binding = enu.nextElement();
 
-				Attributes attributes = _portalLDAP.getUserAttributes(
-					ldapServerId, companyId, ldapContext,
-					binding.getNameInNamespace());
+				Attributes attributes = _safePortalLDAP.getUserAttributes(
+					ldapServerId, companyId, safeLdapContext,
+					SafeLdapName.from(binding));
 
 				return importUser(
-					ldapServerId, companyId, ldapContext, attributes, null);
+					ldapServerId, companyId, safeLdapContext, attributes, null);
 			}
 
 			return null;
@@ -254,8 +294,8 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				enu.close();
 			}
 
-			if (ldapContext != null) {
-				ldapContext.close();
+			if (safeLdapContext != null) {
+				safeLdapContext.close();
 			}
 		}
 	}
@@ -312,10 +352,10 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 	public User importUserByScreenName(long companyId, String screenName)
 		throws Exception {
 
-		long ldapServerId = _portalLDAP.getLdapServerId(
+		long ldapServerId = _safePortalLDAP.getLdapServerId(
 			companyId, screenName, StringPool.BLANK);
 
-		SearchResult result = (SearchResult)_portalLDAP.getUser(
+		SearchResult result = (SearchResult)_safePortalLDAP.getUser(
 			ldapServerId, companyId, screenName, StringPool.BLANK);
 
 		if (result == null) {
@@ -327,18 +367,18 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			return null;
 		}
 
-		LdapContext ldapContext = _portalLDAP.getContext(
+		SafeLdapContext safeLdapContext = _safePortalLDAP.getSafeLdapContext(
 			ldapServerId, companyId);
 
-		String fullUserDN = result.getNameInNamespace();
+		SafeLdapName fullUserDNSafeLdapName = SafeLdapName.from(result);
 
-		Attributes attributes = _portalLDAP.getUserAttributes(
-			ldapServerId, companyId, ldapContext, fullUserDN);
+		Attributes attributes = _safePortalLDAP.getUserAttributes(
+			ldapServerId, companyId, safeLdapContext, fullUserDNSafeLdapName);
 
 		User user = importUser(
-			ldapServerId, companyId, ldapContext, attributes, null);
+			ldapServerId, companyId, safeLdapContext, attributes, null);
 
-		ldapContext.close();
+		safeLdapContext.close();
 
 		return user;
 	}
@@ -428,10 +468,10 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			return;
 		}
 
-		LdapContext ldapContext = _portalLDAP.getContext(
+		SafeLdapContext safeLdapContext = _safePortalLDAP.getSafeLdapContext(
 			ldapServerId, companyId);
 
-		if (ldapContext == null) {
+		if (safeLdapContext == null) {
 			return;
 		}
 
@@ -443,6 +483,18 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		LDAPServerConfiguration ldapServerConfiguration =
 			_ldapServerConfigurationProvider.getConfiguration(
 				companyId, ldapServerId);
+
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"LDAP server id ", ldapServerId,
+						" is no longer valid, company ", companyId,
+						" now uses ", ldapServerConfiguration.ldapServerId()));
+			}
+
+			return;
+		}
 
 		String[] userIgnoreAttributes =
 			ldapServerConfiguration.userIgnoreAttributes();
@@ -467,7 +519,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 
 			LDAPImportContext ldapImportContext = getLDAPImportContext(
 				companyId, contactExpandoMappings, contactMappings,
-				groupMappings, ldapContext, ldapServerId,
+				groupMappings, safeLdapContext, ldapServerId,
 				ldapUserIgnoreAttributes, userExpandoMappings, userMappings);
 
 			if (importMethod.equals(_IMPORT_BY_GROUP)) {
@@ -481,7 +533,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			_log.error("Unable to import LDAP users and groups", e);
 		}
 		finally {
-			ldapContext.close();
+			safeLdapContext.close();
 		}
 	}
 
@@ -643,13 +695,13 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 	protected LDAPImportContext getLDAPImportContext(
 		long companyId, Properties contactExpandoMappings,
 		Properties contactMappings, Properties groupMappings,
-		LdapContext ldapContext, long ldapServerId,
+		SafeLdapContext safeLdapContext, long ldapServerId,
 		Set<String> ldapUserIgnoreAttributes, Properties userExpandoMappings,
 		Properties userMappings) {
 
 		return new LDAPImportContext(
 			companyId, contactExpandoMappings, contactMappings, groupMappings,
-			ldapContext, ldapServerId, ldapUserIgnoreAttributes,
+			safeLdapContext, ldapServerId, ldapUserIgnoreAttributes,
 			userExpandoMappings, userMappings);
 	}
 
@@ -701,29 +753,28 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				ldapImportContext.getCompanyId(),
 				ldapImportContext.getLdapServerId());
 
-		String baseDN = ldapServerConfiguration.baseDN();
+		if (ldapServerConfiguration.ldapServerId() !=
+				ldapImportContext.getLdapServerId()) {
 
-		StringBundler sb = new StringBundler(7);
+			return null;
+		}
 
-		sb.append("(&");
+		SafeLdapFilter safeLdapFilter = SafeLdapFilter.eq(
+			groupMappings.getProperty("groupName"), userGroup.getName());
 
-		String groupSearchFilter = ldapServerConfiguration.groupSearchFilter();
+		SafeLdapFilter groupSearchSafeLdapFilter =
+			LDAPUtil.getGroupSearchSafeLdapFilter(
+				ldapServerConfiguration, _ldapFilterValidator);
 
-		_ldapFilterValidator.validate(
-			groupSearchFilter, "LDAPServerConfiguration.groupSearchFilter");
+		if (groupSearchSafeLdapFilter != null) {
+			safeLdapFilter = safeLdapFilter.and(groupSearchSafeLdapFilter);
+		}
 
-		sb.append(groupSearchFilter);
-
-		sb.append(StringPool.OPEN_PARENTHESIS);
-		sb.append(groupMappings.getProperty("groupName"));
-		sb.append("=");
-		sb.append(_portalLDAP.encodeFilterAttribute(userGroup.getName(), true));
-		sb.append("))");
-
-		return _portalLDAP.getMultivaluedAttribute(
+		return _safePortalLDAP.getMultivaluedAttribute(
 			ldapImportContext.getCompanyId(),
-			ldapImportContext.getLdapContext(), baseDN, sb.toString(),
-			attribute);
+			ldapImportContext.getSafeLdapContext(),
+			LDAPUtil.getBaseDNSafeLdapName(ldapServerConfiguration),
+			safeLdapFilter, attribute);
 	}
 
 	protected void importFromLDAPByGroup(LDAPImportContext ldapImportContext)
@@ -742,19 +793,20 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			groupMappingsGroupName = StringUtil.toLowerCase(
 				groupMappingsGroupName);
 
-			cookie = _portalLDAP.getGroups(
+			cookie = _safePortalLDAP.getGroups(
 				ldapImportContext.getLdapServerId(),
 				ldapImportContext.getCompanyId(),
-				ldapImportContext.getLdapContext(), cookie, 0,
+				ldapImportContext.getSafeLdapContext(), cookie, 0,
 				new String[] {groupMappingsGroupName}, searchResults);
 
 			for (SearchResult searchResult : searchResults) {
 				try {
-					Attributes groupAttributes = _portalLDAP.getGroupAttributes(
-						ldapImportContext.getLdapServerId(),
-						ldapImportContext.getCompanyId(),
-						ldapImportContext.getLdapContext(),
-						searchResult.getNameInNamespace(), true);
+					Attributes groupAttributes =
+						_safePortalLDAP.getGroupAttributes(
+							ldapImportContext.getLdapServerId(),
+							ldapImportContext.getCompanyId(),
+							ldapImportContext.getSafeLdapContext(),
+							SafeLdapName.from(searchResult), true);
 
 					UserGroup userGroup = importUserGroup(
 						ldapImportContext.getCompanyId(), groupAttributes,
@@ -799,24 +851,26 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			userMappingsScreenName = StringUtil.toLowerCase(
 				userMappingsScreenName);
 
-			cookie = _portalLDAP.getUsers(
+			cookie = _safePortalLDAP.getUsers(
 				ldapImportContext.getLdapServerId(),
 				ldapImportContext.getCompanyId(),
-				ldapImportContext.getLdapContext(), cookie, 0,
+				ldapImportContext.getSafeLdapContext(), cookie, 0,
 				new String[] {userMappingsScreenName}, searchResults);
 
 			for (SearchResult searchResult : searchResults) {
+				String fullUserDN = searchResult.getNameInNamespace();
+
+				if (ldapImportContext.containsImportedUser(fullUserDN)) {
+					continue;
+				}
+
 				try {
-					String fullUserDN = searchResult.getNameInNamespace();
-
-					if (ldapImportContext.containsImportedUser(fullUserDN)) {
-						continue;
-					}
-
-					Attributes userAttributes = _portalLDAP.getUserAttributes(
-						ldapImportContext.getLdapServerId(),
-						ldapImportContext.getCompanyId(),
-						ldapImportContext.getLdapContext(), fullUserDN);
+					Attributes userAttributes =
+						_safePortalLDAP.getUserAttributes(
+							ldapImportContext.getLdapServerId(),
+							ldapImportContext.getCompanyId(),
+							ldapImportContext.getSafeLdapContext(),
+							SafeLdapName.from(searchResult));
 
 					User user = importUser(
 						ldapImportContext, fullUserDN, userAttributes, null);
@@ -828,24 +882,25 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 
 					if (type == GroupFriendlyURLException.DUPLICATE) {
 						_log.error(
-							"Unable to import user " + searchResult +
+							"Unable to import user " + fullUserDN +
 								" because of a duplicate group friendly URL",
 							gfurle);
 					}
 					else {
 						_log.error(
-							"Unable to import user " + searchResult, gfurle);
+							"Unable to import user " + fullUserDN, gfurle);
 					}
 				}
 				catch (Exception e) {
-					_log.error("Unable to import user " + searchResult, e);
+					_log.error("Unable to import user " + fullUserDN, e);
 				}
 			}
 		}
 	}
 
 	protected Set<Long> importGroup(
-			LDAPImportContext ldapImportContext, String fullGroupDN, User user,
+			LDAPImportContext ldapImportContext,
+			SafeLdapName userGroupDNSafeLdapName, User user,
 			Set<Long> newUserGroupIds)
 		throws Exception {
 
@@ -864,7 +919,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			sb.append(StringPool.UNDERLINE);
 			sb.append(ldapImportContext.getCompanyId());
 			sb.append(StringPool.UNDERLINE);
-			sb.append(fullGroupDN);
+			sb.append(userGroupDNSafeLdapName);
 
 			userGroupIdKey = sb.toString();
 
@@ -873,25 +928,30 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 
 		if (userGroupId != null) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Skipping reimport of full group DN " + fullGroupDN);
+				_log.debug(
+					"Skipping reimport of full group DN " +
+						userGroupDNSafeLdapName);
 			}
 		}
 		else {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Importing full group DN " + fullGroupDN);
+				_log.debug(
+					"Importing full group DN " + userGroupDNSafeLdapName);
 			}
 
 			Attributes groupAttributes = null;
 
 			try {
-				groupAttributes = _portalLDAP.getGroupAttributes(
+				groupAttributes = _safePortalLDAP.getGroupAttributes(
 					ldapImportContext.getLdapServerId(),
 					ldapImportContext.getCompanyId(),
-					ldapImportContext.getLdapContext(), fullGroupDN);
+					ldapImportContext.getSafeLdapContext(),
+					userGroupDNSafeLdapName);
 			}
 			catch (NameNotFoundException nnfe) {
 				_log.error(
-					"LDAP group not found with full group DN " + fullGroupDN,
+					"LDAP group not found with full group DN " +
+						userGroupDNSafeLdapName,
 					nnfe);
 			}
 
@@ -926,50 +986,52 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			User user)
 		throws Exception {
 
+		LDAPServerConfiguration ldapServerConfiguration =
+			_ldapServerConfigurationProvider.getConfiguration(
+				ldapImportContext.getCompanyId(),
+				ldapImportContext.getLdapServerId());
+
+		if (ldapServerConfiguration.ldapServerId() !=
+				ldapImportContext.getLdapServerId()) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"LDAP server id ", ldapImportContext.getLdapServerId(),
+						" is no longer valid, company ",
+						ldapImportContext.getCompanyId(), " now uses ",
+						ldapServerConfiguration.ldapServerId()));
+			}
+
+			return;
+		}
+
 		Properties groupMappings = ldapImportContext.getGroupMappings();
 
 		String groupMappingsUser = groupMappings.getProperty("user");
 
 		Set<Long> newUserGroupIds = new LinkedHashSet<>();
 
-		LDAPServerConfiguration ldapServerConfiguration =
-			_ldapServerConfigurationProvider.getConfiguration(
-				ldapImportContext.getCompanyId(),
-				ldapImportContext.getLdapServerId());
-
 		if (Validator.isNotNull(groupMappingsUser) &&
 			ldapServerConfiguration.groupSearchFilterEnabled()) {
 
-			String baseDN = ldapServerConfiguration.baseDN();
-
-			StringBundler sb = new StringBundler(9);
-
-			sb.append(StringPool.OPEN_PARENTHESIS);
-			sb.append(StringPool.AMPERSAND);
-
-			String groupSearchFilter =
-				ldapServerConfiguration.groupSearchFilter();
-
-			_ldapFilterValidator.validate(
-				groupSearchFilter, "LDAPServerConfiguration.groupSearchFilter");
-
-			sb.append(groupSearchFilter);
-
-			sb.append(StringPool.OPEN_PARENTHESIS);
-			sb.append(groupMappingsUser);
-			sb.append(StringPool.EQUAL);
-
-			Binding binding = _portalLDAP.getUser(
+			Binding binding = _safePortalLDAP.getUser(
 				ldapImportContext.getLdapServerId(),
 				ldapImportContext.getCompanyId(), user.getScreenName(),
 				user.getEmailAddress());
 
 			String fullUserDN = binding.getNameInNamespace();
 
-			sb.append(_portalLDAP.encodeFilterAttribute(fullUserDN, false));
+			SafeLdapFilter safeLdapFilter = SafeLdapFilter.eq(
+				groupMappingsUser, fullUserDN);
 
-			sb.append(StringPool.CLOSE_PARENTHESIS);
-			sb.append(StringPool.CLOSE_PARENTHESIS);
+			SafeLdapFilter groupSearchSafeLdapFilter =
+				LDAPUtil.getGroupSearchSafeLdapFilter(
+					ldapServerConfiguration, _ldapFilterValidator);
+
+			if (groupSearchSafeLdapFilter != null) {
+				safeLdapFilter = safeLdapFilter.and(groupSearchSafeLdapFilter);
+			}
 
 			byte[] cookie = new byte[0];
 
@@ -982,17 +1044,20 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				groupMappingsGroupName = StringUtil.toLowerCase(
 					groupMappingsGroupName);
 
-				cookie = _portalLDAP.searchLDAP(
+				cookie = _safePortalLDAP.searchLDAP(
 					ldapImportContext.getCompanyId(),
-					ldapImportContext.getLdapContext(), cookie, 0, baseDN,
-					sb.toString(), new String[] {groupMappingsGroupName},
+					ldapImportContext.getSafeLdapContext(), cookie, 0,
+					LDAPUtil.getBaseDNSafeLdapName(ldapServerConfiguration),
+					safeLdapFilter, new String[] {groupMappingsGroupName},
 					searchResults);
 
 				for (SearchResult searchResult : searchResults) {
-					String fullGroupDN = searchResult.getNameInNamespace();
+					SafeLdapName userGroupSafeLdapName = SafeLdapName.from(
+						searchResult);
 
 					newUserGroupIds = importGroup(
-						ldapImportContext, fullGroupDN, user, newUserGroupIds);
+						ldapImportContext, userGroupSafeLdapName, user,
+						newUserGroupIds);
 				}
 			}
 		}
@@ -1020,10 +1085,12 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			}
 
 			for (int i = 0; i < userGroupAttribute.size(); i++) {
-				String fullGroupDN = (String)userGroupAttribute.get(i);
+				SafeLdapName groupSafeLdapName = SafeLdapName.from(
+					userGroupAttribute, i);
 
 				newUserGroupIds = importGroup(
-					ldapImportContext, fullGroupDN, user, newUserGroupIds);
+					ldapImportContext, groupSafeLdapName, user,
+					newUserGroupIds);
 			}
 		}
 
@@ -1211,10 +1278,11 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				Attributes userAttributes = null;
 
 				try {
-					userAttributes = _portalLDAP.getUserAttributes(
+					userAttributes = _safePortalLDAP.getUserAttributes(
 						ldapImportContext.getLdapServerId(),
 						ldapImportContext.getCompanyId(),
-						ldapImportContext.getLdapContext(), fullUserDN);
+						ldapImportContext.getSafeLdapContext(),
+						SafeLdapName.from(usersLdapAttribute, i));
 				}
 				catch (NameNotFoundException nnfe) {
 					_log.error(
@@ -1568,6 +1636,18 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			_ldapServerConfigurationProvider.getConfiguration(
 				companyId, ldapServerId);
 
+		if (ldapServerConfiguration.ldapServerId() != ldapServerId) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"LDAP server id ", ldapServerId,
+						" is no longer valid, company ", companyId,
+						" now uses ", ldapServerConfiguration.ldapServerId()));
+			}
+
+			return user;
+		}
+
 		String[] userIgnoreAttributes =
 			ldapServerConfiguration.userIgnoreAttributes();
 
@@ -1745,14 +1825,14 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 
 	private LockManager _lockManager;
 	private PortalCache<String, Long> _portalCache;
+	private RoleLocalService _roleLocalService;
 
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY
 	)
-	private volatile PortalLDAP _portalLDAP;
+	private volatile SafePortalLDAP _safePortalLDAP;
 
-	private RoleLocalService _roleLocalService;
 	private UserGroupLocalService _userGroupLocalService;
 	private UserLocalService _userLocalService;
 
