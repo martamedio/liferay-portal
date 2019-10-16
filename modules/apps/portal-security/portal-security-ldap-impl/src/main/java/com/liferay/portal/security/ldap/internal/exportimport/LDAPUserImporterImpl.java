@@ -64,6 +64,7 @@ import com.liferay.portal.security.exportimport.UserImporter;
 import com.liferay.portal.security.ldap.ContactConverterKeys;
 import com.liferay.portal.security.ldap.SafeLdapContext;
 import com.liferay.portal.security.ldap.SafeLdapFilter;
+import com.liferay.portal.security.ldap.SafeLdapFilterTemplate;
 import com.liferay.portal.security.ldap.SafeLdapName;
 import com.liferay.portal.security.ldap.SafePortalLDAP;
 import com.liferay.portal.security.ldap.UserConverterKeys;
@@ -225,17 +226,18 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 				return null;
 			}
 
-			SafeLdapFilter authSearchSafeLdapFilter =
-				LDAPUtil.getAuthSearchSafeLdapFilter(
+			SafeLdapFilterTemplate authSearchSafeLdapFilterTemplate =
+				LDAPUtil.getAuthSearchSafeLdapFilterTemplate(
 					ldapServerConfiguration, _ldapFilterValidator);
 
-			if (authSearchSafeLdapFilter == null) {
+			if (authSearchSafeLdapFilterTemplate == null) {
 				_log.error("Missing authSearchFilter");
 
 				return null;
 			}
 
-			authSearchSafeLdapFilter = authSearchSafeLdapFilter.replace(
+			authSearchSafeLdapFilterTemplate =
+				authSearchSafeLdapFilterTemplate.replace(
 				new String[] {
 					"@company_id@", "@email_address@", "@screen_name@"
 				},
@@ -258,7 +260,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 
 			enu = safeLdapContext.search(
 				LDAPUtil.getBaseDNSafeLdapName(ldapServerConfiguration),
-				authSearchSafeLdapFilter, searchControls);
+				authSearchSafeLdapFilterTemplate, searchControls);
 
 			if (enu.hasMoreElements()) {
 				if (_log.isDebugEnabled()) {
