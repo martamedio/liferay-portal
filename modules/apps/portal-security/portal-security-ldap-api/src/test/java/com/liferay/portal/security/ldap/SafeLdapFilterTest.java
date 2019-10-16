@@ -76,11 +76,11 @@ public class SafeLdapFilterTest {
 				"(\\28keyInvalid={6}\\29={7}))", "(!(&(&(&",
 				"(|(key1={8})((key2={9})))", "(|(key2={10})((key1={11}))))",
 				"(|(key3={12})((key4={13}))))",
-				"(\\28keyInvalid={14}\\29={15}))))"),
+				"(\\28keyInvalid=@placeholderInvalid@\\29={14}))))"),
 			new Object[] {
 				"value1", "value2", "value2", "value1", "value1", "value2",
 				"valueInvalid", "invalid", "value1", "value2", "value2",
-				"value1", "value1", "value2", "valueInvalid", "invalid"
+				"value1", "value1", "value2", "invalid"
 			});
 	}
 
