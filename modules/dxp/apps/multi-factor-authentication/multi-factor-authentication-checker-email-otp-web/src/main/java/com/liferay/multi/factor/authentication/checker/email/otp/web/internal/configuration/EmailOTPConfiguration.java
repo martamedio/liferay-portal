@@ -30,6 +30,12 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface EmailOTPConfiguration {
 
+	@Meta.AD(
+		deflt = "-1", description = "retry-timeout-description",
+		name = "retry-timout", required = false
+	)
+	public long retryTimeout();
+
 	@Meta.AD(deflt = "false", name = "enabled", required = false)
 	public boolean enabled();
 
@@ -72,6 +78,12 @@ public interface EmailOTPConfiguration {
 		name = "email-template-body", required = false
 	)
 	public String emailTemplateBody();
+
+	@Meta.AD(
+		deflt = "-1", description = "failed-attempts-allowed-description",
+		name = "failed-attempts-allowed", required = false
+	)
+	public int failedAttemptsAllowed();
 
 	@Meta.AD(
 		deflt = "6", description = "otp-size-description", name = "otp-size",
