@@ -32,6 +32,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +102,7 @@ public class EmailOTPMFAChecker {
 
 		HttpSession session = originalHttpServletRequest.getSession(false);
 
-		if (isValid(session, userId)) {
+		if (isVerified(session, userId)) {
 			return true;
 		}
 
@@ -130,6 +131,18 @@ public class EmailOTPMFAChecker {
 
 			if (mfaEmailOTP == null) {
 				_mfaEmailOTPEntryLocalService.addMFAEmailOTPEntry(userId);
+			}
+
+			if (isThrottlingEnabled()) {
+				if (_reachedFailedAttemptsAllowed(userId)) {
+					if (_isRetryTimedout(userId)) {
+						_mfaEmailOTPEntryLocalService.resetFailedAttempts(
+							userId);
+					}
+					else {
+						return false;
+					}
+				}
 			}
 
 			boolean verified = _verify(session, userInput);
@@ -197,7 +210,20 @@ public class EmailOTPMFAChecker {
 		}
 	}
 
-	protected boolean isValid(HttpSession httpSession, long userId) {
+	protected boolean isThrottlingEnabled() {
+		long retryTimeout = _emailOTPConfiguration.retryTimeout();
+
+		int failedAttemptsAllowed =
+			_emailOTPConfiguration.failedAttemptsAllowed();
+
+		if ((retryTimeout < 0) || (failedAttemptsAllowed < 0)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	protected boolean isVerified(HttpSession httpSession, long userId) {
 		if (httpSession == null) {
 			return false;
 		}
@@ -233,12 +259,41 @@ public class EmailOTPMFAChecker {
 		return (Map<String, Object>)session.getAttribute(_VALIDATED);
 	}
 
+	private boolean _isRetryTimedout(long userId) {
+		long retryTimeout = _emailOTPConfiguration.retryTimeout();
+
+		MFAEmailOTPEntry mfaEmailOTP =
+			_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(userId);
+
+		Date lastFailedDate = mfaEmailOTP.getLastFailDate();
+
+		if ((lastFailedDate.getTime() + retryTimeout) >
+				System.currentTimeMillis()) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean _reachedFailedAttemptsAllowed(long userId) {
+		int failedAttemptsAllowed =
+			_emailOTPConfiguration.failedAttemptsAllowed();
+
+		MFAEmailOTPEntry mfaEmailOTP =
+			_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(userId);
+
+		if (mfaEmailOTP.getFailedAttempts() >= failedAttemptsAllowed) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _verify(HttpSession session, String userInput)
 		throws Exception {
 
 		String expected = (String)session.getAttribute("otp");
-
-		// user may make typo, not removing attributes to allow retry
 
 		if ((expected == null) || !expected.equals(userInput)) {
 			return false;
