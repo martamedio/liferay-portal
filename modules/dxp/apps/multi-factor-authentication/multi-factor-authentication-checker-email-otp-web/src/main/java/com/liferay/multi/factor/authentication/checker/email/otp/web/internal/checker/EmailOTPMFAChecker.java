@@ -14,6 +14,7 @@
 
 package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.checker;
 
+import com.liferay.multi.factor.authentication.checker.email.otp.model.MFAEmailOTPEntry;
 import com.liferay.multi.factor.authentication.checker.email.otp.service.MFAEmailOTPEntryLocalService;
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.configuration.EmailOTPConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -123,6 +124,14 @@ public class EmailOTPMFAChecker {
 		HttpSession session = originalHttpServletRequest.getSession();
 
 		try {
+			MFAEmailOTPEntry mfaEmailOTP =
+				_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(
+					userId);
+
+			if (mfaEmailOTP == null) {
+				_mfaEmailOTPEntryLocalService.addMFAEmailOTPEntry(userId);
+			}
+
 			boolean verified = _verify(session, userInput);
 			String userIP = originalHttpServletRequest.getRemoteAddr();
 
