@@ -21,21 +21,20 @@ EmailOTPConfiguration emailOTPConfiguration = (EmailOTPConfiguration)request.get
 %>
 
 <div id="<portlet:namespace/>phaseOne">
-	<h2>
+	<div class="portlet-msg-info">
 		<liferay-ui:message key="your-one-time-password-will-be-sent-to-your-email-address" />
-	</h2>
+	</div>
 
-	<aui:button id="sendEmailButton" value="send" />
+	<aui:button-row>
+		<aui:button id="sendEmailButton" value="send" />
+	</aui:button-row>
 </div>
 
 <div id="<portlet:namespace/>messageContainer"></div>
 
 <div id="<portlet:namespace/>phaseTwo">
-	<h2>
-		<liferay-ui:message key="please-enter-the-one-time-password-from-the-email" />
-	</h2>
 
-	<aui:input name="otp" showRequiredLabel="yes" />
+	<aui:input label="please-enter-the-one-time-password-from-the-email" name="otp" showRequiredLabel="yes" />
 </div>
 
 <aui:script use="aui-base,aui-io-request">
@@ -99,7 +98,7 @@ EmailOTPConfiguration emailOTPConfiguration = (EmailOTPConfiguration)request.get
 						},
 						success: function(event, id, obj) {
 							var messageContainer = A.one('#<portlet:namespace />messageContainer');
-							messageContainer.html('<span class="alert alert-success"><liferay-ui:message key="email-sent-please-enter-the-received-code" /></span>');
+							messageContainer.html('<span class="alert alert-success"><liferay-ui:message key="email-sent-please-check-the-received-code" /></span>');
 
 							var phaseTwo = A.one('#<portlet:namespace />phaseTwo');
 							phaseTwo.disabled = false;

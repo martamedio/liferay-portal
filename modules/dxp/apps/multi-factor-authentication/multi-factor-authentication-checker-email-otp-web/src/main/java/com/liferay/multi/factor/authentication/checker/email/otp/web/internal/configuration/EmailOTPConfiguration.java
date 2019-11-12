@@ -22,7 +22,8 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Tomas Polesovsky
  */
 @ExtendedObjectClassDefinition(
-	category = "mfa", scope = ExtendedObjectClassDefinition.Scope.COMPANY
+	category = "multi-factor-authentication",
+	scope = ExtendedObjectClassDefinition.Scope.COMPANY
 )
 @Meta.OCD(
 	id = "com.liferay.multi.factor.authentication.checker.email.otp.web.internal.configuration.EmailOTPConfiguration",
@@ -32,7 +33,7 @@ public interface EmailOTPConfiguration {
 
 	@Meta.AD(
 		deflt = "-1", description = "retry-timeout-description",
-		name = "retry-timout", required = false
+		name = "retry-timeout", required = false
 	)
 	public long retryTimeout();
 
@@ -52,28 +53,28 @@ public interface EmailOTPConfiguration {
 	public long validationExpirationTime();
 
 	@Meta.AD(
-		deflt = "noreply@liferay.com",
+		deflt = "${server-property://com.liferay.portal/admin.email.from.address}",
 		description = "email-template-from-description",
 		name = "email-template-from", required = false
 	)
 	public String emailTemplateFrom();
 
 	@Meta.AD(
-		deflt = "Test Test",
+		deflt = "${server-property://com.liferay.portal/admin.email.from.name}",
 		description = "email-template-from-name-description",
 		name = "email-template-from-name", required = false
 	)
 	public String emailTemplateFromName();
 
 	@Meta.AD(
-		deflt = "${resource:com/liferay/multi/factor/authentication/checker/email/otp/web/internal/configuration/email_subject.tmpl}",
+		deflt = "${resource:com/liferay/multi/factor/authentication/checker/email/otp/dependencies/email_multi_factor_authentication_email_otp_subject.tmpl}",
 		description = "email-template-subject-description",
 		name = "email-template-subject", required = false
 	)
 	public String emailTemplateSubject();
 
 	@Meta.AD(
-		deflt = "${resource:com/liferay/multi/factor/authentication/checker/email/otp/web/internal/configuration/email_body.tmpl}",
+		deflt = "${resource:com/liferay/multi/factor/authentication/checker/email/otp/dependencies/email_multi_factor_authentication_email_otp_body.tmpl}",
 		description = "email-template-body-description",
 		name = "email-template-body", required = false
 	)

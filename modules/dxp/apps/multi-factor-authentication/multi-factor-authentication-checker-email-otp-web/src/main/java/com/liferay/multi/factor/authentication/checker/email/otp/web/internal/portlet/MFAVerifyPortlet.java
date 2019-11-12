@@ -15,8 +15,6 @@
 package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.portlet;
 
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants.MFAPortletKeys;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.InterruptedPortletRequestWhitelistUtil;
 import com.liferay.portal.util.PropsValues;
@@ -59,7 +57,7 @@ public class MFAVerifyPortlet extends MVCPortlet {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		List<String> portletInterruptedRequestWhitelistList = new ArrayList(
+		List<String> portletInterruptedRequestWhitelistList = new ArrayList<>(
 			Arrays.asList(PropsValues.PORTLET_INTERRUPTED_REQUEST_WHITELIST));
 
 		portletInterruptedRequestWhitelistList.add(
@@ -74,7 +72,7 @@ public class MFAVerifyPortlet extends MVCPortlet {
 
 	@Deactivate
 	protected void deactivate() {
-		List<String> portletInterruptedRequestWhitelistList = new ArrayList(
+		List<String> portletInterruptedRequestWhitelistList = new ArrayList<>(
 			Arrays.asList(PropsValues.PORTLET_INTERRUPTED_REQUEST_WHITELIST));
 
 		portletInterruptedRequestWhitelistList.add(
@@ -86,9 +84,6 @@ public class MFAVerifyPortlet extends MVCPortlet {
 		_interruptedPortletRequestWhitelistUtil.
 			resetPortletInvocationWhitelist();
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		MFAVerifyPortlet.class);
 
 	@Reference
 	private InterruptedPortletRequestWhitelistUtil

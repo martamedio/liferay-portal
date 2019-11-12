@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.util.Accessor;
 import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -44,11 +45,9 @@ public class RequestEncryptionHelper {
 	public static Map<String, Object> createStateFromRequestParameters(
 		HttpServletRequest httpServletRequest) {
 
-		Map<String, Object> stateMap = new HashMap<>();
-
-		stateMap.put("requestParameters", httpServletRequest.getParameterMap());
-
-		return stateMap;
+		return HashMapBuilder.<String, Object>put(
+			"requestParameters", httpServletRequest.getParameterMap()
+		).build();
 	}
 
 	public static Map<String, Object> decrypt(
@@ -98,25 +97,18 @@ public class RequestEncryptionHelper {
 
 		String encryptedStateMapJSON = Encryptor.encrypt(key, stateMapJSON);
 
-		String digest = DigesterUtil.digest(encryptedStateMapJSON);
-
-		Map<String, Object> encryptionInfo = new HashMap<>();
-
-		encryptionInfo.put("digest", digest);
-		encryptionInfo.put("key", key);
-
 		session.setAttribute(LoginMFAIntegrationWebKeys.ENCRYPTION_INFO, key);
 
 		return encryptedStateMapJSON;
 	}
 
 	public static HttpServletRequest loadRequestParametersFromState(
-		HttpServletRequest request, Map<String, Object> stateMap) {
+		HttpServletRequest httpServletRequest, Map<String, Object> stateMap) {
 
 		Map<String, String[]> requestParameters =
 			(Map<String, String[]>)stateMap.get("requestParameters");
 
-		request = new HttpServletRequestWrapper(request) {
+		httpServletRequest = new HttpServletRequestWrapper(httpServletRequest) {
 
 			@Override
 			public String getParameter(String name) {
@@ -142,7 +134,7 @@ public class RequestEncryptionHelper {
 
 		};
 
-		return request;
+		return httpServletRequest;
 	}
 
 	private static final Accessor<Object, String> _STRING_ACCESSOR =

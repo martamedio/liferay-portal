@@ -1,5 +1,3 @@
-<%@ page import="com.liferay.multi.factor.authentication.checker.email.otp.web.internal.checker.EmailOTPMFAChecker" %>
-
 <%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -28,13 +26,9 @@ long mfaUserId = (Long)request.getAttribute("mfaUserId");
 	<portlet:param name="mvcRenderCommandName" value="/mfa_verify/view" />
 </portlet:actionURL>
 
-<aui:form action="<%= verifyActionURL %>" data-senna-off="true" cssClass="container-fluid-1280 sign-in-form" method="post" name="fm">
+<aui:form action="<%= verifyActionURL %>" cssClass="container-fluid-1280 sign-in-form" data-senna-off="true" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value='<%= ParamUtil.getString(request, "redirect") %>' />
 	<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
-
-	<h1>
-		<liferay-ui:message key='<%= HtmlUtil.escape("Email OTP") %>' />
-	</h1>
 
 	<liferay-ui:error key="mfaFailed" message="multi-factor-authentication-failed" />
 

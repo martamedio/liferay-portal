@@ -17,8 +17,6 @@ package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.p
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.checker.EmailOTPMFAChecker;
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants.MFAPortletKeys;
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants.MFAPortletURLFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -53,7 +51,7 @@ public class MFAVerifyMVCRenderCommand implements MVCRenderCommand {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		long mfaUserId = getMFAUserId(renderRequest);
+		long mfaUserId = _getMultiFactorAuthenticationUserId(renderRequest);
 
 		if (mfaUserId == 0) {
 			SessionErrors.add(renderRequest, "sessionExpired");
@@ -67,7 +65,9 @@ public class MFAVerifyMVCRenderCommand implements MVCRenderCommand {
 		return "/mfa_verify/verify.jsp";
 	}
 
-	private long getMFAUserId(PortletRequest portletRequest) {
+	private long _getMultiFactorAuthenticationUserId(
+		PortletRequest portletRequest) {
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
@@ -90,9 +90,6 @@ public class MFAVerifyMVCRenderCommand implements MVCRenderCommand {
 
 		return (Long)mfaUserId;
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		MFAVerifyMVCRenderCommand.class);
 
 	@Reference
 	private EmailOTPMFAChecker _emailOTPMFAChecker;

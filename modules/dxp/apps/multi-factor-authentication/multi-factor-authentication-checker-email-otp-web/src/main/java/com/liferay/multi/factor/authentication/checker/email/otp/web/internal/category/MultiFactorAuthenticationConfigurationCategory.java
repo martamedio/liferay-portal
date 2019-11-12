@@ -42,7 +42,7 @@ public class MultiFactorAuthenticationConfigurationCategory
 
 	private static final String _CATEGORY_ICON = "lock";
 
-	private static final String _CATEGORY_KEY = "mfa";
+	private static final String _CATEGORY_KEY = "multi-factor-authentication";
 
 	private static final String _CATEGORY_SECTION = "security";
 
