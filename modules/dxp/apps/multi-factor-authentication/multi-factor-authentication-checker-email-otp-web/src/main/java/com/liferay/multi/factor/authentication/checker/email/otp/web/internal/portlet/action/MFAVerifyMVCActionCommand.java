@@ -51,7 +51,7 @@ public class MFAVerifyMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		long userId = getMFAUserId(actionRequest);
+		long userId = _getMultiFactorAuthenticationUserId(actionRequest);
 
 		if (userId == 0) {
 			SessionErrors.add(actionRequest, "sessionExpired");
@@ -70,7 +70,9 @@ public class MFAVerifyMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
-	private long getMFAUserId(PortletRequest portletRequest) {
+	private long _getMultiFactorAuthenticationUserId(
+		PortletRequest portletRequest) {
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 

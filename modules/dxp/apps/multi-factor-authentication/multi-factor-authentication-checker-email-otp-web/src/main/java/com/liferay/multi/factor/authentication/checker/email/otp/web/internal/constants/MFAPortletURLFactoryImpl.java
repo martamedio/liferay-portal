@@ -40,24 +40,27 @@ public class MFAPortletURLFactoryImpl implements MFAPortletURLFactory {
 
 	@Override
 	public LiferayPortletURL createVerifyURL(
-		HttpServletRequest request, String redirectURL, long userId) {
+		HttpServletRequest httpServletRequest, String redirectURL,
+		long userId) {
 
-		request = _portal.getOriginalServletRequest(request);
+		httpServletRequest = _portal.getOriginalServletRequest(
+			httpServletRequest);
 
-		HttpSession session = request.getSession();
+		HttpSession session = httpServletRequest.getSession();
 
 		session.setAttribute(MFA_USER_ID, userId);
 
 		long plid = 0;
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		if (themeDisplay != null) {
 			plid = themeDisplay.getPlid();
 		}
 
 		LiferayPortletURL liferayPortletURL = _portletURLFactory.create(
-			request, MFAPortletKeys.MFA_VERIFY_PORTLET, plid,
+			httpServletRequest, MFAPortletKeys.MFA_VERIFY_PORTLET, plid,
 			PortletRequest.RENDER_PHASE);
 
 		liferayPortletURL.setParameter(

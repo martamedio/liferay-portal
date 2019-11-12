@@ -27,6 +27,6 @@ public interface MFAPortletURLFactory {
 		MFAPortletURLFactory.class.getName() + "#MFA_USER_ID";
 
 	public LiferayPortletURL createVerifyURL(
-		HttpServletRequest request, String redirectURL, long userId);
+		HttpServletRequest httpServletRequest, String redirectURL, long userId);
 
 }

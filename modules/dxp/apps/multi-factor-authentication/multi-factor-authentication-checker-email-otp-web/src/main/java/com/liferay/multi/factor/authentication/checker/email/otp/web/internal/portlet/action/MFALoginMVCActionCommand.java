@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.kernel.util.Accessor;
 import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -96,19 +97,21 @@ public class MFALoginMVCActionCommand extends BaseMVCActionCommand {
 		String password = ParamUtil.getString(actionRequest, "password");
 
 		if (!Validator.isBlank(login) && !Validator.isBlank(password)) {
-			HttpServletRequest request = _portal.getOriginalServletRequest(
-				_portal.getHttpServletRequest(actionRequest));
+			HttpServletRequest httpServletRequest =
+				_portal.getOriginalServletRequest(
+					_portal.getHttpServletRequest(actionRequest));
 
 			long userId =
 				AuthenticatedSessionManagerUtil.getAuthenticatedUserId(
-					request, login, password, null);
+					httpServletRequest, login, password, null);
 
-			if (userId > 0) {
-				if (!_emailOTPMFAChecker.isBrowserVerified(request, userId)) {
-					_redirectToVerify(userId, actionRequest, actionResponse);
+			if ((userId > 0) &&
+				!_emailOTPMFAChecker.isBrowserVerified(
+					httpServletRequest, userId)) {
 
-					return;
-				}
+				_redirectToVerify(userId, actionRequest, actionResponse);
+
+				return;
 			}
 		}
 
@@ -180,8 +183,7 @@ public class MFALoginMVCActionCommand extends BaseMVCActionCommand {
 		Map<String, String[]> requestParameters =
 			(Map<String, String[]>)stateMap.get("requestParameters");
 
-		ActionRequestWrapper actionRequestWrapper = new ActionRequestWrapper(
-			actionRequest) {
+		return new ActionRequestWrapper(actionRequest) {
 
 			@Override
 			public String getParameter(String name) {
@@ -206,8 +208,6 @@ public class MFALoginMVCActionCommand extends BaseMVCActionCommand {
 			}
 
 		};
-
-		return actionRequestWrapper;
 	}
 
 	private void _redirectToVerify(
@@ -215,9 +215,9 @@ public class MFALoginMVCActionCommand extends BaseMVCActionCommand {
 			ActionResponse actionResponse)
 		throws Exception {
 
-		Map<String, Object> stateMap = new HashMap<>();
-
-		stateMap.put("requestParameters", actionRequest.getParameterMap());
+		Map<String, Object> stateMap = HashMapBuilder.<String, Object>put(
+			"requestParameters", actionRequest.getParameterMap()
+		).build();
 
 		HttpServletRequest httpServletRequest =
 			_portal.getOriginalServletRequest(
@@ -235,12 +235,11 @@ public class MFALoginMVCActionCommand extends BaseMVCActionCommand {
 
 		LiferayPortletURL verifyURL = _mfaPortletURLFactory.createVerifyURL(
 			httpServletRequest, actionURL.toString(), userId);
-		
-		String portletId = 
-			ParamUtil.getString(httpServletRequest, "p_p_id");
-		
+
+		String portletId = ParamUtil.getString(httpServletRequest, "p_p_id");
+
 		if (LoginPortletKeys.FAST_LOGIN.equals(portletId)) {
-			verifyURL.setWindowState(actionRequest.getWindowState());	
+			verifyURL.setWindowState(actionRequest.getWindowState());
 		}
 		else {
 			verifyURL.setWindowState(WindowState.MAXIMIZED);

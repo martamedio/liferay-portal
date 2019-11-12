@@ -12,13 +12,16 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.definition;
+package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.settings.definition;
 
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.configuration.EmailOTPConfiguration;
 import com.liferay.portal.kernel.settings.definition.ConfigurationBeanDeclaration;
 
 import org.osgi.service.component.annotations.Component;
 
+/**
+ * @author Carlos Sierra Andrés
+ */
 @Component(service = ConfigurationBeanDeclaration.class)
 public class EmailOTPCompanyConfigurationBeanDeclaration
 	implements ConfigurationBeanDeclaration {
