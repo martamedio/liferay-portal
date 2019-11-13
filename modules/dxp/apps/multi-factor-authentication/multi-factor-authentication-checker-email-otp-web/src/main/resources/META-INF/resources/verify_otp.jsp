@@ -16,6 +16,10 @@
 
 <%@ include file="/init.jsp" %>
 
+<%
+EmailOTPConfiguration emailOTPConfiguration = (EmailOTPConfiguration)request.getAttribute("emailOTPConfiguration");
+%>
+
 <div id="<portlet:namespace/>phaseOne">
 	<h2>
 		<liferay-ui:message key="your-one-time-password-will-be-sent-to-your-email-address" />
@@ -47,6 +51,24 @@
 
 			var buttonText = sendEmailButton.text();
 
+			var resendDuration = <%= emailOTPConfiguration.resendEmailTimeout() %>;
+
+			var interval = setInterval(
+				function() {
+					if (resendDuration === 0) {
+						sendEmailButton.text(buttonText);
+						sendEmailButton.removeAttribute('disabled');
+
+						clearInterval(interval);
+					}
+					else {
+						sendEmailButton.text(--resendDuration);
+					}
+
+				},
+				1000
+			);
+
 			var data = {
 				p_auth: Liferay.authToken
 			};
@@ -72,6 +94,8 @@
 
 							sendEmailButton.text(buttonText);
 							sendEmailButton.removeAttribute('disabled');
+
+							clearInterval(interval);
 						},
 						success: function(event, id, obj) {
 							var messageContainer = A.one('#<portlet:namespace />messageContainer');
