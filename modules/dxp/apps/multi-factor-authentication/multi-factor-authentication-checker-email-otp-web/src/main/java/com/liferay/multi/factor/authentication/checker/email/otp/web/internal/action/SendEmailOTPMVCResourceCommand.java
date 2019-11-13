@@ -100,6 +100,10 @@ public class SendEmailOTPMVCResourceCommand implements MVCResourceCommand {
 				return false;
 			}
 
+			if (!_isResendTimedOut(emailOTPConfiguration, session)) {
+				return false;
+			}
+
 			String generatedOTP = PwdGenerator.getPassword(
 				emailOTPConfiguration.otpSize());
 
@@ -145,6 +149,27 @@ public class SendEmailOTPMVCResourceCommand implements MVCResourceCommand {
 		catch (Exception e) {
 			throw new PortletException(e);
 		}
+	}
+
+	private boolean _isResendTimedOut(
+		EmailOTPConfiguration emailOTPConfiguration, HttpSession session) {
+
+		Object otpSetAtObj = session.getAttribute("otpSetAt");
+
+		if (otpSetAtObj == null) {
+			return true;
+		}
+
+		long otpSetAt = (Long)otpSetAtObj;
+
+		long timedOut =
+			otpSetAt + emailOTPConfiguration.resendEmailTimeout() * 1000;
+
+		if (System.currentTimeMillis() > timedOut) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _sendNotificationEmail(
