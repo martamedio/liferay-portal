@@ -34,6 +34,12 @@ public interface EmailOTPConfiguration {
 	public boolean enabled();
 
 	@Meta.AD(
+		deflt = "30", description = "resend-email-timeout-description",
+		name = "resend-email-timeout", required = false
+	)
+	public long resendEmailTimeout();
+
+	@Meta.AD(
 		deflt = "-1", description = "validation-expiration-time-description",
 		name = "validation-expiration-time", required = false
 	)
