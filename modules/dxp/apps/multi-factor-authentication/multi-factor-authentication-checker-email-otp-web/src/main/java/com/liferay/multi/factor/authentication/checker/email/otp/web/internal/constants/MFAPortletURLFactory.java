@@ -12,21 +12,21 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.contants;
+package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants;
+
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Tomas Polesovsky
  */
-public class MFAPortletKeys {
+public interface MFAPortletURLFactory {
 
-	public static final String CATEGORY_KEY_MFA = "multi-factor-authentication";
+	public static final String MFA_USER_ID =
+		MFAPortletURLFactory.class.getName() + "#MFA_USER_ID";
 
-	public static final String MFA_SETUP_PORTLET =
-		"com_liferay_multi_factor_authentication_portlet_web_internal_" +
-			"portlet_MFASetupPortlet";
-
-	public static final String MFA_VERIFY_PORTLET =
-		"com_liferay_multi_factor_authentication_portlet_web_internal_" +
-			"portlet_MFAVerifyPortlet";
+	public LiferayPortletURL createVerifyURL(
+		HttpServletRequest request, String redirectURL, long userId);
 
 }

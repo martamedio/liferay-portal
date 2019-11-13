@@ -15,8 +15,8 @@
 package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.portlet.action;
 
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.checker.EmailOTPMFAChecker;
-import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.contants.MFAPortletKeys;
-import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.contants.MFAPortletURLFactory;
+import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants.MFAPortletKeys;
+import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants.MFAPortletURLFactory;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
