@@ -14,7 +14,7 @@
 
 package com.liferay.multi.factor.authentication.checker.email.otp.web.internal;
 
-import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.contants.LoginMFAIntegrationWebKeys;
+import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants.LoginMFAIntegrationWebKeys;
 import com.liferay.petra.encryptor.Encryptor;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;

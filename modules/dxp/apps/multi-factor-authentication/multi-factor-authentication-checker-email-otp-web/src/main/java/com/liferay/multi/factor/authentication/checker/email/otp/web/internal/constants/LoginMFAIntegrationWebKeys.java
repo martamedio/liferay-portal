@@ -12,17 +12,14 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.contants;
+package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants;
 
 /**
  * @author Tomas Polesovsky
  */
-public class LoginPortletKeys {
+public class LoginMFAIntegrationWebKeys {
 
-	public static final String FAST_LOGIN =
-		"com_liferay_login_web_portlet_FastLoginPortlet";
-
-	public static final String LOGIN =
-		"com_liferay_login_web_portlet_LoginPortlet";
+	public static final String ENCRYPTION_INFO =
+		LoginMFAIntegrationWebKeys.class + "#ENCRYPTION_INFO";
 
 }
