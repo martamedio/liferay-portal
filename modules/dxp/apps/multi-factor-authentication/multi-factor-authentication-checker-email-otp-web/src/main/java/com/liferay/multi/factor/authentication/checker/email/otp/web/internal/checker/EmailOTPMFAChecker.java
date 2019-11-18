@@ -17,10 +17,10 @@ package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.c
 import com.liferay.multi.factor.authentication.checker.email.otp.model.MFAEmailOTPEntry;
 import com.liferay.multi.factor.authentication.checker.email.otp.service.MFAEmailOTPEntryLocalService;
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.configuration.EmailOTPConfiguration;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -52,15 +52,8 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Arthur Chan
  */
-@Component(
-	configurationPid = "com.liferay.multi.factor.authentication.checker.email.otp.web.internal.configuration.EmailOTPConfiguration",
-	service = EmailOTPMFAChecker.class
-)
+@Component(service = EmailOTPMFAChecker.class)
 public class EmailOTPMFAChecker {
-
-	public EmailOTPConfiguration getEmailOTPConfiguration() {
-		return _emailOTPConfiguration;
-	}
 
 	public void includeBrowserVerification(
 			HttpServletRequest httpServletRequest,
@@ -74,9 +67,12 @@ public class EmailOTPMFAChecker {
 		RequestDispatcher requestDispatcher =
 			_servletContext.getRequestDispatcher("/verify_otp.jsp");
 
+		EmailOTPConfiguration emailOTPConfiguration = _getEmailOTPConfiguration(
+			userId);
+
 		try {
 			httpServletRequest.setAttribute(
-				"emailOTPConfiguration", _emailOTPConfiguration);
+				"emailOTPConfiguration", emailOTPConfiguration);
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 
@@ -133,15 +129,14 @@ public class EmailOTPMFAChecker {
 				_mfaEmailOTPEntryLocalService.addMFAEmailOTPEntry(userId);
 			}
 
-			if (isThrottlingEnabled()) {
-				if (_reachedFailedAttemptsAllowed(userId)) {
-					if (_isRetryTimedout(userId)) {
-						_mfaEmailOTPEntryLocalService.resetFailedAttempts(
-							userId);
-					}
-					else {
-						return false;
-					}
+			if (isThrottlingEnabled(userId) &&
+				_reachedFailedAttemptsAllowed(userId)) {
+
+				if (_isRetryTimedout(userId)) {
+					_mfaEmailOTPEntryLocalService.resetFailedAttempts(userId);
+				}
+				else {
+					return false;
 				}
 			}
 
@@ -179,9 +174,6 @@ public class EmailOTPMFAChecker {
 
 	@Activate
 	protected void activate(Map<String, Object> properties) {
-		_emailOTPConfiguration = ConfigurableUtil.createConfigurable(
-			EmailOTPConfiguration.class, properties);
-
 		if (PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
 			List<String> sessionPhishingProtectedAttributesList =
 				new ArrayList<>(
@@ -210,11 +202,16 @@ public class EmailOTPMFAChecker {
 		}
 	}
 
-	protected boolean isThrottlingEnabled() {
-		long retryTimeout = _emailOTPConfiguration.retryTimeout();
+	protected boolean isThrottlingEnabled(long userId) {
+		User user = _userLocalService.getUser(userId);
+
+		EmailOTPConfiguration emailOTPConfiguration = _getEmailOTPConfiguration(
+			user.getCompanyId());
+
+		long retryTimeout = emailOTPConfiguration.retryTimeout();
 
 		int failedAttemptsAllowed =
-			_emailOTPConfiguration.failedAttemptsAllowed();
+			emailOTPConfiguration.failedAttemptsAllowed();
 
 		if ((retryTimeout < 0) || (failedAttemptsAllowed < 0)) {
 			return false;
@@ -235,8 +232,11 @@ public class EmailOTPMFAChecker {
 				return false;
 			}
 
+			EmailOTPConfiguration emailOTPConfiguration =
+				_getEmailOTPConfiguration(userId);
+
 			long validationExpirationTime =
-				_emailOTPConfiguration.validationExpirationTime();
+				emailOTPConfiguration.validationExpirationTime();
 
 			if (validationExpirationTime < 0) {
 				return true;
@@ -254,13 +254,23 @@ public class EmailOTPMFAChecker {
 		return false;
 	}
 
+	private EmailOTPConfiguration _getEmailOTPConfiguration(long userId) {
+		User user = _userLocalService.getUser(userId);
+
+		return ConfigurationProviderUtil.getCompanyConfiguration(
+			EmailOTPConfiguration.class, user.getCompanyId());
+	}
+
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> _getValidatedMap(HttpSession session) {
 		return (Map<String, Object>)session.getAttribute(_VALIDATED);
 	}
 
 	private boolean _isRetryTimedout(long userId) {
-		long retryTimeout = _emailOTPConfiguration.retryTimeout();
+		EmailOTPConfiguration emailOTPConfiguration = _getEmailOTPConfiguration(
+			userId);
+
+		long retryTimeout = emailOTPConfiguration.retryTimeout();
 
 		MFAEmailOTPEntry mfaEmailOTP =
 			_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(userId);
@@ -277,8 +287,11 @@ public class EmailOTPMFAChecker {
 	}
 
 	private boolean _reachedFailedAttemptsAllowed(long userId) {
+		EmailOTPConfiguration emailOTPConfiguration = _getEmailOTPConfiguration(
+			userId);
+
 		int failedAttemptsAllowed =
-			_emailOTPConfiguration.failedAttemptsAllowed();
+			emailOTPConfiguration.failedAttemptsAllowed();
 
 		MFAEmailOTPEntry mfaEmailOTP =
 			_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(userId);
@@ -312,8 +325,6 @@ public class EmailOTPMFAChecker {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		EmailOTPMFAChecker.class);
-
-	private EmailOTPConfiguration _emailOTPConfiguration;
 
 	@Reference
 	private MFAEmailOTPEntryLocalService _mfaEmailOTPEntryLocalService;
