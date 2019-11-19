@@ -14,8 +14,6 @@
 
 package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -23,8 +21,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.PortletRequest;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -71,9 +67,6 @@ public class MFAPortletURLFactoryImpl implements MFAPortletURLFactory {
 
 		return liferayPortletURL;
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		MFAPortletURLFactoryImpl.class);
 
 	@Reference
 	private Portal _portal;
