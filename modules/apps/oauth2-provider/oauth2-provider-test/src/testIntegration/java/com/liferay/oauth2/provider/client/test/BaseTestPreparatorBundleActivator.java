@@ -22,6 +22,7 @@ import com.liferay.oauth2.provider.scope.spi.prefix.handler.PrefixHandlerFactory
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
 import com.liferay.oauth2.provider.scope.spi.scope.mapper.ScopeMapper;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -51,6 +53,7 @@ import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -277,21 +280,25 @@ public abstract class BaseTestPreparatorBundleActivator
 
 		autoCloseables.add(() -> bundleContext.ungetService(serviceReference));
 
-		OAuth2Application oAuth2Application =
-			oAuth2ApplicationLocalService.addOAuth2Application(
-				user.getUserId(), user.getLogin(), availableGrants,
-				user.getUserId(), clientId, 0, clientSecret,
-				"test oauth application",
-				Collections.singletonList("token_introspection"),
-				"http://localhost:8080", 0, "test application",
-				"http://localhost:8080", redirectUris, availableScopes,
-				new ServiceContext());
+		return _changeCompany(
+			companyId,
+			() -> {
+				OAuth2Application oAuth2Application =
+					oAuth2ApplicationLocalService.addOAuth2Application(
+						user.getUserId(), user.getLogin(), availableGrants,
+						user.getUserId(), clientId, 0, clientSecret,
+						"test oauth application",
+						Collections.singletonList("token_introspection"),
+						"http://localhost:8080", 0, "test application",
+						"http://localhost:8080", redirectUris, availableScopes,
+						new ServiceContext());
 
-		autoCloseables.add(
-			() -> oAuth2ApplicationLocalService.deleteOAuth2Application(
-				oAuth2Application.getOAuth2ApplicationId()));
+				autoCloseables.add(
+					() -> oAuth2ApplicationLocalService.deleteOAuth2Application(
+						oAuth2Application.getOAuth2ApplicationId()));
 
-		return oAuth2Application;
+				return oAuth2Application;
+			});
 	}
 
 	protected void createServiceAccessProfile(
@@ -422,6 +429,24 @@ public abstract class BaseTestPreparatorBundleActivator
 
 	protected ArrayList<AutoCloseable> autoCloseables;
 	protected BundleContext bundleContext;
+
+	private static <T> T _changeCompany(long companyId, Callable<T> callable) {
+		long currentCompanyId = CompanyThreadLocal.getCompanyId();
+
+		CompanyThreadLocal.setCompanyId(companyId);
+
+		try {
+			return callable.call();
+		}
+		catch (Exception e) {
+			ReflectionUtil.throwException(e);
+
+			return null;
+		}
+		finally {
+			CompanyThreadLocal.setCompanyId(currentCompanyId);
+		}
+	}
 
 	private void _cleanUp() {
 		ListIterator<AutoCloseable> listIterator = autoCloseables.listIterator(
