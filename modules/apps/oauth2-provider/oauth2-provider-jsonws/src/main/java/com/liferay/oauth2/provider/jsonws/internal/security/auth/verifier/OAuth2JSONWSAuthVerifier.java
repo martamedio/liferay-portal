@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
 import com.liferay.portal.kernel.security.service.access.policy.ServiceAccessPolicy;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -100,6 +101,13 @@ public class OAuth2JSONWSAuthVerifier implements AuthVerifier {
 				accessToken.getOAuth2Application();
 
 			long companyId = oAuth2Application.getCompanyId();
+
+			long requestCompanyId = _portal.getCompanyId(
+				accessControlContext.getRequest());
+
+			if (companyId != requestCompanyId) {
+				return authVerifierResult;
+			}
 
 			BearerTokenProvider bearerTokenProvider =
 				_bearerTokenProviderAccessor.getBearerTokenProvider(
@@ -292,6 +300,9 @@ public class OAuth2JSONWSAuthVerifier implements AuthVerifier {
 
 	@Reference
 	private OAuth2ScopeGrantLocalService _oAuth2ScopeGrantLocalService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private SAPEntryScopeDescriptorFinderRegistrator
