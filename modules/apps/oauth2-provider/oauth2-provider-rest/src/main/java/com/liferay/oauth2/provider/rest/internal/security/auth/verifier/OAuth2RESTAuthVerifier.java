@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.security.auth.AuthException;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifier;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -165,12 +164,6 @@ public class OAuth2RESTAuthVerifier implements AuthVerifier {
 			_oAuth2ApplicationLocalService.getOAuth2Application(
 				oAuth2Authorization.getOAuth2ApplicationId());
 
-		long requestCompanyId = _portal.getCompanyId(httpServletRequest);
-
-		if (requestCompanyId != oAuth2Application.getCompanyId()) {
-			return null;
-		}
-
 		Date createDate = oAuth2Authorization.getAccessTokenCreateDate();
 		Date expirationDate =
 			oAuth2Authorization.getAccessTokenExpirationDate();
@@ -220,9 +213,6 @@ public class OAuth2RESTAuthVerifier implements AuthVerifier {
 
 	@Reference
 	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
-
-	@Reference
-	private Portal _portal;
 
 	@Reference
 	private ScopeContext _scopeContext;
