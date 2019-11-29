@@ -97,15 +97,13 @@ public class OAuth2JSONWSAuthVerifier implements AuthVerifier {
 				return authVerifierResult;
 			}
 
+			long companyId = _portal.getCompanyId(
+				accessControlContext.getRequest());
+
 			OAuth2Application oAuth2Application =
 				accessToken.getOAuth2Application();
 
-			long companyId = oAuth2Application.getCompanyId();
-
-			long requestCompanyId = _portal.getCompanyId(
-				accessControlContext.getRequest());
-
-			if (companyId != requestCompanyId) {
+			if (companyId != oAuth2Application.getCompanyId()) {
 				return authVerifierResult;
 			}
 
