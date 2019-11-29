@@ -161,13 +161,13 @@ public class OAuth2RESTAuthVerifier implements AuthVerifier {
 			return null;
 		}
 
-		long companyId = _portal.getCompanyId(httpServletRequest);
-
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.getOAuth2Application(
 				oAuth2Authorization.getOAuth2ApplicationId());
 
-		if (companyId != oAuth2Application.getCompanyId()) {
+		long requestCompanyId = _portal.getCompanyId(httpServletRequest);
+
+		if (requestCompanyId != oAuth2Application.getCompanyId()) {
 			return null;
 		}
 
