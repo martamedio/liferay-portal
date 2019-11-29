@@ -21,6 +21,7 @@ import com.liferay.oauth2.provider.scope.liferay.LiferayOAuth2Scope;
 import com.liferay.oauth2.provider.service.base.OAuth2ScopeGrantLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.ArrayList;
@@ -95,6 +96,7 @@ public class OAuth2ScopeGrantLocalServiceImpl
 
 		List<OAuth2ScopeGrant> oAuth2ScopeGrants =
 			oAuth2ScopeGrantPersistence.findByOAuth2ApplicationScopeAliasesId(
+				CompanyThreadLocal.getCompanyId(),
 				oAuth2ApplicationScopeAliasesId);
 
 		for (LiferayOAuth2Scope liferayOAuth2Scope : liferayOAuth2Scopes) {
@@ -117,6 +119,7 @@ public class OAuth2ScopeGrantLocalServiceImpl
 
 		return oAuth2ScopeGrantPersistence.
 			findByOAuth2ApplicationScopeAliasesId(
+				CompanyThreadLocal.getCompanyId(),
 				oAuth2ApplicationScopeAliasesId, start, end, orderByComparator);
 	}
 
@@ -145,6 +148,7 @@ public class OAuth2ScopeGrantLocalServiceImpl
 
 		List<OAuth2ScopeGrant> oAuth2ScopeGrants =
 			oAuth2ScopeGrantPersistence.findByOAuth2ApplicationScopeAliasesId(
+				CompanyThreadLocal.getCompanyId(),
 				oAuth2Authorization.getOAuth2ApplicationScopeAliasesId());
 
 		List<OAuth2ScopeGrant> resultOAuth2ScopeGrants = new ArrayList<>(
