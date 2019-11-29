@@ -26,6 +26,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
@@ -198,7 +199,8 @@ public class OAuth2ApplicationScopeAliasesLocalServiceImpl
 
 		return oAuth2ApplicationScopeAliasesPersistence.
 			findByOAuth2ApplicationId(
-				oAuth2ApplicationId, start, end, orderByComparator);
+				CompanyThreadLocal.getCompanyId(), oAuth2ApplicationId, start,
+				end, orderByComparator);
 	}
 
 	@Override
