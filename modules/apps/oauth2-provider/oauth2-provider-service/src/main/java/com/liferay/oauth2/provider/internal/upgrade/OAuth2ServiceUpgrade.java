@@ -21,6 +21,7 @@ import com.liferay.oauth2.provider.internal.upgrade.v2_0_0.util.OAuth2Applicatio
 import com.liferay.oauth2.provider.internal.upgrade.v2_0_0.util.OAuth2ScopeGrantTable;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.step.util.UpgradeStepFactory;
 
@@ -69,6 +70,26 @@ public class OAuth2ServiceUpgrade implements UpgradeStepRegistrator {
 			UpgradeStepFactory.runSql(
 				"update OAuth2Application set clientCredentialUserId = " +
 					"userId, clientCredentialUserName = userName"));
+
+		registry.register(
+			"3.0.0", "3.0.1",
+			new UpgradeProcess() {
+
+				@Override
+				protected void doUpgrade() throws Exception {
+					upgradeTable(
+						OAuth2ApplicationTable.TABLE_NAME,
+						OAuth2ApplicationTable.TABLE_COLUMNS,
+						OAuth2ApplicationTable.TABLE_SQL_CREATE,
+						OAuth2ApplicationTable.TABLE_SQL_ADD_INDEXES);
+					upgradeTable(
+						OAuth2AuthorizationTable.TABLE_NAME,
+						OAuth2AuthorizationTable.TABLE_COLUMNS,
+						OAuth2AuthorizationTable.TABLE_SQL_CREATE,
+						OAuth2AuthorizationTable.TABLE_SQL_ADD_INDEXES);
+				}
+
+			});
 	}
 
 	@Reference
