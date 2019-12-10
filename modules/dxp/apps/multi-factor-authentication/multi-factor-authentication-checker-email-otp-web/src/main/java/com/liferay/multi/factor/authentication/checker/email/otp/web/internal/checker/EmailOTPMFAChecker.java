@@ -17,6 +17,7 @@ package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.c
 import com.liferay.multi.factor.authentication.checker.email.otp.model.MFAEmailOTPEntry;
 import com.liferay.multi.factor.authentication.checker.email.otp.service.MFAEmailOTPEntryLocalService;
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.configuration.EmailOTPConfiguration;
+import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants.WebKeys;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -91,8 +92,8 @@ public class EmailOTPMFAChecker {
 
 			HttpSession session = originalHttpServletRequest.getSession();
 
-			session.setAttribute("otpPhase", "verify");
-			session.setAttribute("userId", userId);
+			session.setAttribute(WebKeys.OTP_PHASE, "verify");
+			session.setAttribute(WebKeys.USER_ID, userId);
 		}
 		catch (ServletException se) {
 			throw new IOException(
@@ -178,8 +179,8 @@ public class EmailOTPMFAChecker {
 					session.setAttribute(_VALIDATED, validatedMap);
 				}
 
-				validatedMap.put("userId", userId);
-				validatedMap.put("validatedAt", validatedAt);
+				validatedMap.put(WebKeys.USER_ID, userId);
+				validatedMap.put(WebKeys.VALIDATED_AT, validatedAt);
 
 				_mfaEmailOTPEntryLocalService.updateAttempts(
 					userId, userIP, true);
@@ -251,7 +252,7 @@ public class EmailOTPMFAChecker {
 		Map<String, Object> validatedMap = _getValidatedMap(session);
 
 		if (validatedMap != null) {
-			if (userId != MapUtil.getLong(validatedMap, "userId")) {
+			if (userId != MapUtil.getLong(validatedMap, WebKeys.USER_ID)) {
 				return false;
 			}
 
@@ -265,7 +266,8 @@ public class EmailOTPMFAChecker {
 				return true;
 			}
 
-			long validatedAt = MapUtil.getLong(validatedMap, "validatedAt");
+			long validatedAt = MapUtil.getLong(
+				validatedMap, WebKeys.VALIDATED_AT);
 
 			if ((validatedAt + validationExpirationTime * 1000) >
 					System.currentTimeMillis()) {
@@ -331,16 +333,16 @@ public class EmailOTPMFAChecker {
 	}
 
 	private boolean _verify(HttpSession session, String userInput) {
-		String expected = (String)session.getAttribute("otp");
+		String expected = (String)session.getAttribute(WebKeys.OTP);
 
 		if ((expected == null) || !expected.equals(userInput)) {
 			return false;
 		}
 
-		session.removeAttribute("otp");
-		session.removeAttribute("otpSetAt");
-		session.removeAttribute("otpPhase");
-		session.removeAttribute("userId");
+		session.removeAttribute(WebKeys.OTP);
+		session.removeAttribute(WebKeys.OTP_PHASE);
+		session.removeAttribute(WebKeys.OTP_SET_AT);
+		session.removeAttribute(WebKeys.USER_ID);
 
 		return true;
 	}

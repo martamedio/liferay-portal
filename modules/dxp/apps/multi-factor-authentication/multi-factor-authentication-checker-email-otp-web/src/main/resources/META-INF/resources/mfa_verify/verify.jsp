@@ -17,9 +17,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-EmailOTPMFAChecker emailOtpMfaChecker = (EmailOTPMFAChecker)request.getAttribute("emailMFAChecker");
+EmailOTPMFAChecker emailOtpMfaChecker = (EmailOTPMFAChecker)request.getAttribute(WebKeys.EMAIL_MFA_CHECKER);
 
-long mfaUserId = (Long)request.getAttribute("mfaUserId");
+long mfaUserId = (Long)request.getAttribute(WebKeys.MFA_USER_ID);
 %>
 
 <portlet:actionURL name="/mfa_verify/verify" var="verifyActionURL">
