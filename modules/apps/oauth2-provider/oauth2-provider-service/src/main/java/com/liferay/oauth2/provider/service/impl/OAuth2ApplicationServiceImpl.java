@@ -70,11 +70,11 @@ public class OAuth2ApplicationServiceImpl
 		}
 
 		return oAuth2ApplicationLocalService.addOAuth2Application(
-			user.getCompanyId(), user.getUserId(), user.getFullName(),
-			allowedGrantTypesList, clientCredentialUserId, clientId,
-			clientProfile, clientSecret, description, featuresList, homePageURL,
-			iconFileEntryId, name, privacyPolicyURL, redirectURIsList,
-			scopeAliasesList, serviceContext);
+			user.getUserId(), user.getFullName(), allowedGrantTypesList,
+			clientCredentialUserId, clientId, clientProfile, clientSecret,
+			description, featuresList, homePageURL, iconFileEntryId, name,
+			privacyPolicyURL, redirectURIsList, scopeAliasesList,
+			serviceContext);
 	}
 
 	/**
@@ -123,8 +123,7 @@ public class OAuth2ApplicationServiceImpl
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
-			oAuth2ApplicationLocalService.fetchOAuth2Application(
-				clientId);
+			oAuth2ApplicationLocalService.fetchOAuth2Application(clientId);
 
 		if (oAuth2Application != null) {
 			_oAuth2ApplicationModelResourcePermission.check(

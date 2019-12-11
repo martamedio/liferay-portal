@@ -128,6 +128,8 @@ public class OAuth2ApplicationLocalServiceImpl
 			redirectURIsList = new ArrayList<>();
 		}
 
+		long companyId = CompanyThreadLocal.getCompanyId();
+
 		validate(
 			companyId, allowedGrantTypesList, clientId, clientProfile,
 			clientSecret, homePageURL, name, privacyPolicyURL,
@@ -164,7 +166,7 @@ public class OAuth2ApplicationLocalServiceImpl
 			OAuth2ApplicationScopeAliases oAuth2ApplicationScopeAliases =
 				_oAuth2ApplicationScopeAliasesLocalService.
 					addOAuth2ApplicationScopeAliases(
-						companyId, userId, userName, oAuth2ApplicationId,
+						userId, userName, oAuth2ApplicationId,
 						builderConsumer);
 
 			oAuth2Application.setOAuth2ApplicationScopeAliasesId(
@@ -180,6 +182,10 @@ public class OAuth2ApplicationLocalServiceImpl
 		return oAuth2ApplicationPersistence.update(oAuth2Application);
 	}
 
+	/**
+	 * @deprecated As of Mueller (7.2.x)
+	 */
+	@Deprecated
 	@Override
 	public OAuth2Application addOAuth2Application(
 			long companyId, long userId, String userName,
@@ -252,7 +258,7 @@ public class OAuth2ApplicationLocalServiceImpl
 			OAuth2ApplicationScopeAliases oAuth2ApplicationScopeAliases =
 				_oAuth2ApplicationScopeAliasesLocalService.
 					addOAuth2ApplicationScopeAliases(
-						companyId, userId, userName, oAuth2ApplicationId,
+						userId, userName, oAuth2ApplicationId,
 						scopeAliasesList);
 
 			oAuth2Application.setOAuth2ApplicationScopeAliasesId(
@@ -266,27 +272,6 @@ public class OAuth2ApplicationLocalServiceImpl
 			oAuth2Application.getOAuth2ApplicationId(), false, false, false);
 
 		return oAuth2ApplicationPersistence.update(oAuth2Application);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	@Override
-	public OAuth2Application addOAuth2Application(
-			long companyId, long userId, String userName,
-			List<GrantType> allowedGrantTypesList, String clientId,
-			int clientProfile, String clientSecret, String description,
-			List<String> featuresList, String homePageURL, long iconFileEntryId,
-			String name, String privacyPolicyURL, List<String> redirectURIsList,
-			List<String> scopeAliasesList, ServiceContext serviceContext)
-		throws PortalException {
-
-		return addOAuth2Application(
-			userId, userName, allowedGrantTypesList, userId,
-			clientId, clientProfile, clientSecret, description, featuresList,
-			homePageURL, iconFileEntryId, name, privacyPolicyURL,
-			redirectURIsList, scopeAliasesList, serviceContext);
 	}
 
 	@Override
@@ -323,7 +308,6 @@ public class OAuth2ApplicationLocalServiceImpl
 
 	@Override
 	public OAuth2Application fetchOAuth2Application(String clientId) {
-
 		return oAuth2ApplicationPersistence.fetchByC_C(
 			CompanyThreadLocal.getCompanyId(), clientId);
 	}
@@ -538,8 +522,8 @@ public class OAuth2ApplicationLocalServiceImpl
 			oAuth2ApplicationScopeAliases =
 				_oAuth2ApplicationScopeAliasesLocalService.
 					addOAuth2ApplicationScopeAliases(
-						oAuth2Application.getCompanyId(), userId, userName,
-						oAuth2ApplicationId, scopeAliasesList);
+						userId, userName, oAuth2ApplicationId,
+						scopeAliasesList);
 		}
 
 		if (oAuth2Application.getOAuth2ApplicationScopeAliasesId() !=

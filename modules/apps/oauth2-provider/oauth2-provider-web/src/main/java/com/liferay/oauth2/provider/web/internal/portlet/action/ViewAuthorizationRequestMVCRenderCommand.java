@@ -113,8 +113,7 @@ public class ViewAuthorizationRequestMVCRenderCommand
 
 		try {
 			OAuth2Application oAuth2Application =
-				_oAuth2ApplicationService.getOAuth2Application(
-					themeDisplay.getCompanyId(), clientId);
+				_oAuth2ApplicationService.getOAuth2Application(clientId);
 			OAuth2AuthorizePortletDisplayContext
 				oAuth2AuthorizePortletDisplayContext =
 					new OAuth2AuthorizePortletDisplayContext(

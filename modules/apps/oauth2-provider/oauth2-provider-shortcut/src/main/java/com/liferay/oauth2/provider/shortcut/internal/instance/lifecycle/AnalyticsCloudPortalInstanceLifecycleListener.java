@@ -162,7 +162,7 @@ public class AnalyticsCloudPortalInstanceLifecycleListener
 
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.addOAuth2Application(
-				company.getCompanyId(), user.getUserId(), user.getScreenName(),
+				user.getUserId(), user.getScreenName(),
 				new ArrayList<GrantType>() {
 					{
 						add(GrantType.AUTHORIZATION_CODE);

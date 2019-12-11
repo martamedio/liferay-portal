@@ -17,7 +17,7 @@
 <%@ include file="/admin/init.jsp" %>
 
 <%
-int oAuth2ApplicationsCount = OAuth2ApplicationServiceUtil.getOAuth2ApplicationsCount(themeDisplay.getCompanyId());
+int oAuth2ApplicationsCount = OAuth2ApplicationServiceUtil.getOAuth2ApplicationsCount();
 
 OAuth2ApplicationsManagementToolbarDisplayContext oAuth2ApplicationsManagementToolbarDisplayContext = new OAuth2ApplicationsManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, currentURLObj);
 
@@ -58,7 +58,7 @@ String displayStyle = oAuth2ApplicationsManagementToolbarDisplayContext.getDispl
 			total="<%= oAuth2ApplicationsCount %>"
 		>
 			<liferay-ui:search-container-results
-				results="<%= OAuth2ApplicationServiceUtil.getOAuth2Applications(themeDisplay.getCompanyId(), searchContainer.getStart(), searchContainer.getEnd(), oAuth2ApplicationsManagementToolbarDisplayContext.getOrderByComparator()) %>"
+				results="<%= OAuth2ApplicationServiceUtil.getOAuth2Applications(searchContainer.getStart(), searchContainer.getEnd(), oAuth2ApplicationsManagementToolbarDisplayContext.getOrderByComparator()) %>"
 			/>
 
 			<liferay-ui:search-container-row

@@ -53,8 +53,7 @@ public class FragmentRendererPortalInstanceLifecycleListener
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
 		OAuth2Application oAuth2Application =
-			_oAuth2ApplicationLocalService.fetchOAuth2Application(
-				company.getCompanyId(), _clientId);
+			_oAuth2ApplicationLocalService.fetchOAuth2Application(_clientId);
 
 		if (oAuth2Application != null) {
 			return;
@@ -63,7 +62,7 @@ public class FragmentRendererPortalInstanceLifecycleListener
 		User user = _userLocalService.getDefaultUser(company.getCompanyId());
 
 		_oAuth2ApplicationLocalService.addOAuth2Application(
-			company.getCompanyId(), user.getUserId(), user.getScreenName(),
+			user.getUserId(), user.getScreenName(),
 			new ArrayList<GrantType>() {
 				{
 					add(GrantType.REFRESH_TOKEN);

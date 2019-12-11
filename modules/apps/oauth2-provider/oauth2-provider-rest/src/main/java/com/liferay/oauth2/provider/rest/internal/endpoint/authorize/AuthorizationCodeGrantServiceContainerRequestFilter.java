@@ -182,8 +182,7 @@ public class AuthorizationCodeGrantServiceContainerRequestFilter
 		throws Exception {
 
 		OAuth2Application oAuth2Application =
-			_oAuth2ApplicationLocalService.fetchOAuth2Application(
-				user.getCompanyId(), clientId);
+			_oAuth2ApplicationLocalService.fetchOAuth2Application(clientId);
 
 		if (oAuth2Application == null) {
 			return false;

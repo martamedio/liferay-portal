@@ -48,7 +48,7 @@ public class ThreadLocalScopeContextScopeChecker
 
 		Collection<OAuth2ScopeGrant> oAuth2ScopeGrants = new ArrayList<>(
 			_oAuth2ScopeGrantLocalService.getOAuth2ScopeGrants(
-				_companyIdThreadLocal.get(), _applicationNameThreadLocal.get(),
+				_applicationNameThreadLocal.get(),
 				_bundleSymbolicNameThreadLocal.get(),
 				_accessTokenThreadLocal.get()));
 
@@ -79,7 +79,7 @@ public class ThreadLocalScopeContextScopeChecker
 
 		Collection<OAuth2ScopeGrant> oAuth2ScopeGrants =
 			_oAuth2ScopeGrantLocalService.getOAuth2ScopeGrants(
-				_companyIdThreadLocal.get(), _applicationNameThreadLocal.get(),
+				_applicationNameThreadLocal.get(),
 				_bundleSymbolicNameThreadLocal.get(),
 				_accessTokenThreadLocal.get());
 
@@ -108,7 +108,7 @@ public class ThreadLocalScopeContextScopeChecker
 
 		Collection<OAuth2ScopeGrant> oAuth2ScopeGrants =
 			_oAuth2ScopeGrantLocalService.getOAuth2ScopeGrants(
-				_companyIdThreadLocal.get(), _applicationNameThreadLocal.get(),
+				_applicationNameThreadLocal.get(),
 				_bundleSymbolicNameThreadLocal.get(),
 				_accessTokenThreadLocal.get());
 

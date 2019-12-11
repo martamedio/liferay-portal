@@ -40,7 +40,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
@@ -554,15 +553,9 @@ public class LiferayOAuthDataProvider
 	}
 
 	public OAuth2Application resolveOAuth2Application(Client client) {
-		Map<String, String> properties = client.getProperties();
-
-		long companyId = GetterUtil.getLong(
-			properties.get(
-				OAuth2ProviderRESTEndpointConstants.PROPERTY_KEY_COMPANY_ID));
-
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.fetchOAuth2Application(
-				companyId, client.getClientId());
+				client.getClientId());
 
 		if (oAuth2Application == null) {
 			if (_log.isWarnEnabled()) {
@@ -683,8 +676,7 @@ public class LiferayOAuthDataProvider
 	@Override
 	protected Client doGetClient(String clientId) {
 		OAuth2Application oAuth2Application =
-			_oAuth2ApplicationLocalService.fetchOAuth2Application(
-				CompanyThreadLocal.getCompanyId(), clientId);
+			_oAuth2ApplicationLocalService.fetchOAuth2Application(clientId);
 
 		if (oAuth2Application == null) {
 			if (_log.isWarnEnabled()) {
@@ -1089,8 +1081,7 @@ public class LiferayOAuthDataProvider
 
 		OAuth2Authorization oAuth2Authorization =
 			_oAuth2AuthorizationLocalService.addOAuth2Authorization(
-				oAuth2Application.getCompanyId(), userId, userName,
-				oAuth2Application.getOAuth2ApplicationId(),
+				userId, userName, oAuth2Application.getOAuth2ApplicationId(),
 				oAuth2Application.getOAuth2ApplicationScopeAliasesId(),
 				serverAccessToken.getTokenKey(), createDate, expirationDate,
 				remoteHost, remoteAddr, null, null, null);
