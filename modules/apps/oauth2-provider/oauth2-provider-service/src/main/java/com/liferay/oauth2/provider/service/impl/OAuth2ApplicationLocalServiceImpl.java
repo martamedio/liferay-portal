@@ -55,6 +55,7 @@ import com.liferay.portal.kernel.repository.RepositoryFactory;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Http;
@@ -98,7 +99,7 @@ public class OAuth2ApplicationLocalServiceImpl
 
 	@Override
 	public OAuth2Application addOAuth2Application(
-			long companyId, long userId, String userName,
+			long userId, String userName,
 			List<GrantType> allowedGrantTypesList, long clientCredentialUserId,
 			String clientId, int clientProfile, String clientSecret,
 			String description, List<String> featuresList, String homePageURL,
@@ -190,6 +191,8 @@ public class OAuth2ApplicationLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		long companyId = CompanyThreadLocal.getCompanyId();
+
 		if (allowedGrantTypesList == null) {
 			allowedGrantTypesList = new ArrayList<>();
 		}
@@ -280,7 +283,7 @@ public class OAuth2ApplicationLocalServiceImpl
 		throws PortalException {
 
 		return addOAuth2Application(
-			companyId, userId, userName, allowedGrantTypesList, userId,
+			userId, userName, allowedGrantTypesList, userId,
 			clientId, clientProfile, clientSecret, description, featuresList,
 			homePageURL, iconFileEntryId, name, privacyPolicyURL,
 			redirectURIsList, scopeAliasesList, serviceContext);
@@ -319,34 +322,24 @@ public class OAuth2ApplicationLocalServiceImpl
 	}
 
 	@Override
-	public void deleteOAuth2Applications(long companyId)
-		throws PortalException {
+	public OAuth2Application fetchOAuth2Application(String clientId) {
 
-		for (OAuth2Application oAuth2Application :
-				oAuth2ApplicationPersistence.findByC(companyId)) {
-
-			deleteOAuth2Application(oAuth2Application.getOAuth2ApplicationId());
-		}
+		return oAuth2ApplicationPersistence.fetchByC_C(
+			CompanyThreadLocal.getCompanyId(), clientId);
 	}
 
 	@Override
-	public OAuth2Application fetchOAuth2Application(
-		long companyId, String clientId) {
-
-		return oAuth2ApplicationPersistence.fetchByC_C(companyId, clientId);
-	}
-
-	@Override
-	public OAuth2Application getOAuth2Application(
-			long companyId, String clientId)
+	public OAuth2Application getOAuth2Application(String clientId)
 		throws NoSuchOAuth2ApplicationException {
 
-		return oAuth2ApplicationPersistence.findByC_C(companyId, clientId);
+		return oAuth2ApplicationPersistence.findByC_C(
+			CompanyThreadLocal.getCompanyId(), clientId);
 	}
 
 	@Override
-	public List<OAuth2Application> getOAuth2Applications(long companyId) {
-		return oAuth2ApplicationPersistence.findByC(companyId);
+	public List<OAuth2Application> getOAuth2Applications() {
+		return oAuth2ApplicationPersistence.findByC(
+			CompanyThreadLocal.getCompanyId());
 	}
 
 	@Override

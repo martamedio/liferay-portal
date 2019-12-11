@@ -59,7 +59,7 @@ public class OAuth2ApplicationScopeAliasesLocalServiceImpl
 	extends OAuth2ApplicationScopeAliasesLocalServiceBaseImpl {
 
 	public OAuth2ApplicationScopeAliases addOAuth2ApplicationScopeAliases(
-			long companyId, long userId, String userName,
+			long userId, String userName,
 			long oAuth2ApplicationId,
 			Consumer<OAuth2ScopeBuilder> builderConsumer)
 		throws PortalException {
@@ -76,6 +76,8 @@ public class OAuth2ApplicationScopeAliasesLocalServiceImpl
 		OAuth2ApplicationScopeAliases oAuth2ApplicationScopeAliases =
 			createOAuth2ApplicationScopeAliases(
 				oAuth2ApplicationScopeAliasesId);
+
+		long companyId = CompanyThreadLocal.getCompanyId();
 
 		oAuth2ApplicationScopeAliases.setCompanyId(companyId);
 		oAuth2ApplicationScopeAliases.setUserId(userId);
@@ -107,7 +109,7 @@ public class OAuth2ApplicationScopeAliasesLocalServiceImpl
 
 	@Override
 	public OAuth2ApplicationScopeAliases addOAuth2ApplicationScopeAliases(
-			long companyId, long userId, String userName,
+			long userId, String userName,
 			long oAuth2ApplicationId, List<String> scopeAliasesList)
 		throws PortalException {
 
@@ -117,6 +119,8 @@ public class OAuth2ApplicationScopeAliasesLocalServiceImpl
 					"Scope aliases cannot contain spaces");
 			}
 		}
+
+		long companyId = CompanyThreadLocal.getCompanyId();
 
 		Map<LiferayOAuth2Scope, List<String>> liferayOAuth2ScopesScopeAliases =
 			_getLiferayOAuth2ScopesScopeAliases(companyId, scopeAliasesList);

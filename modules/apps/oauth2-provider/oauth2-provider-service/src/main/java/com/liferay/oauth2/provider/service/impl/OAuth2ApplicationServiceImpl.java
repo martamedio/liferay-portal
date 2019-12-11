@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceMode;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -118,13 +119,12 @@ public class OAuth2ApplicationServiceImpl
 	}
 
 	@Override
-	public OAuth2Application fetchOAuth2Application(
-			long companyId, String clientId)
+	public OAuth2Application fetchOAuth2Application(String clientId)
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
 			oAuth2ApplicationLocalService.fetchOAuth2Application(
-				companyId, clientId);
+				clientId);
 
 		if (oAuth2Application != null) {
 			_oAuth2ApplicationModelResourcePermission.check(
@@ -149,13 +149,11 @@ public class OAuth2ApplicationServiceImpl
 	}
 
 	@Override
-	public OAuth2Application getOAuth2Application(
-			long companyId, String clientId)
+	public OAuth2Application getOAuth2Application(String clientId)
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
-			oAuth2ApplicationLocalService.getOAuth2Application(
-				companyId, clientId);
+			oAuth2ApplicationLocalService.getOAuth2Application(clientId);
 
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(), oAuth2Application, ActionKeys.VIEW);
@@ -165,16 +163,17 @@ public class OAuth2ApplicationServiceImpl
 
 	@Override
 	public List<OAuth2Application> getOAuth2Applications(
-		long companyId, int start, int end,
+		int start, int end,
 		OrderByComparator<OAuth2Application> orderByComparator) {
 
 		return oAuth2ApplicationPersistence.filterFindByC(
-			companyId, start, end, orderByComparator);
+			CompanyThreadLocal.getCompanyId(), start, end, orderByComparator);
 	}
 
 	@Override
-	public int getOAuth2ApplicationsCount(long companyId) {
-		return oAuth2ApplicationPersistence.filterCountByC(companyId);
+	public int getOAuth2ApplicationsCount() {
+		return oAuth2ApplicationPersistence.filterCountByC(
+			CompanyThreadLocal.getCompanyId());
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class OAuth2AuthorizationLocalServiceImpl
 		Date refreshTokenCreateDate, Date refreshTokenExpirationDate) {
 
 		return addOAuth2Authorization(
-			companyId, userId, userName, oAuth2ApplicationId,
+			userId, userName, oAuth2ApplicationId,
 			oAuth2ApplicationScopeAliasesId, accessTokenContent,
 			accessTokenCreateDate, accessTokenExpirationDate, null,
 			remoteIPInfo, refreshTokenContent, refreshTokenCreateDate,
@@ -63,7 +63,7 @@ public class OAuth2AuthorizationLocalServiceImpl
 
 	@Override
 	public OAuth2Authorization addOAuth2Authorization(
-		long companyId, long userId, String userName, long oAuth2ApplicationId,
+		long userId, String userName, long oAuth2ApplicationId,
 		long oAuth2ApplicationScopeAliasesId, String accessTokenContent,
 		Date accessTokenCreateDate, Date accessTokenExpirationDate,
 		String remoteHostInfo, String remoteIPInfo, String refreshTokenContent,
@@ -75,7 +75,7 @@ public class OAuth2AuthorizationLocalServiceImpl
 		OAuth2Authorization oAuth2Authorization = createOAuth2Authorization(
 			oAuth2AuthorizationId);
 
-		oAuth2Authorization.setCompanyId(companyId);
+		oAuth2Authorization.setCompanyId(CompanyThreadLocal.getCompanyId());
 		oAuth2Authorization.setUserId(userId);
 		oAuth2Authorization.setUserName(userName);
 		oAuth2Authorization.setCreateDate(new Date());

@@ -54,10 +54,11 @@ public class OAuth2ScopeGrantLocalServiceImpl
 
 	@Override
 	public OAuth2ScopeGrant createOAuth2ScopeGrant(
-			long companyId, long oAuth2ApplicationScopeAliasesId,
-			String applicationName, String bundleSymbolicName, String scope,
-			List<String> scopeAliases)
+			long oAuth2ApplicationScopeAliasesId, String applicationName,
+			String bundleSymbolicName, String scope, List<String> scopeAliases)
 		throws DuplicateOAuth2ScopeGrantException {
+
+		long companyId = CompanyThreadLocal.getCompanyId();
 
 		OAuth2ScopeGrant oAuth2ScopeGrant =
 			oAuth2ScopeGrantPersistence.fetchByC_O_A_B_S(
@@ -125,11 +126,12 @@ public class OAuth2ScopeGrantLocalServiceImpl
 
 	@Override
 	public Collection<OAuth2ScopeGrant> getOAuth2ScopeGrants(
-		long companyId, String applicationName, String bundleSymbolicName,
+		String applicationName, String bundleSymbolicName,
 		String accessTokenContent) {
 
 		return oAuth2ScopeGrantFinder.findByC_A_B_A(
-			companyId, applicationName, bundleSymbolicName, accessTokenContent);
+			CompanyThreadLocal.getCompanyId(), applicationName,
+			bundleSymbolicName, accessTokenContent);
 	}
 
 	@Override
