@@ -63,14 +63,13 @@ public interface OAuth2ApplicationScopeAliasesLocalService
 	 * Never modify or reference this interface directly. Always use {@link OAuth2ApplicationScopeAliasesLocalServiceUtil} to access the o auth2 application scope aliases local service. Add custom service methods to <code>com.liferay.oauth2.provider.service.impl.OAuth2ApplicationScopeAliasesLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 	public OAuth2ApplicationScopeAliases addOAuth2ApplicationScopeAliases(
-			long companyId, long userId, String userName,
-			long oAuth2ApplicationId,
+			long userId, String userName, long oAuth2ApplicationId,
 			Consumer<OAuth2ScopeBuilder> builderConsumer)
 		throws PortalException;
 
 	public OAuth2ApplicationScopeAliases addOAuth2ApplicationScopeAliases(
-			long companyId, long userId, String userName,
-			long oAuth2ApplicationId, List<String> scopeAliasesList)
+			long userId, String userName, long oAuth2ApplicationId,
+			List<String> scopeAliasesList)
 		throws PortalException;
 
 	/**

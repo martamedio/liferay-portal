@@ -127,14 +127,14 @@ public class OAuth2ScopeGrantLocalServiceWrapper
 	@Override
 	public com.liferay.oauth2.provider.model.OAuth2ScopeGrant
 			createOAuth2ScopeGrant(
-				long companyId, long oAuth2ApplicationScopeAliasesId,
-				String applicationName, String bundleSymbolicName, String scope,
+				long oAuth2ApplicationScopeAliasesId, String applicationName,
+				String bundleSymbolicName, String scope,
 				java.util.List<String> scopeAliases)
 		throws com.liferay.oauth2.provider.exception.
 			DuplicateOAuth2ScopeGrantException {
 
 		return _oAuth2ScopeGrantLocalService.createOAuth2ScopeGrant(
-			companyId, oAuth2ApplicationScopeAliasesId, applicationName,
+			oAuth2ApplicationScopeAliasesId, applicationName,
 			bundleSymbolicName, scope, scopeAliases);
 	}
 
@@ -448,11 +448,11 @@ public class OAuth2ScopeGrantLocalServiceWrapper
 	public java.util.Collection
 		<com.liferay.oauth2.provider.model.OAuth2ScopeGrant>
 			getOAuth2ScopeGrants(
-				long companyId, String applicationName,
-				String bundleSymbolicName, String accessTokenContent) {
+				String applicationName, String bundleSymbolicName,
+				String accessTokenContent) {
 
 		return _oAuth2ScopeGrantLocalService.getOAuth2ScopeGrants(
-			companyId, applicationName, bundleSymbolicName, accessTokenContent);
+			applicationName, bundleSymbolicName, accessTokenContent);
 	}
 
 	/**

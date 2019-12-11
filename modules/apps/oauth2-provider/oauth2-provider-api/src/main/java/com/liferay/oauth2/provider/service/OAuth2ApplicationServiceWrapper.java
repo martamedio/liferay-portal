@@ -95,11 +95,10 @@ public class OAuth2ApplicationServiceWrapper
 
 	@Override
 	public com.liferay.oauth2.provider.model.OAuth2Application
-			fetchOAuth2Application(long companyId, String clientId)
+			fetchOAuth2Application(String clientId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _oAuth2ApplicationService.fetchOAuth2Application(
-			companyId, clientId);
+		return _oAuth2ApplicationService.fetchOAuth2Application(clientId);
 	}
 
 	@Override
@@ -113,28 +112,27 @@ public class OAuth2ApplicationServiceWrapper
 
 	@Override
 	public com.liferay.oauth2.provider.model.OAuth2Application
-			getOAuth2Application(long companyId, String clientId)
+			getOAuth2Application(String clientId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _oAuth2ApplicationService.getOAuth2Application(
-			companyId, clientId);
+		return _oAuth2ApplicationService.getOAuth2Application(clientId);
 	}
 
 	@Override
 	public java.util.List<com.liferay.oauth2.provider.model.OAuth2Application>
 		getOAuth2Applications(
-			long companyId, int start, int end,
+			int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator
 				<com.liferay.oauth2.provider.model.OAuth2Application>
 					orderByComparator) {
 
 		return _oAuth2ApplicationService.getOAuth2Applications(
-			companyId, start, end, orderByComparator);
+			start, end, orderByComparator);
 	}
 
 	@Override
-	public int getOAuth2ApplicationsCount(long companyId) {
-		return _oAuth2ApplicationService.getOAuth2ApplicationsCount(companyId);
+	public int getOAuth2ApplicationsCount() {
+		return _oAuth2ApplicationService.getOAuth2ApplicationsCount();
 	}
 
 	/**

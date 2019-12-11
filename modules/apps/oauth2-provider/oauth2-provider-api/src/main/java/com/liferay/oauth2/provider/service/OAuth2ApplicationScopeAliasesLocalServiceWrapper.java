@@ -43,8 +43,7 @@ public class OAuth2ApplicationScopeAliasesLocalServiceWrapper
 	@Override
 	public com.liferay.oauth2.provider.model.OAuth2ApplicationScopeAliases
 			addOAuth2ApplicationScopeAliases(
-				long companyId, long userId, String userName,
-				long oAuth2ApplicationId,
+				long userId, String userName, long oAuth2ApplicationId,
 				java.util.function.Consumer
 					<com.liferay.oauth2.provider.util.builder.
 						OAuth2ScopeBuilder> builderConsumer)
@@ -52,22 +51,19 @@ public class OAuth2ApplicationScopeAliasesLocalServiceWrapper
 
 		return _oAuth2ApplicationScopeAliasesLocalService.
 			addOAuth2ApplicationScopeAliases(
-				companyId, userId, userName, oAuth2ApplicationId,
-				builderConsumer);
+				userId, userName, oAuth2ApplicationId, builderConsumer);
 	}
 
 	@Override
 	public com.liferay.oauth2.provider.model.OAuth2ApplicationScopeAliases
 			addOAuth2ApplicationScopeAliases(
-				long companyId, long userId, String userName,
-				long oAuth2ApplicationId,
+				long userId, String userName, long oAuth2ApplicationId,
 				java.util.List<String> scopeAliasesList)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _oAuth2ApplicationScopeAliasesLocalService.
 			addOAuth2ApplicationScopeAliases(
-				companyId, userId, userName, oAuth2ApplicationId,
-				scopeAliasesList);
+				userId, userName, oAuth2ApplicationId, scopeAliasesList);
 	}
 
 	/**

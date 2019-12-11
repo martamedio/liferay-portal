@@ -147,13 +147,12 @@ public class OAuth2ApplicationServiceSoap {
 	}
 
 	public static com.liferay.oauth2.provider.model.OAuth2ApplicationSoap
-			fetchOAuth2Application(long companyId, String clientId)
+			fetchOAuth2Application(String clientId)
 		throws RemoteException {
 
 		try {
 			com.liferay.oauth2.provider.model.OAuth2Application returnValue =
-				OAuth2ApplicationServiceUtil.fetchOAuth2Application(
-					companyId, clientId);
+				OAuth2ApplicationServiceUtil.fetchOAuth2Application(clientId);
 
 			return com.liferay.oauth2.provider.model.OAuth2ApplicationSoap.
 				toSoapModel(returnValue);
@@ -185,13 +184,12 @@ public class OAuth2ApplicationServiceSoap {
 	}
 
 	public static com.liferay.oauth2.provider.model.OAuth2ApplicationSoap
-			getOAuth2Application(long companyId, String clientId)
+			getOAuth2Application(String clientId)
 		throws RemoteException {
 
 		try {
 			com.liferay.oauth2.provider.model.OAuth2Application returnValue =
-				OAuth2ApplicationServiceUtil.getOAuth2Application(
-					companyId, clientId);
+				OAuth2ApplicationServiceUtil.getOAuth2Application(clientId);
 
 			return com.liferay.oauth2.provider.model.OAuth2ApplicationSoap.
 				toSoapModel(returnValue);
@@ -205,7 +203,7 @@ public class OAuth2ApplicationServiceSoap {
 
 	public static com.liferay.oauth2.provider.model.OAuth2ApplicationSoap[]
 			getOAuth2Applications(
-				long companyId, int start, int end,
+				int start, int end,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<com.liferay.oauth2.provider.model.OAuth2Application>
 						orderByComparator)
@@ -215,7 +213,7 @@ public class OAuth2ApplicationServiceSoap {
 			java.util.List<com.liferay.oauth2.provider.model.OAuth2Application>
 				returnValue =
 					OAuth2ApplicationServiceUtil.getOAuth2Applications(
-						companyId, start, end, orderByComparator);
+						start, end, orderByComparator);
 
 			return com.liferay.oauth2.provider.model.OAuth2ApplicationSoap.
 				toSoapModels(returnValue);
@@ -227,13 +225,10 @@ public class OAuth2ApplicationServiceSoap {
 		}
 	}
 
-	public static int getOAuth2ApplicationsCount(long companyId)
-		throws RemoteException {
-
+	public static int getOAuth2ApplicationsCount() throws RemoteException {
 		try {
 			int returnValue =
-				OAuth2ApplicationServiceUtil.getOAuth2ApplicationsCount(
-					companyId);
+				OAuth2ApplicationServiceUtil.getOAuth2ApplicationsCount();
 
 			return returnValue;
 		}

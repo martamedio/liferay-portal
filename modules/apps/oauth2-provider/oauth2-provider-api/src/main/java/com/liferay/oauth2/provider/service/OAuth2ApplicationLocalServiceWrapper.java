@@ -49,31 +49,6 @@ public class OAuth2ApplicationLocalServiceWrapper
 				java.util.List<String> featuresList, String homePageURL,
 				long iconFileEntryId, String name, String privacyPolicyURL,
 				java.util.List<String> redirectURIsList,
-				java.util.function.Consumer
-					<com.liferay.oauth2.provider.util.builder.
-						OAuth2ScopeBuilder> builderConsumer,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _oAuth2ApplicationLocalService.addOAuth2Application(
-			companyId, userId, userName, allowedGrantTypesList,
-			clientCredentialUserId, clientId, clientProfile, clientSecret,
-			description, featuresList, homePageURL, iconFileEntryId, name,
-			privacyPolicyURL, redirectURIsList, builderConsumer,
-			serviceContext);
-	}
-
-	@Override
-	public com.liferay.oauth2.provider.model.OAuth2Application
-			addOAuth2Application(
-				long companyId, long userId, String userName,
-				java.util.List<com.liferay.oauth2.provider.constants.GrantType>
-					allowedGrantTypesList,
-				long clientCredentialUserId, String clientId, int clientProfile,
-				String clientSecret, String description,
-				java.util.List<String> featuresList, String homePageURL,
-				long iconFileEntryId, String name, String privacyPolicyURL,
-				java.util.List<String> redirectURIsList,
 				java.util.List<String> scopeAliasesList,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -110,6 +85,30 @@ public class OAuth2ApplicationLocalServiceWrapper
 			clientProfile, clientSecret, description, featuresList, homePageURL,
 			iconFileEntryId, name, privacyPolicyURL, redirectURIsList,
 			scopeAliasesList, serviceContext);
+	}
+
+	@Override
+	public com.liferay.oauth2.provider.model.OAuth2Application
+			addOAuth2Application(
+				long userId, String userName,
+				java.util.List<com.liferay.oauth2.provider.constants.GrantType>
+					allowedGrantTypesList,
+				long clientCredentialUserId, String clientId, int clientProfile,
+				String clientSecret, String description,
+				java.util.List<String> featuresList, String homePageURL,
+				long iconFileEntryId, String name, String privacyPolicyURL,
+				java.util.List<String> redirectURIsList,
+				java.util.function.Consumer
+					<com.liferay.oauth2.provider.util.builder.
+						OAuth2ScopeBuilder> builderConsumer,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _oAuth2ApplicationLocalService.addOAuth2Application(
+			userId, userName, allowedGrantTypesList, clientCredentialUserId,
+			clientId, clientProfile, clientSecret, description, featuresList,
+			homePageURL, iconFileEntryId, name, privacyPolicyURL,
+			redirectURIsList, builderConsumer, serviceContext);
 	}
 
 	/**
@@ -172,13 +171,6 @@ public class OAuth2ApplicationLocalServiceWrapper
 
 		return _oAuth2ApplicationLocalService.deleteOAuth2Application(
 			oAuth2Application);
-	}
-
-	@Override
-	public void deleteOAuth2Applications(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_oAuth2ApplicationLocalService.deleteOAuth2Applications(companyId);
 	}
 
 	/**
@@ -294,10 +286,9 @@ public class OAuth2ApplicationLocalServiceWrapper
 
 	@Override
 	public com.liferay.oauth2.provider.model.OAuth2Application
-		fetchOAuth2Application(long companyId, String clientId) {
+		fetchOAuth2Application(String clientId) {
 
-		return _oAuth2ApplicationLocalService.fetchOAuth2Application(
-			companyId, clientId);
+		return _oAuth2ApplicationLocalService.fetchOAuth2Application(clientId);
 	}
 
 	@Override
@@ -333,12 +324,18 @@ public class OAuth2ApplicationLocalServiceWrapper
 
 	@Override
 	public com.liferay.oauth2.provider.model.OAuth2Application
-			getOAuth2Application(long companyId, String clientId)
+			getOAuth2Application(String clientId)
 		throws com.liferay.oauth2.provider.exception.
 			NoSuchOAuth2ApplicationException {
 
-		return _oAuth2ApplicationLocalService.getOAuth2Application(
-			companyId, clientId);
+		return _oAuth2ApplicationLocalService.getOAuth2Application(clientId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.oauth2.provider.model.OAuth2Application>
+		getOAuth2Applications() {
+
+		return _oAuth2ApplicationLocalService.getOAuth2Applications();
 	}
 
 	/**
@@ -357,13 +354,6 @@ public class OAuth2ApplicationLocalServiceWrapper
 		getOAuth2Applications(int start, int end) {
 
 		return _oAuth2ApplicationLocalService.getOAuth2Applications(start, end);
-	}
-
-	@Override
-	public java.util.List<com.liferay.oauth2.provider.model.OAuth2Application>
-		getOAuth2Applications(long companyId) {
-
-		return _oAuth2ApplicationLocalService.getOAuth2Applications(companyId);
 	}
 
 	/**

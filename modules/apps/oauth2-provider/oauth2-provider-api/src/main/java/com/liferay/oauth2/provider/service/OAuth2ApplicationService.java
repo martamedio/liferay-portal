@@ -81,8 +81,7 @@ public interface OAuth2ApplicationService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OAuth2Application fetchOAuth2Application(
-			long companyId, String clientId)
+	public OAuth2Application fetchOAuth2Application(String clientId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -90,17 +89,16 @@ public interface OAuth2ApplicationService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OAuth2Application getOAuth2Application(
-			long companyId, String clientId)
+	public OAuth2Application getOAuth2Application(String clientId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OAuth2Application> getOAuth2Applications(
-		long companyId, int start, int end,
+		int start, int end,
 		OrderByComparator<OAuth2Application> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getOAuth2ApplicationsCount(long companyId);
+	public int getOAuth2ApplicationsCount();
 
 	/**
 	 * Returns the OSGi service identifier.

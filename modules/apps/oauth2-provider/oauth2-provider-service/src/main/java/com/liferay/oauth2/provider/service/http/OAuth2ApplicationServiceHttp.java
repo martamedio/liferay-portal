@@ -197,8 +197,7 @@ public class OAuth2ApplicationServiceHttp {
 	}
 
 	public static com.liferay.oauth2.provider.model.OAuth2Application
-			fetchOAuth2Application(
-				HttpPrincipal httpPrincipal, long companyId, String clientId)
+			fetchOAuth2Application(HttpPrincipal httpPrincipal, String clientId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -207,7 +206,7 @@ public class OAuth2ApplicationServiceHttp {
 				_fetchOAuth2ApplicationParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, clientId);
+				methodKey, clientId);
 
 			Object returnObj = null;
 
@@ -277,8 +276,7 @@ public class OAuth2ApplicationServiceHttp {
 	}
 
 	public static com.liferay.oauth2.provider.model.OAuth2Application
-			getOAuth2Application(
-				HttpPrincipal httpPrincipal, long companyId, String clientId)
+			getOAuth2Application(HttpPrincipal httpPrincipal, String clientId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -287,7 +285,7 @@ public class OAuth2ApplicationServiceHttp {
 				_getOAuth2ApplicationParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, clientId);
+				methodKey, clientId);
 
 			Object returnObj = null;
 
@@ -319,7 +317,7 @@ public class OAuth2ApplicationServiceHttp {
 	public static java.util.List
 		<com.liferay.oauth2.provider.model.OAuth2Application>
 			getOAuth2Applications(
-				HttpPrincipal httpPrincipal, long companyId, int start, int end,
+				HttpPrincipal httpPrincipal, int start, int end,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<com.liferay.oauth2.provider.model.OAuth2Application>
 						orderByComparator) {
@@ -330,7 +328,7 @@ public class OAuth2ApplicationServiceHttp {
 				_getOAuth2ApplicationsParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, start, end, orderByComparator);
+				methodKey, start, end, orderByComparator);
 
 			Object returnObj = null;
 
@@ -352,17 +350,14 @@ public class OAuth2ApplicationServiceHttp {
 		}
 	}
 
-	public static int getOAuth2ApplicationsCount(
-		HttpPrincipal httpPrincipal, long companyId) {
-
+	public static int getOAuth2ApplicationsCount(HttpPrincipal httpPrincipal) {
 		try {
 			MethodKey methodKey = new MethodKey(
 				OAuth2ApplicationServiceUtil.class,
 				"getOAuth2ApplicationsCount",
 				_getOAuth2ApplicationsCountParameterTypes7);
 
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId);
+			MethodHandler methodHandler = new MethodHandler(methodKey);
 
 			Object returnObj = null;
 
@@ -593,18 +588,18 @@ public class OAuth2ApplicationServiceHttp {
 	private static final Class<?>[] _deleteOAuth2ApplicationParameterTypes2 =
 		new Class[] {long.class};
 	private static final Class<?>[] _fetchOAuth2ApplicationParameterTypes3 =
-		new Class[] {long.class, String.class};
+		new Class[] {String.class};
 	private static final Class<?>[] _getOAuth2ApplicationParameterTypes4 =
 		new Class[] {long.class};
 	private static final Class<?>[] _getOAuth2ApplicationParameterTypes5 =
-		new Class[] {long.class, String.class};
+		new Class[] {String.class};
 	private static final Class<?>[] _getOAuth2ApplicationsParameterTypes6 =
 		new Class[] {
-			long.class, int.class, int.class,
+			int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[] _getOAuth2ApplicationsCountParameterTypes7 =
-		new Class[] {long.class};
+		new Class[] {};
 	private static final Class<?>[] _updateIconParameterTypes8 = new Class[] {
 		long.class, java.io.InputStream.class
 	};

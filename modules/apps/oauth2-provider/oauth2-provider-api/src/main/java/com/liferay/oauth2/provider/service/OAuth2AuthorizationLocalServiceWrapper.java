@@ -60,16 +60,16 @@ public class OAuth2AuthorizationLocalServiceWrapper
 	@Override
 	public com.liferay.oauth2.provider.model.OAuth2Authorization
 		addOAuth2Authorization(
-			long companyId, long userId, String userName,
-			long oAuth2ApplicationId, long oAuth2ApplicationScopeAliasesId,
-			String accessTokenContent, java.util.Date accessTokenCreateDate,
+			long userId, String userName, long oAuth2ApplicationId,
+			long oAuth2ApplicationScopeAliasesId, String accessTokenContent,
+			java.util.Date accessTokenCreateDate,
 			java.util.Date accessTokenExpirationDate, String remoteHostInfo,
 			String remoteIPInfo, String refreshTokenContent,
 			java.util.Date refreshTokenCreateDate,
 			java.util.Date refreshTokenExpirationDate) {
 
 		return _oAuth2AuthorizationLocalService.addOAuth2Authorization(
-			companyId, userId, userName, oAuth2ApplicationId,
+			userId, userName, oAuth2ApplicationId,
 			oAuth2ApplicationScopeAliasesId, accessTokenContent,
 			accessTokenCreateDate, accessTokenExpirationDate, remoteHostInfo,
 			remoteIPInfo, refreshTokenContent, refreshTokenCreateDate,

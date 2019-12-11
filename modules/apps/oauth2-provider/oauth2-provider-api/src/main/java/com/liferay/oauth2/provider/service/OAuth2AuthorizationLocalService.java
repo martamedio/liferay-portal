@@ -79,7 +79,7 @@ public interface OAuth2AuthorizationLocalService
 		Date refreshTokenCreateDate, Date refreshTokenExpirationDate);
 
 	public OAuth2Authorization addOAuth2Authorization(
-		long companyId, long userId, String userName, long oAuth2ApplicationId,
+		long userId, String userName, long oAuth2ApplicationId,
 		long oAuth2ApplicationScopeAliasesId, String accessTokenContent,
 		Date accessTokenCreateDate, Date accessTokenExpirationDate,
 		String remoteHostInfo, String remoteIPInfo, String refreshTokenContent,
