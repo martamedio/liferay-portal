@@ -91,10 +91,10 @@ public class EmailOTPMFAChecker {
 			HttpServletRequest originalHttpServletRequest =
 				_portal.getOriginalServletRequest(httpServletRequest);
 
-			HttpSession session = originalHttpServletRequest.getSession();
+			HttpSession httpSession = originalHttpServletRequest.getSession();
 
-			session.setAttribute(WebKeys.OTP_PHASE, "verify");
-			session.setAttribute(WebKeys.USER_ID, userId);
+			httpSession.setAttribute(WebKeys.OTP_PHASE, "verify");
+			httpSession.setAttribute(WebKeys.USER_ID, userId);
 		}
 		catch (ServletException se) {
 			throw new IOException(
@@ -108,9 +108,9 @@ public class EmailOTPMFAChecker {
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
-		HttpSession session = originalHttpServletRequest.getSession(false);
+		HttpSession httpSession = originalHttpServletRequest.getSession(false);
 
-		if (isVerified(session, userId)) {
+		if (isVerified(httpSession, userId)) {
 			return true;
 		}
 
@@ -136,7 +136,7 @@ public class EmailOTPMFAChecker {
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
-		HttpSession session = originalHttpServletRequest.getSession();
+		HttpSession httpSession = originalHttpServletRequest.getSession();
 
 		try {
 			MFAEmailOTPEntry mfaEmailOTPEntry =
@@ -165,19 +165,20 @@ public class EmailOTPMFAChecker {
 
 			String userInput = ParamUtil.getString(httpServletRequest, "otp");
 
-			boolean verified = _verify(session, userInput);
+			boolean verified = _verify(httpSession, userInput);
 
 			String userIP = originalHttpServletRequest.getRemoteAddr();
 
 			if (verified) {
 				long validatedAt = System.currentTimeMillis();
 
-				Map<String, Object> validatedMap = _getValidatedMap(session);
+				Map<String, Object> validatedMap = _getValidatedMap(
+					httpSession);
 
 				if (validatedMap == null) {
 					validatedMap = new HashMap<>(2);
 
-					session.setAttribute(_VALIDATED, validatedMap);
+					httpSession.setAttribute(_VALIDATED, validatedMap);
 				}
 
 				validatedMap.put(WebKeys.USER_ID, userId);
@@ -245,12 +246,12 @@ public class EmailOTPMFAChecker {
 		return true;
 	}
 
-	protected boolean isVerified(HttpSession session, long userId) {
-		if (session == null) {
+	protected boolean isVerified(HttpSession httpSession, long userId) {
+		if (httpSession == null) {
 			return false;
 		}
 
-		Map<String, Object> validatedMap = _getValidatedMap(session);
+		Map<String, Object> validatedMap = _getValidatedMap(httpSession);
 
 		if (validatedMap != null) {
 			if (userId != MapUtil.getLong(validatedMap, WebKeys.USER_ID)) {
@@ -299,8 +300,8 @@ public class EmailOTPMFAChecker {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> _getValidatedMap(HttpSession session) {
-		return (Map<String, Object>)session.getAttribute(_VALIDATED);
+	private Map<String, Object> _getValidatedMap(HttpSession httpSession) {
+		return (Map<String, Object>)httpSession.getAttribute(_VALIDATED);
 	}
 
 	private boolean _isRetryTimedOut(
@@ -333,17 +334,17 @@ public class EmailOTPMFAChecker {
 		return false;
 	}
 
-	private boolean _verify(HttpSession session, String userInput) {
-		String expected = (String)session.getAttribute(WebKeys.OTP);
+	private boolean _verify(HttpSession httpSession, String userInput) {
+		String expected = (String)httpSession.getAttribute(WebKeys.OTP);
 
 		if ((expected == null) || !expected.equals(userInput)) {
 			return false;
 		}
 
-		session.removeAttribute(WebKeys.OTP);
-		session.removeAttribute(WebKeys.OTP_PHASE);
-		session.removeAttribute(WebKeys.OTP_SET_AT);
-		session.removeAttribute(WebKeys.USER_ID);
+		httpSession.removeAttribute(WebKeys.OTP);
+		httpSession.removeAttribute(WebKeys.OTP_PHASE);
+		httpSession.removeAttribute(WebKeys.OTP_SET_AT);
+		httpSession.removeAttribute(WebKeys.USER_ID);
 
 		return true;
 	}

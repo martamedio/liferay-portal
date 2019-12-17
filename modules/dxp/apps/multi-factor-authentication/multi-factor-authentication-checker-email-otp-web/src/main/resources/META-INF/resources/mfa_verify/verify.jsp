@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-EmailOTPMFAChecker emailOtpMfaChecker = (EmailOTPMFAChecker)request.getAttribute(WebKeys.EMAIL_MFA_CHECKER);
+EmailOTPMFAChecker emailOTPMFAChecker = (EmailOTPMFAChecker)request.getAttribute(WebKeys.EMAIL_MFA_CHECKER);
 
 long mfaUserId = (Long)request.getAttribute(WebKeys.MFA_USER_ID);
 %>
@@ -33,7 +33,7 @@ long mfaUserId = (Long)request.getAttribute(WebKeys.MFA_USER_ID);
 	<liferay-ui:error key="mfaFailed" message="multi-factor-authentication-failed" />
 
 	<%
-	emailOtpMfaChecker.includeBrowserVerification(request, response, mfaUserId);
+	emailOTPMFAChecker.includeBrowserVerification(request, response, mfaUserId);
 	%>
 
 	<aui:button-row>
