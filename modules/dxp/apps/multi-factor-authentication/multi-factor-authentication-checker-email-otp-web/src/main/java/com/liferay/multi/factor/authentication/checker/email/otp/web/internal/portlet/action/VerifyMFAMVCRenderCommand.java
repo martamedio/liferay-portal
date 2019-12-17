@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCRenderCommand.class
 )
-public class VerifyMFARenderCommand implements MVCRenderCommand {
+public class VerifyMFAMVCRenderCommand implements MVCRenderCommand {
 
 	@Override
 	public String render(
