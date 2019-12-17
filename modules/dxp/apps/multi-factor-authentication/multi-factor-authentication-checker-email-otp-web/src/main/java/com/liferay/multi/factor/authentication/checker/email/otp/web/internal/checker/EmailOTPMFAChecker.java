@@ -73,7 +73,8 @@ public class EmailOTPMFAChecker {
 			return;
 		}
 
-		httpServletRequest.setAttribute("sendToEmail", user.getEmailAddress());
+		httpServletRequest.setAttribute(
+			WebKeys.SEND_TO_EMAIL, user.getEmailAddress());
 
 		RequestDispatcher requestDispatcher =
 			_servletContext.getRequestDispatcher("/verify_otp.jsp");
@@ -83,7 +84,7 @@ public class EmailOTPMFAChecker {
 				_getEmailOTPConfiguration(userId);
 
 			httpServletRequest.setAttribute(
-				"emailOTPConfiguration", emailOTPConfiguration);
+				WebKeys.EMAIL_OTP_CONFIGURATION, emailOTPConfiguration);
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 

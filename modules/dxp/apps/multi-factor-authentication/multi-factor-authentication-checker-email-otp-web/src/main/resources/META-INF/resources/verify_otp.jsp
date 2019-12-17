@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-EmailOTPConfiguration emailOTPConfiguration = (EmailOTPConfiguration)request.getAttribute("emailOTPConfiguration");
+EmailOTPConfiguration emailOTPConfiguration = (EmailOTPConfiguration)request.getAttribute(WebKeys.EMAIL_OTP_CONFIGURATION);
 %>
 
 <div id="<portlet:namespace/>phaseOne">

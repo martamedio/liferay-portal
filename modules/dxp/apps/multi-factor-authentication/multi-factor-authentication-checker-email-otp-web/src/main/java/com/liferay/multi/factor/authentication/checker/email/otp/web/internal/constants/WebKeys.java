@@ -19,7 +19,13 @@ package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.c
  */
 public class WebKeys {
 
+	public static final String BODY_LOCALIZED_VALUES_MAP =
+		"bodyLocalizedValuesMap";
+
 	public static final String EMAIL_MFA_CHECKER = "emailMFAChecker";
+
+	public static final String EMAIL_OTP_CONFIGURATION =
+		"emailOTPConfiguration";
 
 	public static final String MFA_USER_ID = "mfaUserId";
 
@@ -28,6 +34,11 @@ public class WebKeys {
 	public static final String OTP_PHASE = "otpPhase";
 
 	public static final String OTP_SET_AT = "otpSetAt";
+
+	public static final String SEND_TO_EMAIL = "sendToEmail";
+
+	public static final String SUBJECT_LOCALIZED_VALUES_MAP =
+		"subjectLocalizedValuesMap";
 
 	public static final String USER_ID = "userId";
 

@@ -15,6 +15,7 @@
 package com.liferay.multi.factor.authentication.checker.email.otp.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.configuration.EmailOTPConfiguration;
+import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.constants.WebKeys;
 import com.liferay.multi.factor.authentication.checker.email.otp.web.internal.settings.EmailOTPConfigurationLocalizedValuesMap;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -25,7 +26,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
 import java.util.Locale;
@@ -82,7 +82,7 @@ public class EmailOTPPortalSettingsConfigurationScreenContributor
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
+				com.liferay.portal.kernel.util.WebKeys.THEME_DISPLAY);
 
 		EmailOTPConfiguration emailOTPConfiguration = null;
 
@@ -101,12 +101,12 @@ public class EmailOTPPortalSettingsConfigurationScreenContributor
 		}
 
 		httpServletRequest.setAttribute(
-			"bodyLocalizedValuesMap",
+			WebKeys.BODY_LOCALIZED_VALUES_MAP,
 			_getEmailOTPTemplate(
 				EmailOTPConfiguration.DEFAULT_EMAIL_OTP_BODY,
 				emailOTPConfiguration.emailTemplateBody()));
 		httpServletRequest.setAttribute(
-			"subjectLocalizedValuesMap",
+			WebKeys.SUBJECT_LOCALIZED_VALUES_MAP,
 			_getEmailOTPTemplate(
 				EmailOTPConfiguration.DEFAULT_EMAIL_OTP_SUBJECT,
 				emailOTPConfiguration.emailTemplateSubject()));

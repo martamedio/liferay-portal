@@ -34,9 +34,9 @@ EmailOTPConfiguration emailOTPConfiguration = ConfigurationProviderUtil.getCompa
 	<aui:input helpMessage="email-template-from-description" label="email-template-from" name="emailTemplateFrom" type="text" value="<%= emailOTPConfiguration.emailTemplateFrom() %>" />
 
 	<liferay-frontend:email-notification-settings
-		emailBodyLocalizedValuesMap='<%= (LocalizedValuesMap)request.getAttribute("bodyLocalizedValuesMap") %>'
+		emailBodyLocalizedValuesMap="<%= (LocalizedValuesMap)request.getAttribute(WebKeys.BODY_LOCALIZED_VALUES_MAP) %>"
 		emailParam="emailOTPTemplate"
-		emailSubjectLocalizedValuesMap='<%= (LocalizedValuesMap)request.getAttribute("subjectLocalizedValuesMap") %>'
+		emailSubjectLocalizedValuesMap="<%= (LocalizedValuesMap)request.getAttribute(WebKeys.SUBJECT_LOCALIZED_VALUES_MAP) %>"
 		showEmailEnabled="<%= false %>"
 	/>
 
