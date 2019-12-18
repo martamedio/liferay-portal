@@ -197,8 +197,6 @@ public class OAuth2ApplicationLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		long companyId = CompanyThreadLocal.getCompanyId();
-
 		if (allowedGrantTypesList == null) {
 			allowedGrantTypesList = new ArrayList<>();
 		}

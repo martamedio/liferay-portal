@@ -39,10 +39,9 @@ public class OAuth2ApplicationLocalServiceUtil {
 	 */
 
 	/**
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never modify or reference this interface directly. Always use {@link OAuth2ApplicationLocalServiceUtil} to access the o auth2 application local service. Add custom service methods to <code>com.liferay.oauth2.provider.service.impl.OAuth2ApplicationLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * @deprecated As of Mueller (7.2.x)
 	 */
+	@Deprecated
 	public static com.liferay.oauth2.provider.model.OAuth2Application
 			addOAuth2Application(
 				long companyId, long userId, String userName,
@@ -63,31 +62,6 @@ public class OAuth2ApplicationLocalServiceUtil {
 			description, featuresList, homePageURL, iconFileEntryId, name,
 			privacyPolicyURL, redirectURIsList, scopeAliasesList,
 			serviceContext);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	public static com.liferay.oauth2.provider.model.OAuth2Application
-			addOAuth2Application(
-				long companyId, long userId, String userName,
-				java.util.List<com.liferay.oauth2.provider.constants.GrantType>
-					allowedGrantTypesList,
-				String clientId, int clientProfile, String clientSecret,
-				String description, java.util.List<String> featuresList,
-				String homePageURL, long iconFileEntryId, String name,
-				String privacyPolicyURL,
-				java.util.List<String> redirectURIsList,
-				java.util.List<String> scopeAliasesList,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return getService().addOAuth2Application(
-			companyId, userId, userName, allowedGrantTypesList, clientId,
-			clientProfile, clientSecret, description, featuresList, homePageURL,
-			iconFileEntryId, name, privacyPolicyURL, redirectURIsList,
-			scopeAliasesList, serviceContext);
 	}
 
 	public static com.liferay.oauth2.provider.model.OAuth2Application
