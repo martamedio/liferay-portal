@@ -22,10 +22,14 @@ public class WebKeys {
 	public static final String BODY_LOCALIZED_VALUES_MAP =
 		"bodyLocalizedValuesMap";
 
+	public static final String DIGEST = "digest";
+
 	public static final String EMAIL_MFA_CHECKER = "emailMFAChecker";
 
 	public static final String EMAIL_OTP_CONFIGURATION =
 		"emailOTPConfiguration";
+
+	public static final String KEY = "key";
 
 	public static final String MFA_USER_ID = "mfaUserId";
 
