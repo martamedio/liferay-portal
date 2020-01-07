@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.oauth2.provider.scope.liferay;
+package com.liferay.oauth2.provider.scope.liferay.spi;
 
 import com.liferay.oauth2.provider.scope.spi.application.descriptor.ApplicationDescriptor;
 
