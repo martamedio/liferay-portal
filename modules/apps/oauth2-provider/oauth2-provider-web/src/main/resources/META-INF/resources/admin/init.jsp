@@ -37,6 +37,7 @@ page import="com.liferay.oauth2.provider.service.OAuth2AuthorizationServiceUtil"
 page import="com.liferay.oauth2.provider.web.internal.AssignableScopes" %><%@
 page import="com.liferay.oauth2.provider.web.internal.constants.OAuth2ProviderWebKeys" %><%@
 page import="com.liferay.oauth2.provider.web.internal.display.context.AssignScopesDisplayContext" %><%@
+page import="com.liferay.oauth2.provider.web.internal.display.context.AssignSimpleScopesDisplayContext" %><%@
 page import="com.liferay.oauth2.provider.web.internal.display.context.OAuth2AdminPortletDisplayContext" %><%@
 page import="com.liferay.oauth2.provider.web.internal.display.context.OAuth2ApplicationsManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth2.provider.web.internal.display.context.OAuth2AuthorizationsManagementToolbarDisplayContext" %><%@
@@ -61,4 +62,5 @@ page import="java.util.Iterator" %>
 
 <%
 OAuth2AdminPortletDisplayContext oAuth2AdminPortletDisplayContext = (OAuth2AdminPortletDisplayContext)request.getAttribute(OAuth2ProviderWebKeys.OAUTH2_ADMIN_PORTLET_DISPLAY_CONTEXT);
+OAuth2AdminPortletDisplayContext oAuth2AdminPortletSimpleDisplayContext = (OAuth2AdminPortletDisplayContext)request.getAttribute(OAuth2ProviderWebKeys.OAUTH2_ADMIN_PORTLET_SIMPLE_DISPLAY_CONTEXT);
 %>
