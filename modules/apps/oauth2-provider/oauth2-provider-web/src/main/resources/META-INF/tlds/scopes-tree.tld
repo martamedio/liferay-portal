@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<taglib xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns="http://java.sun.com/xml/ns/javaee"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+		version="2.1">
+	<display-name>Tree util</display-name>
+	<tlib-version>1.0</tlib-version>
+	<short-name>scopes-tree</short-name>
+	<uri>http://liferay.com/tld/scopes-tree</uri>
+	<tag>
+		<name>scopes-tree</name>
+		<tag-class>com.liferay.oauth2.provider.web.internal.taglib.ScopesTreeTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<name>beforeParent</name>
+			<required>true</required>
+			<fragment>true</fragment>
+		</attribute>
+		<attribute>
+			<name>leaf</name>
+			<required>true</required>
+			<fragment>true</fragment>
+		</attribute>
+		<attribute>
+			<name>scopesMap</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.util.Map</type>
+		</attribute>
+	</tag>
+</taglib>
