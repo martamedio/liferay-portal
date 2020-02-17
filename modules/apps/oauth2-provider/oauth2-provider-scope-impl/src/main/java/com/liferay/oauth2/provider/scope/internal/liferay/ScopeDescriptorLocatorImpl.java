@@ -19,6 +19,9 @@ import com.liferay.oauth2.provider.scope.liferay.ScopedServiceTrackerMap;
 import com.liferay.oauth2.provider.scope.liferay.ScopedServiceTrackerMapFactory;
 import com.liferay.oauth2.provider.scope.liferay.spi.ScopeDescriptorLocator;
 import com.liferay.oauth2.provider.scope.spi.scope.descriptor.ScopeDescriptor;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -31,6 +34,11 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = ScopeDescriptorLocator.class)
 public class ScopeDescriptorLocatorImpl implements ScopeDescriptorLocator {
+
+	@Override
+	public ScopeDescriptor getScopeDescriptor(long companyId) {
+		return _scopeAliasServiceTrackerMap.getService(companyId);
+	}
 
 	@Override
 	public ScopeDescriptor getScopeDescriptor(
@@ -54,6 +62,20 @@ public class ScopeDescriptorLocatorImpl implements ScopeDescriptorLocator {
 			bundleContext, ScopeDescriptor.class,
 			OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME,
 			() -> _defaultScopeDescriptor);
+
+		_scopeAliasServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, ScopeDescriptor.class,
+				"(&(companyId=*)(!(" +
+					OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME + "=*)))",
+				(serviceReference, emitter) -> {
+					long companyId = GetterUtil.getLong(
+						serviceReference.getProperty("companyId"));
+
+					if (companyId != 0) {
+						emitter.emit(companyId);
+					}
+				});
 	}
 
 	@Deactivate
@@ -71,6 +93,8 @@ public class ScopeDescriptorLocatorImpl implements ScopeDescriptorLocator {
 	@Reference(target = "(default=true)")
 	private ScopeDescriptor _defaultScopeDescriptor;
 
+	private ServiceTrackerMap<Long, ScopeDescriptor>
+		_scopeAliasServiceTrackerMap;
 	private ScopedServiceTrackerMap<ScopeDescriptor> _scopedServiceTrackerMap;
 	private ScopedServiceTrackerMapFactory _scopedServiceTrackerMapFactory;
 
