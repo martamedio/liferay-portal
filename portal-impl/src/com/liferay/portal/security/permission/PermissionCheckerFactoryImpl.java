@@ -16,9 +16,12 @@ package com.liferay.portal.security.permission;
 
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerDecorator;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.contributor.RoleContributor;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.registry.ServiceReference;
+import com.liferay.registry.ServiceTrackerCustomizer;
 import com.liferay.registry.collections.ServiceTrackerCollections;
 import com.liferay.registry.collections.ServiceTrackerList;
 
@@ -28,6 +31,9 @@ import com.liferay.registry.collections.ServiceTrackerList;
  * @author Shuyang Zhou
  */
 public class PermissionCheckerFactoryImpl implements PermissionCheckerFactory {
+
+	private ServiceTrackerList<PermissionCheckerDecorator>
+		_permissionCheckerDecorators;
 
 	public PermissionCheckerFactoryImpl() throws Exception {
 		Class<PermissionChecker> clazz =
@@ -40,6 +46,10 @@ public class PermissionCheckerFactoryImpl implements PermissionCheckerFactory {
 	public void afterPropertiesSet() {
 		_roleContributors = ServiceTrackerCollections.openList(
 			RoleContributor.class);
+
+		_permissionCheckerDecorators = ServiceTrackerCollections.openList(
+		PermissionCheckerDecorator.class,
+			new PermissionCheckerDecoratorServiceTrackerCustomizer());
 	}
 
 	@Override
@@ -59,4 +69,42 @@ public class PermissionCheckerFactoryImpl implements PermissionCheckerFactory {
 	private final PermissionChecker _permissionChecker;
 	private ServiceTrackerList<RoleContributor> _roleContributors;
 
+	private class PermissionCheckerDecoratorServiceTrackerCustomizer
+		implements
+		ServiceTrackerCustomizer<
+			PermissionCheckerDecorator, Object> {
+		@Override
+		public Object addingService(
+			ServiceReference<PermissionCheckerDecorator> serviceReference) {
+
+			return serviceReference;
+		}
+
+		@Override
+		public void modifiedService(
+			ServiceReference<PermissionCheckerDecorator> serviceReference,
+			Object service) {
+
+			_rebuild();
+		}
+
+		@Override
+		public void removedService(
+			ServiceReference<PermissionCheckerDecorator> serviceReference,
+			Object service) {
+
+			_rebuild();
+		}
+
+		private void _rebuild() {
+			PermissionChecker permissionChecker = _permissionChecker.clone();
+
+			for (PermissionCheckerDecorator permissionCheckerDecorator :
+				_permissionCheckerDecorators) {
+
+				permissionChecker = permissionCheckerDecorator.decorate(
+					permissionChecker);
+			}
+		}
+	}
 }
