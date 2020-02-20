@@ -24,14 +24,14 @@ public interface Tree<T> {
 
 	public static final class Node<T> implements Tree<T> {
 		private T _value;
-		private List<Node<T>> _children;
+		private List<Tree<T>> _children;
 
-		public Node(T value, List<Node<T>> children) {
+		public Node(T value, List<Tree<T>> children) {
 			_value = value;
 			_children = children;
 		}
 
-		public Node(T value, Node<T> ... children) {
+		public Node(T value, Tree<T> ... children) {
 			_value = value;
 			_children = Arrays.asList(children);
 		}

@@ -21,12 +21,16 @@ import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.liferay.oauth2.provider.web.internal.taglib.Tree.Leaf;
+import com.liferay.oauth2.provider.web.internal.taglib.Tree.Node;
+import com.liferay.petra.string.StringPool;
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -46,38 +50,33 @@ public class GenerateScopesTreeUtil {
 			directedAcyclicGraph.addVertex(vertex);
 		}
 
-		Set<String> initialScopes = new HashSet<>();
-		Set<String> endingScopes = new HashSet<>();
+		for (String scopeAlias1 : scopeAliases) {
+			ScopeMatcher scopeMatcher = scopeMatcherFactory.create(scopeAlias1);
 
-		for (String scope : scopeAliases) {
-			Stream<String> streamScopeAliases = scopeAliases.stream();
+			for (String scopeAlias2 : scopeAliases) {
+				if (Objects.equals(scopeAlias1, scopeAlias2)) {
+					continue;
+				}
 
-			streamScopeAliases.forEach(
-				s -> {
-					ScopeMatcher scopeMatcher = scopeMatcherFactory.create(
-						scope);
-
-					if ((!Objects.equals(s, scope)) && scopeMatcher.match(s)) {
-						directedAcyclicGraph.addEdge(
-							scope, s, scope + " -> " + s);
-					}
-				});
+				if (scopeMatcher.match(scopeAlias2)) {
+					directedAcyclicGraph.addEdge(
+						scopeAlias1, scopeAlias2,
+						scopeAlias1 + "#" + scopeAlias2);
+				}
+			}
 		}
 
-		for (String scope : scopeAliases) {
-			if (directedAcyclicGraph.inDegreeOf(scope) == 0) {
-				initialScopes.add(scope);
-			}
+		Set<String> endingScopes = new HashSet<>();
+		Set<String> initialScopes = new HashSet<>();
 
+		for (String scope : scopeAliases) {
 			if (directedAcyclicGraph.outDegreeOf(scope) == 0) {
 				endingScopes.add(scope);
 			}
-		}
 
-		for (String initialScope : initialScopes) {
-			Tree.Node<String> node = new Tree.Node<>(initialScope);
-
-			root.addChildren(node);
+			if (directedAcyclicGraph.inDegreeOf(scope) == 0) {
+				initialScopes.add(scope);
+			}
 		}
 
 		AllDirectedPaths<String, String> allDirectedPaths =
@@ -86,10 +85,10 @@ public class GenerateScopesTreeUtil {
 		List<GraphPath<String, String>> allPaths = allDirectedPaths.getAllPaths(
 			initialScopes, endingScopes, true, null);
 
-		Comparator<GraphPath<?, ?>> ci = Comparator.comparingInt(
+		Comparator<GraphPath<?, ?>> comparator = Comparator.comparingInt(
 			GraphPath::getLength);
 
-		allPaths.sort(ci.reversed());
+		allPaths.sort(comparator.reversed());
 
 		HashMap<String, Set<String>> visitedMap = new HashMap<>();
 
@@ -97,38 +96,47 @@ public class GenerateScopesTreeUtil {
 			List<String> vertexList = path.getVertexList();
 
 			Set<String> visited = visitedMap.computeIfAbsent(
-				path.getStartVertex() + " -> " + path.getEndVertex(),
+				path.getStartVertex() + "#" + path.getEndVertex(),
 				__ -> new HashSet<>());
 
 			if (visited.containsAll(vertexList)) {
+				directedAcyclicGraph.removeAllEdges(path.getEdgeList());
+
 				continue;
 			}
 
 			visited.addAll(vertexList);
-
-			Node<String> parent = null;
-			Iterator<String> iterator = vertexList.iterator();
-
-			while (iterator.hasNext()) {
-				String scope = iterator.next();
-
-				if (parent == null) {
-					parent = root.findChildrenByValue(scope);
-
-					continue;
-				}
-
-				SortedSet<Node> nodes = parent.getNodes();
-
-				nodes.add(new Node(scope));
-
-				if (iterator.hasNext()) {
-					parent = parent.findChildrenByValue(scope);
-				}
-			}
 		}
 
-		return root;
+		final Stream<String> stream = initialScopes.stream();
+
+		return new Node<>(
+			StringPool.BLANK, stream.map(
+				scope -> _createTree(directedAcyclicGraph, scope)
+			).collect(
+				Collectors.toList()
+			)
+		);
+	}
+
+	private static <T, E> Tree<T> _createTree(Graph<T, E> graph, T t) {
+		if (graph.outDegreeOf(t) == 0) {
+			return new Leaf<>(t);
+		}
+		else {
+			final Set<E> outgoingEdgesOf = graph.outgoingEdgesOf(t);
+
+			final Stream<E> stream = outgoingEdgesOf.stream();
+
+			return new Node<>(
+				t,
+				stream.map(
+					edge -> _createTree(graph, graph.getEdgeTarget(edge))
+				).collect(
+					Collectors.toList()
+				)
+			);
+		}
 	}
 
 }
