@@ -25,7 +25,7 @@ import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalSer
 import com.liferay.oauth2.provider.service.OAuth2ApplicationService;
 import com.liferay.oauth2.provider.service.OAuth2ScopeGrantLocalService;
 import com.liferay.oauth2.provider.web.internal.ScopeAliasScopeDescriptor;
-import com.liferay.oauth2.provider.web.internal.taglib.Node;
+import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 import com.liferay.oauth2.provider.web.internal.util.GenerateScopesTreeUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -101,7 +101,7 @@ public class AssignScopesTreeDisplayContext
 		return _assignedScopeAliases;
 	}
 
-	public Node getAvailableScopeAliases() {
+	public Tree<String> getAvailableScopeAliases() {
 		return _availableScopeAliases;
 	}
 
@@ -160,7 +160,7 @@ public class AssignScopesTreeDisplayContext
 
 	private final Set<String> _assignedDeletedScopeAliases;
 	private final Set<String> _assignedScopeAliases;
-	private final Node _availableScopeAliases;
+	private final Tree<String> _availableScopeAliases;
 	private final long _companyId;
 	private final Locale _locale;
 	private final Map<String, String> _scopeAliasesDescriptions;
