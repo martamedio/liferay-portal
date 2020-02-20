@@ -16,16 +16,15 @@ package com.liferay.oauth2.provider.web.internal.util;
 
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcher;
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcherFactory;
-import com.liferay.oauth2.provider.web.internal.taglib.Node;
-import com.liferay.petra.string.StringPool;
+import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.stream.Stream;
 
 import org.jgrapht.GraphPath;
@@ -37,10 +36,8 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
  */
 public class GenerateScopesTreeUtil {
 
-	public static Node generateScopesTree(
+	public static Tree<String> generateScopesTree(
 		Set<String> scopeAliases, ScopeMatcherFactory scopeMatcherFactory) {
-
-		Node root = new Node(StringPool.BLANK);
 
 		DirectedAcyclicGraph<String, String> directedAcyclicGraph =
 			new DirectedAcyclicGraph<>(String.class);
@@ -60,7 +57,7 @@ public class GenerateScopesTreeUtil {
 					ScopeMatcher scopeMatcher = scopeMatcherFactory.create(
 						scope);
 
-					if ((s != scope) && scopeMatcher.match(s)) {
+					if ((!Objects.equals(s, scope)) && scopeMatcher.match(s)) {
 						directedAcyclicGraph.addEdge(
 							scope, s, scope + " -> " + s);
 					}
@@ -78,7 +75,7 @@ public class GenerateScopesTreeUtil {
 		}
 
 		for (String initialScope : initialScopes) {
-			Node node = new Node(initialScope);
+			Tree.Node<String> node = new Tree.Node<>(initialScope);
 
 			root.addChildren(node);
 		}
@@ -109,7 +106,7 @@ public class GenerateScopesTreeUtil {
 
 			visited.addAll(vertexList);
 
-			Node parent = null;
+			Node<String> parent = null;
 			Iterator<String> iterator = vertexList.iterator();
 
 			while (iterator.hasNext()) {
