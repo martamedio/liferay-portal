@@ -93,6 +93,12 @@ public class AssignScopesTreeDisplayContext
 
 		_availableScopeAliases = GenerateScopesTreeUtil.generateScopesTree(
 			scopeAliases, scopeMatcherFactory);
+
+		List<Tree<String>> children = _availableScopeAliases.getChildren();
+
+		children.sort(
+			Comparator.comparing(
+				Tree::getValue, String.CASE_INSENSITIVE_ORDER));
 	}
 
 	public Set<String> getAssignedDeletedScopeAliases() {
