@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -30,8 +31,8 @@ public class TreeTag extends SimpleTagSupport {
 
 	@Override
 	public void doTag() throws IOException, JspException {
-		for (Node node : root.getNodes()) {
-			_renderTree(node, new LinkedList());
+		for (Tree<String> tree : root.getChildren()) {
+			_renderTree(tree, new LinkedList<>());
 		}
 	}
 
@@ -47,7 +48,7 @@ public class TreeTag extends SimpleTagSupport {
 		return leaf;
 	}
 
-	public Node getRoot() {
+	public Tree.Node getRoot() {
 		return root;
 	}
 
@@ -63,14 +64,14 @@ public class TreeTag extends SimpleTagSupport {
 		this.leaf = leaf;
 	}
 
-	public void setRoot(Node root) {
+	public void setRoot(Tree.Node root) {
 		this.root = root;
 	}
 
 	public JspFragment afterParent;
 	public JspFragment beforeParent;
 	public JspFragment leaf;
-	public Node root;
+	public Tree.Node<String> root;
 
 	private void _invokeAfterParent() throws IOException, JspException {
 		if (afterParent != null) {
@@ -84,24 +85,31 @@ public class TreeTag extends SimpleTagSupport {
 		}
 	}
 
-	private void _renderTree(Node node, Deque<Node> parents)
+	private void _renderTree(
+			Tree<String> tree, Deque<Tree.Node<String>> parents)
 		throws IOException, JspException {
 
-		getJspContext().setAttribute("parents", parents);
-		getJspContext().setAttribute("node", node);
+		final JspContext jspContext = getJspContext();
 
-		if (node.isLeaf()) {
-			leaf.invoke(getJspContext().getOut());
+		jspContext.setAttribute("node", tree);
+		jspContext.setAttribute("parents", parents);
+
+		if (tree instanceof Tree.Leaf) {
+			leaf.invoke(jspContext.getOut());
 		}
 		else {
+			Tree.Node<String> node = (Tree.Node<String>)tree;
+
 			_invokeBeforeParent();
+
 			parents.push(node);
 
-			for (Node children : node.getNodes()) {
+			for (Tree<String> children : node.getChildren()) {
 				_renderTree(children, parents);
 			}
 
 			parents.pop();
+
 			_invokeAfterParent();
 		}
 	}

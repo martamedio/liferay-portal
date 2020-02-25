@@ -24,7 +24,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 AssignScopesTreeDisplayContext
 	assignScopesTreeDisplayContext = (AssignScopesTreeDisplayContext)oAuth2AdminPortletTreeDisplayContext;
 
-Node availableScopeAliases = assignScopesTreeDisplayContext.getAvailableScopeAliases();
+Tree.Node<String> availableScopeAliases = assignScopesTreeDisplayContext.getAvailableScopeAliases();
 
 Set<String> assignedScopeAliases = assignScopesTreeDisplayContext.getAssignedScopeAliases();
 Set<String> deletedScopeAliases = assignScopesTreeDisplayContext.getAssignedDeletedScopeAliases();

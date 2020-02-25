@@ -30,7 +30,7 @@
 			<name>root</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>com.liferay.oauth2.provider.web.internal.taglib.Root</type>
+			<type>com.liferay.oauth2.provider.web.internal.taglib.Tree</type>
 		</attribute>
 	</tag>
 </taglib>

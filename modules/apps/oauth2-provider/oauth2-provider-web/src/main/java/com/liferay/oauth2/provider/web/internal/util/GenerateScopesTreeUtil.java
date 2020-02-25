@@ -16,72 +16,104 @@ package com.liferay.oauth2.provider.web.internal.util;
 
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcher;
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcherFactory;
-import com.liferay.oauth2.provider.web.internal.taglib.Node;
+import com.liferay.oauth2.provider.web.internal.taglib.Tree;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.stream.Stream;
 
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
 /**
+ * @author Carlos Sierra
  * @author Marta Medio
  */
 public class GenerateScopesTreeUtil {
 
-	public static Node generateScopesTree(
+	public static Tree.Node<String> generateScopesTree(
 		Set<String> scopeAliases, ScopeMatcherFactory scopeMatcherFactory) {
-
-		Node root = new Node(StringPool.BLANK);
 
 		DirectedAcyclicGraph<String, String> directedAcyclicGraph =
 			new DirectedAcyclicGraph<>(String.class);
 
-		for (String vertex : scopeAliases) {
-			directedAcyclicGraph.addVertex(vertex);
-		}
+		for (String scopeAlias1 : scopeAliases) {
+			directedAcyclicGraph.addVertex(scopeAlias1);
 
-		Set<String> initialScopes = new HashSet<>();
-		Set<String> endingScopes = new HashSet<>();
+			ScopeMatcher scopeMatcher = scopeMatcherFactory.create(scopeAlias1);
 
-		for (String scope : scopeAliases) {
-			Stream<String> streamScopeAliases = scopeAliases.stream();
+			for (String scopeAlias2 : scopeAliases) {
+				if (Objects.equals(scopeAlias1, scopeAlias2)) {
+					continue;
+				}
 
-			streamScopeAliases.forEach(
-				s -> {
-					ScopeMatcher scopeMatcher = scopeMatcherFactory.create(
-						scope);
+				if (scopeMatcher.match(scopeAlias2)) {
+					directedAcyclicGraph.addVertex(scopeAlias2);
 
-					if ((s != scope) && scopeMatcher.match(s)) {
-						directedAcyclicGraph.addEdge(
-							scope, s, scope + " -> " + s);
-					}
-				});
-		}
-
-		for (String scope : scopeAliases) {
-			if (directedAcyclicGraph.inDegreeOf(scope) == 0) {
-				initialScopes.add(scope);
+					directedAcyclicGraph.addEdge(
+						scopeAlias1, scopeAlias2,
+						scopeAlias1 + "#" + scopeAlias2);
+				}
 			}
+		}
 
+		Set<String> endingScopes = new HashSet<>();
+		Set<String> initialScopes = new HashSet<>();
+
+		for (String scope : scopeAliases) {
 			if (directedAcyclicGraph.outDegreeOf(scope) == 0) {
 				endingScopes.add(scope);
 			}
+
+			if (directedAcyclicGraph.inDegreeOf(scope) == 0) {
+				initialScopes.add(scope);
+			}
 		}
 
-		for (String initialScope : initialScopes) {
-			Node node = new Node(initialScope);
+		_filterRedundantPaths(
+			directedAcyclicGraph, initialScopes, endingScopes);
 
-			root.addChildren(node);
+		return _createTreeNode(
+			directedAcyclicGraph, StringPool.BLANK, initialScopes);
+	}
+
+	private static <T, E> Tree<T> _createTree(Graph<T, E> graph, T t) {
+		if (graph.outDegreeOf(t) == 0) {
+			return new Tree.Leaf<>(t);
 		}
+
+		Set<T> set = new HashSet<>();
+
+		for (E edge : graph.outgoingEdgesOf(t)) {
+			set.add(graph.getEdgeTarget(edge));
+		}
+
+		return _createTreeNode(graph, t, set);
+	}
+
+	private static <T> Tree.Node<T> _createTreeNode(
+		Graph<T, ?> graph, T value, Set<T> children) {
+
+		List<Tree<T>> trees = new ArrayList<>();
+
+		for (T child : children) {
+			trees.add(_createTree(graph, child));
+		}
+
+		return new Tree.Node<>(value, trees);
+	}
+
+	private static void _filterRedundantPaths(
+		DirectedAcyclicGraph<String, String> directedAcyclicGraph,
+		Set<String> initialScopes, Set<String> endingScopes) {
 
 		AllDirectedPaths<String, String> allDirectedPaths =
 			new AllDirectedPaths<>(directedAcyclicGraph);
@@ -89,49 +121,41 @@ public class GenerateScopesTreeUtil {
 		List<GraphPath<String, String>> allPaths = allDirectedPaths.getAllPaths(
 			initialScopes, endingScopes, true, null);
 
-		Comparator<GraphPath<?, ?>> ci = Comparator.comparingInt(
+		Comparator<GraphPath<?, ?>> comparator = Comparator.comparingInt(
 			GraphPath::getLength);
 
-		allPaths.sort(ci.reversed());
+		allPaths.sort(comparator.reversed());
 
-		HashMap<String, Set<String>> visitedMap = new HashMap<>();
+		HashMap<String, Set<String>> visitedEdgesMap = new HashMap<>();
+		HashMap<String, Set<String>> visitedVerticesMap = new HashMap<>();
 
 		for (GraphPath<String, String> path : allPaths) {
+			String pathKey = StringBundler.concat(
+				path.getStartVertex(), "#", path.getEndVertex());
+
+			Set<String> visitedVerticesSet = visitedVerticesMap.computeIfAbsent(
+				pathKey, key -> new HashSet<>());
+
 			List<String> vertexList = path.getVertexList();
 
-			Set<String> visited = visitedMap.computeIfAbsent(
-				path.getStartVertex() + " -> " + path.getEndVertex(),
-				__ -> new HashSet<>());
+			Set<String> visitedEdgesSet = visitedEdgesMap.computeIfAbsent(
+				pathKey, key -> new HashSet<>());
 
-			if (visited.containsAll(vertexList)) {
+			List<String> edgeList = path.getEdgeList();
+
+			if (visitedVerticesSet.containsAll(vertexList)) {
+				for (String edge : edgeList) {
+					if (!visitedEdgesSet.contains(edge)) {
+						directedAcyclicGraph.removeEdge(edge);
+					}
+				}
+
 				continue;
 			}
 
-			visited.addAll(vertexList);
-
-			Node parent = null;
-			Iterator<String> iterator = vertexList.iterator();
-
-			while (iterator.hasNext()) {
-				String scope = iterator.next();
-
-				if (parent == null) {
-					parent = root.findChildrenByValue(scope);
-
-					continue;
-				}
-
-				SortedSet<Node> nodes = parent.getNodes();
-
-				nodes.add(new Node(scope));
-
-				if (iterator.hasNext()) {
-					parent = parent.findChildrenByValue(scope);
-				}
-			}
+			visitedEdgesSet.addAll(edgeList);
+			visitedVerticesSet.addAll(vertexList);
 		}
-
-		return root;
 	}
 
 }
