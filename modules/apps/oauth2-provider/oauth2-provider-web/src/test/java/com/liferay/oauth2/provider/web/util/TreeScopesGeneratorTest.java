@@ -16,13 +16,13 @@ package com.liferay.oauth2.provider.web.util;
 
 import com.liferay.oauth2.provider.scope.internal.spi.scope.matcher.ChunkScopeMatcherFactory;
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcherFactory;
-import com.liferay.oauth2.provider.web.internal.taglib.Node;
+import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 import com.liferay.oauth2.provider.web.internal.util.GenerateScopesTreeUtil;
 import com.liferay.petra.string.StringPool;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.junit.Assert;
@@ -40,117 +40,114 @@ public class TreeScopesGeneratorTest {
 	}
 
 	@Test
-	public void testMultipleLevelScopeTree() throws Exception {
+	public void testMultipleLevelsScopeTree() {
 		List<String> scopesList = Arrays.asList(
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "everything.read.user.documents");
 
-		Node root = GenerateScopesTreeUtil.generateScopesTree(
-			new TreeSet(scopesList), _scopeMatcherFactory);
+		Tree.Node<String> root = GenerateScopesTreeUtil.generateScopesTree(
+			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
-		Assert.assertTrue(_checkValue(root, StringPool.BLANK));
+		Assert.assertEquals(StringPool.BLANK, root.getValue());
 
-		Node node = _getFirstChild(root);
+		Tree<String> node = _getChild(root, 0);
 
-		Assert.assertTrue(_checkValue(node, "everything"));
-		Assert.assertFalse(node.isLeaf());
+		Assert.assertEquals("everything", node.getValue());
+		Assert.assertFalse(node instanceof Tree.Leaf);
 
-		Node firstChild = _getFirstChild(node);
+		Tree<String> firstChild = _getChild((Tree.Node<String>)node, 0);
 
-		Assert.assertTrue(_checkValue(firstChild, "everything.read"));
-		Assert.assertFalse(firstChild.isLeaf());
+		Assert.assertEquals("everything.read", firstChild.getValue());
+		Assert.assertFalse(firstChild instanceof Tree.Leaf);
 
-		Node firstGrandChild = _getFirstChild(firstChild);
+		Tree<String> firstGrandChild = _getChild(
+			(Tree.Node<String>)firstChild, 0);
 
-		Assert.assertTrue(_checkValue(firstGrandChild, "everything.read.user"));
-		Assert.assertFalse(firstGrandChild.isLeaf());
-		Node greatGrandChild = _getFirstChild(firstGrandChild);
+		Assert.assertEquals("everything.read.user", firstGrandChild.getValue());
+		Assert.assertFalse(firstGrandChild instanceof Tree.Leaf);
+		Tree<String> greatGrandChild = _getChild(
+			(Tree.Node<String>)firstGrandChild, 0);
 
-		Assert.assertTrue(
-			_checkValue(greatGrandChild, "everything.read.user.documents"));
+		Assert.assertEquals(
+			"everything.read.user.documents", greatGrandChild.getValue());
 
-		Node lastChild = _getLastChild(node);
+		Tree<String> lastChild = _getLastChild((Tree.Node<String>)node);
 
-		Assert.assertTrue(_checkValue(lastChild, "everything.write"));
-		Assert.assertTrue(lastChild.isLeaf());
+		Assert.assertEquals("everything.write", lastChild.getValue());
+		Assert.assertTrue(lastChild instanceof Tree.Leaf);
 	}
 
 	@Test
-	public void testMultipleParentsScopeTree() throws Exception {
+	public void testMultipleParentsScopeTree() {
 		List<String> scopesList = Arrays.asList(
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "analytics.read", "analytics");
 
-		Node root = GenerateScopesTreeUtil.generateScopesTree(
-			new TreeSet(scopesList), _scopeMatcherFactory);
+		Tree.Node<String> root = GenerateScopesTreeUtil.generateScopesTree(
+			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
-		Assert.assertTrue(_checkValue(root, StringPool.BLANK));
+		Assert.assertEquals(StringPool.BLANK, root.getValue());
 
-		Node firstNode = _getFirstChild(root);
-		Node lastNode = _getLastChild(root);
+		Tree<String> firstNode = _getChild(root, 0);
+		Tree<String> lastNode = _getLastChild(root);
 
-		Assert.assertTrue(_checkValue(firstNode, "analytics"));
-		Assert.assertFalse(firstNode.isLeaf());
+		Assert.assertEquals("analytics", firstNode.getValue());
+		Assert.assertFalse(firstNode instanceof Tree.Leaf);
 
-		Node childFirstNode = _getFirstChild(firstNode);
+		Tree<String> childFirstNode = _getChild(
+			(Tree.Node<String>)firstNode, 0);
 
-		Assert.assertTrue(_checkValue(childFirstNode, "analytics.read"));
+		Assert.assertEquals("analytics.read", childFirstNode.getValue());
 
-		Assert.assertTrue(childFirstNode.isLeaf());
+		Assert.assertTrue(childFirstNode instanceof Tree.Leaf);
 
-		Assert.assertTrue(_checkValue(lastNode, "everything"));
-		Assert.assertFalse(lastNode.isLeaf());
+		Assert.assertEquals("everything", lastNode.getValue());
+		Assert.assertFalse(lastNode instanceof Tree.Leaf);
 
-		Node childLastNode = _getFirstChild(lastNode);
+		Tree<String> childLastNode = _getChild((Tree.Node<String>)lastNode, 0);
 
-		Assert.assertTrue(_checkValue(childLastNode, "everything.read"));
-		Assert.assertFalse(childLastNode.isLeaf());
+		Assert.assertEquals("everything.read", childLastNode.getValue());
+		Assert.assertFalse(childLastNode instanceof Tree.Leaf);
 	}
 
 	@Test
-	public void testOneLevelScopeTree() throws Exception {
+	public void testOneLevelScopeTree() {
 		List<String> scopesList = Arrays.asList(
 			"everything.read", "everything.write", "everything");
 
-		Node root = GenerateScopesTreeUtil.generateScopesTree(
-			new TreeSet(scopesList), _scopeMatcherFactory);
+		Tree.Node<String> root = GenerateScopesTreeUtil.generateScopesTree(
+			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
-		Assert.assertTrue(_checkValue(root, StringPool.BLANK));
+		Assert.assertEquals(StringPool.BLANK, root.getValue());
 
-		SortedSet<Node> nodes = root.getNodes();
+		final Tree<String> child = _getChild(root, 0);
 
-		Node node = nodes.first();
+		Assert.assertEquals("everything", child.getValue());
+		Assert.assertFalse(child instanceof Tree.Leaf);
 
-		Assert.assertTrue(_checkValue(node, "everything"));
-		Assert.assertFalse(node.isLeaf());
+		Tree<String> firstChild = _getChild((Tree.Node<String>)child, 0);
 
-		Node firstChild = _getFirstChild(node);
+		Assert.assertEquals("everything.read", firstChild.getValue());
+		Assert.assertTrue(firstChild instanceof Tree.Leaf);
 
-		Assert.assertTrue(_checkValue(firstChild, "everything.read"));
-		Assert.assertTrue(firstChild.isLeaf());
+		Tree<String> lastChild = _getLastChild((Tree.Node<String>)child);
 
-		Node lastChild = _getLastChild(node);
-
-		Assert.assertTrue(_checkValue(lastChild, "everything.write"));
-		Assert.assertTrue(lastChild.isLeaf());
+		Assert.assertEquals("everything.write", lastChild.getValue());
+		Assert.assertTrue(lastChild instanceof Tree.Leaf);
 	}
 
-	private boolean _checkValue(Node node, String expectedValue) {
-		String nodeValue = node.getValue();
+	private Tree<String> _getChild(Tree.Node<String> node, int indexItem) {
+		final List<Tree<String>> children = node.getChildren();
 
-		return nodeValue.equals(expectedValue);
+		children.sort(Comparator.comparing(Tree::getValue));
+
+		return children.get(indexItem);
 	}
 
-	private Node _getFirstChild(Node node) {
-		SortedSet<Node> nodes = node.getNodes();
+	private Tree<String> _getLastChild(Tree.Node<String> node) {
+		final List<Tree<String>> children = node.getChildren();
 
-		return nodes.first();
-	}
-
-	private Node _getLastChild(Node node) {
-		SortedSet<Node> nodes = node.getNodes();
-
-		return nodes.last();
+		return _getChild(node, children.size() - 1);
 	}
 
 	private ScopeMatcherFactory _scopeMatcherFactory;
