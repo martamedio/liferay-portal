@@ -90,13 +90,13 @@ public class AssignScopesTreeDisplayContext
 
 		scopeAliases.addAll(_assignedScopeAliases);
 
-		_scopeAliasesDescriptionMap = _getScopeAliasDescriptionMap(
+		_scopeAliasDescriptionMap = _getScopeAliasDescriptionMap(
 			scopeAliases);
 
-		_scopeAliasesTreeNode = GenerateScopesTreeUtil.getScopesTreeNode(
+		_scopeAliasTreeNode = GenerateScopesTreeUtil.getScopesTreeNode(
 			scopeAliases, scopeMatcherFactory);
 
-		List<Tree<String>> children = _scopeAliasesTreeNode.getChildren();
+		List<Tree<String>> children = _scopeAliasTreeNode.getChildren();
 
 		children.sort(
 			Comparator.comparing(
@@ -112,11 +112,11 @@ public class AssignScopesTreeDisplayContext
 	}
 
 	public Map<String, String> getScopeAliasDescriptionMap() {
-		return _scopeAliasesDescriptionMap;
+		return _scopeAliasDescriptionMap;
 	}
 
 	public Tree.Node<String> getScopeAliasTreeNode() {
-		return _scopeAliasesTreeNode;
+		return _scopeAliasTreeNode;
 	}
 
 	protected Set<String> getAssignedScopeAliases(
@@ -169,8 +169,8 @@ public class AssignScopesTreeDisplayContext
 	private final Set<String> _assignedDeletedScopeAliases;
 	private final Set<String> _assignedScopeAliases;
 	private final Locale _locale;
-	private final Map<String, String> _scopeAliasesDescriptionMap;
-	private final Tree.Node<String> _scopeAliasesTreeNode;
+	private final Map<String, String> _scopeAliasDescriptionMap;
+	private final Tree.Node<String> _scopeAliasTreeNode;
 	private final ScopeAliasScopeDescriptor _scopeAliasScopeDescriptor;
 
 }
