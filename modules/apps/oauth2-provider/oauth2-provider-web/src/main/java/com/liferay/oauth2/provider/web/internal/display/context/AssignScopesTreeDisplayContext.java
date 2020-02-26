@@ -83,13 +83,12 @@ public class AssignScopesTreeDisplayContext
 		Set<String> scopeAliases = new LinkedHashSet<>(
 			scopeLocator.getScopeAliases(_companyId));
 
-		_assignedDeletedScopeAliases = _generateAssignedDeletedScopeAliases(
+		_assignedDeletedScopeAliases = _getAssignedDeletedScopeAliases(
 			scopeAliases);
 
 		scopeAliases.addAll(_assignedScopeAliases);
 
-		_scopeAliasesDescriptions = _generateScopeAliasesDescriptions(
-			scopeAliases);
+		_scopeAliasesDescriptions = _getScopeAliasesDescriptions(scopeAliases);
 
 		_availableScopeAliases = GenerateScopesTreeUtil.generateScopesTree(
 			scopeAliases, scopeMatcherFactory);
@@ -137,7 +136,7 @@ public class AssignScopesTreeDisplayContext
 		return assignedScopeAliases;
 	}
 
-	private Set<String> _generateAssignedDeletedScopeAliases(
+	private Set<String> _getAssignedDeletedScopeAliases(
 		Set<String> scopeAliases) {
 
 		Set<String> asignedDeletedScopeAliases = new TreeSet<>();
@@ -151,7 +150,7 @@ public class AssignScopesTreeDisplayContext
 		return asignedDeletedScopeAliases;
 	}
 
-	private Map<String, String> _generateScopeAliasesDescriptions(
+	private Map<String, String> _getScopeAliasesDescriptions(
 		Set<String> scopeAliases) {
 
 		Map<String, String> descriptionsMap = new HashMap<>();
