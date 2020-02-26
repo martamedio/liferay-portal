@@ -66,8 +66,8 @@ public class ScopeDescriptorLocatorImpl implements ScopeDescriptorLocator {
 		_scopeDescriptorServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, ScopeDescriptor.class,
-				"(&(companyId=*)(!(" +
-					OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME + "=*)))",
+				"(&(!(" + OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME +
+					"=*))(companyId=*))",
 				(serviceReference, emitter) -> {
 					long companyId = GetterUtil.getLong(
 						serviceReference.getProperty("companyId"));
