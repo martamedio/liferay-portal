@@ -49,6 +49,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * @author Tomas Polesovsky
@@ -135,19 +136,13 @@ public class AssignScopesMVCRenderCommand implements MVCRenderCommand {
 		return (ThemeDisplay)portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
 	}
 
-	@Reference(name = "default", unbind = "-")
-	protected void setDefaultScopeMatcherFactory(
-		ScopeMatcherFactory defaultScopeMatcherFactory) {
-
-		_defaultScopeMatcherFactory = defaultScopeMatcherFactory;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		AssignScopesMVCRenderCommand.class);
 
 	@Reference
 	private ApplicationDescriptorLocator _applicationDescriptorLocator;
 
+	@Reference(name = "default")
 	private ScopeMatcherFactory _defaultScopeMatcherFactory;
 
 	@Reference
