@@ -89,7 +89,7 @@ public class AssignScopesTreeDisplayContext
 
 		scopeAliases.addAll(_assignedScopeAliases);
 
-		_scopeAliasesDescriptionMap = _getScopeAliasesDescriptions(
+		_scopeAliasesDescriptionMap = _getScopeAliasDescriptionMap(
 			scopeAliases);
 
 		_scopeAliasesTreeNode = GenerateScopesTreeUtil.getScopesTreeNode(
@@ -110,11 +110,11 @@ public class AssignScopesTreeDisplayContext
 		return _assignedScopeAliases;
 	}
 
-	public Map<String, String> getScopeAliasesDescriptionMap() {
+	public Map<String, String> getScopeAliasDescriptionMap() {
 		return _scopeAliasesDescriptionMap;
 	}
 
-	public Tree.Node<String> getScopeAliasesTreeNode() {
+	public Tree.Node<String> getScopeAliasTreeNode() {
 		return _scopeAliasesTreeNode;
 	}
 
@@ -150,7 +150,7 @@ public class AssignScopesTreeDisplayContext
 		);
 	}
 
-	private Map<String, String> _getScopeAliasesDescriptions(
+	private Map<String, String> _getScopeAliasDescriptionMap(
 		Set<String> scopeAliases) {
 
 		Map<String, String> map = new HashMap<>();

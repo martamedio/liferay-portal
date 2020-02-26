@@ -24,12 +24,12 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 AssignScopesTreeDisplayContext
 	assignScopesTreeDisplayContext = (AssignScopesTreeDisplayContext)oAuth2AdminPortletTreeDisplayContext;
 
-Tree.Node<String> availableScopeAliases = assignScopesTreeDisplayContext.getScopeAliasesTreeNode();
+Tree.Node<String> availableScopeAliases = assignScopesTreeDisplayContext.getScopeAliasTreeNode();
 
 Set<String> assignedScopeAliases = assignScopesTreeDisplayContext.getAssignedScopeAliases();
 Set<String> deletedScopeAliases = assignScopesTreeDisplayContext.getAssignedDeletedScopeAliases();
 
-Map<String, String> scopeAliasesDescriptions = assignScopesTreeDisplayContext.getScopeAliasesDescriptionMap();
+Map<String, String> scopeAliasesDescriptions = assignScopesTreeDisplayContext.getScopeAliasDescriptionMap();
 
 pageContext.setAttribute("assignedScopeAliases", assignedScopeAliases);
 pageContext.setAttribute("deletedScopeAliases", deletedScopeAliases);
