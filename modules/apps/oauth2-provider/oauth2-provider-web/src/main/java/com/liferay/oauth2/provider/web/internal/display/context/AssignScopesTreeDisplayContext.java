@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
@@ -126,15 +127,15 @@ public class AssignScopesTreeDisplayContext
 				oAuth2ApplicationScopeAliasesId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null);
 
-		Set<String> assignedScopeAliases = new TreeSet<>();
+		Stream<OAuth2ScopeGrant> stream = oAuth2ScopeGrants.stream();
 
-		Stream<OAuth2ScopeGrant> scopeGrantStream = oAuth2ScopeGrants.stream();
-
-		scopeGrantStream.forEach(
-			oAuth2ScopeGrant -> assignedScopeAliases.addAll(
-				oAuth2ScopeGrant.getScopeAliasesList()));
-
-		return assignedScopeAliases;
+		return stream.map(
+			OAuth2ScopeGrant::getScopeAliasesList
+		).flatMap(
+			Collection::stream
+		).collect(
+			Collectors.toCollection(TreeSet::new)
+		);
 	}
 
 	private Set<String> _getAssignedDeletedScopeAliases(
