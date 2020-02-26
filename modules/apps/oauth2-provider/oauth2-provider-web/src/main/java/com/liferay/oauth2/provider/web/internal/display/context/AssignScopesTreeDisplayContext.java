@@ -141,15 +141,13 @@ public class AssignScopesTreeDisplayContext
 	private Set<String> _getAssignedDeletedScopeAliases(
 		Set<String> scopeAliases) {
 
-		Set<String> asignedDeletedScopeAliases = new TreeSet<>();
+		Stream<String> stream = _assignedScopeAliases.stream();
 
-		for (String assignedScope : _assignedScopeAliases) {
-			if (!scopeAliases.contains(assignedScope)) {
-				asignedDeletedScopeAliases.add(assignedScope);
-			}
-		}
-
-		return asignedDeletedScopeAliases;
+		return stream.filter(
+			scopeAlias -> !scopeAliases.contains(scopeAlias)
+		).collect(
+			Collectors.toCollection(TreeSet::new)
+		);
 	}
 
 	private Map<String, String> _getScopeAliasesDescriptions(
