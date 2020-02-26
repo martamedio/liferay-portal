@@ -17,7 +17,7 @@ package com.liferay.oauth2.provider.web.util;
 import com.liferay.oauth2.provider.scope.internal.spi.scope.matcher.ChunkScopeMatcherFactory;
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcherFactory;
 import com.liferay.oauth2.provider.web.internal.taglib.Tree;
-import com.liferay.oauth2.provider.web.internal.util.GenerateScopesTreeUtil;
+import com.liferay.oauth2.provider.web.internal.util.ScopeTreeUtil;
 import com.liferay.petra.string.StringPool;
 
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class TreeScopesGeneratorTest {
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "everything.read.user.documents");
 
-		Tree.Node<String> root = GenerateScopesTreeUtil.getScopesTreeNode(
+		Tree.Node<String> root = ScopeTreeUtil.getScopesTreeNode(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, root.getValue());
@@ -83,7 +83,7 @@ public class TreeScopesGeneratorTest {
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "analytics.read", "analytics");
 
-		Tree.Node<String> root = GenerateScopesTreeUtil.getScopesTreeNode(
+		Tree.Node<String> root = ScopeTreeUtil.getScopesTreeNode(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, root.getValue());
@@ -115,7 +115,7 @@ public class TreeScopesGeneratorTest {
 		List<String> scopesList = Arrays.asList(
 			"everything.read", "everything.write", "everything");
 
-		Tree.Node<String> root = GenerateScopesTreeUtil.getScopesTreeNode(
+		Tree.Node<String> root = ScopeTreeUtil.getScopesTreeNode(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, root.getValue());
