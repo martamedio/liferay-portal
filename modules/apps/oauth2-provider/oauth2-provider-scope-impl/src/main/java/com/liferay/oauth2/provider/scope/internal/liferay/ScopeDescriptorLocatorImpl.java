@@ -37,7 +37,7 @@ public class ScopeDescriptorLocatorImpl implements ScopeDescriptorLocator {
 
 	@Override
 	public ScopeDescriptor getScopeDescriptor(long companyId) {
-		return _scopeAliasServiceTrackerMap.getService(companyId);
+		return _scopeDescriptorServiceTrackerMap.getService(companyId);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ScopeDescriptorLocatorImpl implements ScopeDescriptorLocator {
 			OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME,
 			() -> _defaultScopeDescriptor);
 
-		_scopeAliasServiceTrackerMap =
+		_scopeDescriptorServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, ScopeDescriptor.class,
 				"(&(companyId=*)(!(" +
@@ -94,7 +94,7 @@ public class ScopeDescriptorLocatorImpl implements ScopeDescriptorLocator {
 	private ScopeDescriptor _defaultScopeDescriptor;
 
 	private ServiceTrackerMap<Long, ScopeDescriptor>
-		_scopeAliasServiceTrackerMap;
+		_scopeDescriptorServiceTrackerMap;
 	private ScopedServiceTrackerMap<ScopeDescriptor> _scopedServiceTrackerMap;
 	private ScopedServiceTrackerMapFactory _scopedServiceTrackerMapFactory;
 
