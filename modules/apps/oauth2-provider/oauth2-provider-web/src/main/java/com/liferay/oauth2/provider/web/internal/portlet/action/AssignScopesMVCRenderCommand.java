@@ -142,8 +142,8 @@ public class AssignScopesMVCRenderCommand implements MVCRenderCommand {
 	@Reference
 	private ApplicationDescriptorLocator _applicationDescriptorLocator;
 
-	@Reference(name = "default")
-	private ScopeMatcherFactory _defaultScopeMatcherFactory;
+	@Reference(name = "default", policy = ReferencePolicy.DYNAMIC)
+	private volatile ScopeMatcherFactory _defaultScopeMatcherFactory;
 
 	@Reference
 	private DLURLHelper _dlURLHelper;
