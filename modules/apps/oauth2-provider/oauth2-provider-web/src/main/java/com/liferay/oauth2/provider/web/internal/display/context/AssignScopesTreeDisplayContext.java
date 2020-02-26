@@ -26,7 +26,7 @@ import com.liferay.oauth2.provider.service.OAuth2ApplicationService;
 import com.liferay.oauth2.provider.service.OAuth2ScopeGrantLocalService;
 import com.liferay.oauth2.provider.web.internal.ScopeAliasScopeDescriptor;
 import com.liferay.oauth2.provider.web.internal.taglib.Tree;
-import com.liferay.oauth2.provider.web.internal.util.GenerateScopesTreeUtil;
+import com.liferay.oauth2.provider.web.internal.util.ScopeTreeUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -93,7 +93,7 @@ public class AssignScopesTreeDisplayContext
 		_scopeAliasDescriptionMap = _getScopeAliasDescriptionMap(
 			scopeAliases);
 
-		_scopeAliasTreeNode = GenerateScopesTreeUtil.getScopesTreeNode(
+		_scopeAliasTreeNode = ScopeTreeUtil.getScopesTreeNode(
 			scopeAliases, scopeMatcherFactory);
 
 		List<Tree<String>> children = _scopeAliasTreeNode.getChildren();
