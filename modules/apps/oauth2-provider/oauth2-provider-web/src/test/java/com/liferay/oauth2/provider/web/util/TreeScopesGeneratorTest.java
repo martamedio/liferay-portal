@@ -45,7 +45,7 @@ public class TreeScopesGeneratorTest {
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "everything.read.user.documents");
 
-		Tree.Node<String> root = GenerateScopesTreeUtil.generateScopesTree(
+		Tree.Node<String> root = GenerateScopesTreeUtil.getScopesTree(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, root.getValue());
@@ -83,7 +83,7 @@ public class TreeScopesGeneratorTest {
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "analytics.read", "analytics");
 
-		Tree.Node<String> root = GenerateScopesTreeUtil.generateScopesTree(
+		Tree.Node<String> root = GenerateScopesTreeUtil.getScopesTree(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, root.getValue());
@@ -115,7 +115,7 @@ public class TreeScopesGeneratorTest {
 		List<String> scopesList = Arrays.asList(
 			"everything.read", "everything.write", "everything");
 
-		Tree.Node<String> root = GenerateScopesTreeUtil.generateScopesTree(
+		Tree.Node<String> root = GenerateScopesTreeUtil.getScopesTree(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, root.getValue());

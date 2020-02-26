@@ -90,7 +90,7 @@ public class AssignScopesTreeDisplayContext
 
 		_scopeAliasesDescriptions = _getScopeAliasesDescriptions(scopeAliases);
 
-		_availableScopeAliases = GenerateScopesTreeUtil.generateScopesTree(
+		_availableScopeAliases = GenerateScopesTreeUtil.getScopesTree(
 			scopeAliases, scopeMatcherFactory);
 
 		List<Tree<String>> children = _availableScopeAliases.getChildren();
