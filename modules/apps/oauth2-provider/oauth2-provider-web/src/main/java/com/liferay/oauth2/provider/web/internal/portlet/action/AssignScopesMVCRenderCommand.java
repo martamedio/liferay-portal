@@ -72,38 +72,30 @@ public class AssignScopesMVCRenderCommand implements MVCRenderCommand {
 		ThemeDisplay themeDisplay = getThemeDisplay(renderRequest);
 
 		try {
-			AssignScopesDisplayContext assignScopesDisplayContext =
+			renderRequest.setAttribute(
+				OAuth2ProviderWebKeys.OAUTH2_ADMIN_PORTLET_DISPLAY_CONTEXT,
 				new AssignScopesDisplayContext(
 					_oAuth2ApplicationService,
 					_oAuth2ApplicationScopeAliasesLocalService,
 					_oAuth2ScopeGrantLocalService, _oAuth2ProviderConfiguration,
 					renderRequest, themeDisplay, _applicationDescriptorLocator,
-					_scopeDescriptorLocator, _scopeLocator, _dlURLHelper);
-
-			renderRequest.setAttribute(
-				OAuth2ProviderWebKeys.OAUTH2_ADMIN_PORTLET_DISPLAY_CONTEXT,
-				assignScopesDisplayContext);
+					_scopeDescriptorLocator, _scopeLocator, _dlURLHelper));
 
 			PermissionChecker permissionChecker =
 				themeDisplay.getPermissionChecker();
 
 			if (!permissionChecker.isOmniadmin()) {
-				ScopeMatcherFactory scopeMatcherFactory =
-					getScopeMatcherFactory(themeDisplay.getCompanyId());
-
-				AssignScopesTreeDisplayContext assignScopesTreeDisplayContext =
+				renderRequest.setAttribute(
+					OAuth2ProviderWebKeys.
+						OAUTH2_ADMIN_PORTLET_TREE_DISPLAY_CONTEXT,
 					new AssignScopesTreeDisplayContext(
 						_oAuth2ApplicationService,
 						_oAuth2ApplicationScopeAliasesLocalService,
 						_oAuth2ScopeGrantLocalService,
 						_oAuth2ProviderConfiguration, renderRequest,
 						themeDisplay, _scopeDescriptorLocator, _scopeLocator,
-						scopeMatcherFactory, _dlURLHelper);
-
-				renderRequest.setAttribute(
-					OAuth2ProviderWebKeys.
-						OAUTH2_ADMIN_PORTLET_TREE_DISPLAY_CONTEXT,
-					assignScopesTreeDisplayContext);
+						getScopeMatcherFactory(themeDisplay.getCompanyId()),
+						_dlURLHelper));
 			}
 		}
 		catch (PortalException portalException) {
