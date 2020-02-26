@@ -44,12 +44,11 @@ public interface Tree<T> {
 
 		public Node(T value, List<Tree<T>> children) {
 			_value = value;
-			_children = children;
+			_children = Collections.unmodifiableList(children);
 		}
 
 		public Node(T value, Tree<T>... children) {
-			_value = value;
-			_children = Collections.unmodifiableList(Arrays.asList(children));
+			this(value, Arrays.asList(children));
 		}
 
 		public List<Tree<T>> getChildren() {
