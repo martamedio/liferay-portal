@@ -20,13 +20,16 @@ import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -42,50 +45,72 @@ public class ScopeTreeUtil {
 	public static Tree.Node<String> getScopeTreeNode(
 		Set<String> scopeAliases, ScopeMatcherFactory scopeMatcherFactory) {
 
-		DirectedAcyclicGraph<String, String> directedAcyclicGraph =
+		final HashMap<String, ScopeMatcher> scopeMatcherMap = new HashMap<>();
+
+		return getTreeNode(
+			scopeAliases, StringPool.BLANK,
+			(scopeAlias1, scopeAlias2) -> {
+				final ScopeMatcher scopeMatcher =
+					scopeMatcherMap.computeIfAbsent(
+						scopeAlias1, scopeMatcherFactory::create);
+
+				return scopeMatcher.match(scopeAlias2);
+			},
+			() -> new TreeSet<Tree<String>>(
+				Comparator.comparing(
+					Tree::getValue, String.CASE_INSENSITIVE_ORDER)));
+	}
+
+	public static <T> Tree.Node<T> getTreeNode(
+		Set<T> set, T rootValue, BiPredicate<T, T> biPredicate,
+		Supplier<Collection<Tree<T>>> collectionSupplier) {
+
+		DirectedAcyclicGraph<T, String> directedAcyclicGraph =
 			new DirectedAcyclicGraph<>(String.class);
 
-		for (String scopeAlias1 : scopeAliases) {
-			directedAcyclicGraph.addVertex(scopeAlias1);
+		for (T element1 : set) {
+			directedAcyclicGraph.addVertex(element1);
 
-			ScopeMatcher scopeMatcher = scopeMatcherFactory.create(scopeAlias1);
-
-			for (String scopeAlias2 : scopeAliases) {
-				if (Objects.equals(scopeAlias1, scopeAlias2)) {
+			for (T element2 : set) {
+				if (Objects.equals(element1, element2)) {
 					continue;
 				}
 
-				if (scopeMatcher.match(scopeAlias2)) {
-					directedAcyclicGraph.addVertex(scopeAlias2);
+				if (biPredicate.test(element1, element2)) {
+					directedAcyclicGraph.addVertex(element2);
 
 					directedAcyclicGraph.addEdge(
-						scopeAlias1, scopeAlias2,
-						scopeAlias1 + "#" + scopeAlias2);
+						element1, element2,
+						element1 + "#" + element2);
 				}
 			}
 		}
 
-		Set<String> endingScopes = new HashSet<>();
-		Set<String> initialScopes = new HashSet<>();
+		Set<T> endingVertices = new HashSet<>();
+		Set<T> initialVertices = new HashSet<>();
 
-		for (String scope : scopeAliases) {
-			if (directedAcyclicGraph.outDegreeOf(scope) == 0) {
-				endingScopes.add(scope);
+		for (T element : set) {
+			if (directedAcyclicGraph.outDegreeOf(element) == 0) {
+				endingVertices.add(element);
 			}
 
-			if (directedAcyclicGraph.inDegreeOf(scope) == 0) {
-				initialScopes.add(scope);
+			if (directedAcyclicGraph.inDegreeOf(element) == 0) {
+				initialVertices.add(element);
 			}
 		}
 
 		_filterRedundantPaths(
-			directedAcyclicGraph, initialScopes, endingScopes);
+			directedAcyclicGraph, initialVertices, endingVertices);
 
 		return _createTreeNode(
-			directedAcyclicGraph, StringPool.BLANK, initialScopes);
+			directedAcyclicGraph, rootValue, initialVertices,
+			collectionSupplier);
 	}
 
-	private static <T, E> Tree<T> _createTree(Graph<T, E> graph, T t) {
+	private static <T, E> Tree<T> _createTree(
+		Graph<T, E> graph, T t,
+		Supplier<Collection<Tree<T>>> collectionSupplier) {
+
 		if (graph.outDegreeOf(t) == 0) {
 			return new Tree.Leaf<>(t);
 		}
@@ -96,30 +121,31 @@ public class ScopeTreeUtil {
 			set.add(graph.getEdgeTarget(edge));
 		}
 
-		return _createTreeNode(graph, t, set);
+		return _createTreeNode(graph, t, set, collectionSupplier);
 	}
 
 	private static <T> Tree.Node<T> _createTreeNode(
-		Graph<T, ?> graph, T value, Set<T> children) {
+		Graph<T, ?> graph, T value, Set<T> children,
+		Supplier<Collection<Tree<T>>> collectionSupplier) {
 
-		List<Tree<T>> trees = new ArrayList<>();
+		Collection<Tree<T>> trees = collectionSupplier.get();
 
 		for (T child : children) {
-			trees.add(_createTree(graph, child));
+			trees.add(_createTree(graph, child, collectionSupplier));
 		}
 
 		return new Tree.Node<>(value, trees);
 	}
 
-	private static void _filterRedundantPaths(
-		DirectedAcyclicGraph<String, String> directedAcyclicGraph,
-		Set<String> initialScopes, Set<String> endingScopes) {
+	private static <T> void _filterRedundantPaths(
+		DirectedAcyclicGraph<T, String> directedAcyclicGraph,
+		Set<T> initialVertices, Set<T> endingVertices) {
 
-		AllDirectedPaths<String, String> allDirectedPaths =
-			new AllDirectedPaths<>(directedAcyclicGraph);
+		AllDirectedPaths<T, String> allDirectedPaths = new AllDirectedPaths<>(
+			directedAcyclicGraph);
 
-		List<GraphPath<String, String>> allPaths = allDirectedPaths.getAllPaths(
-			initialScopes, endingScopes, true, null);
+		List<GraphPath<T, String>> allPaths = allDirectedPaths.getAllPaths(
+			initialVertices, endingVertices, true, null);
 
 		Comparator<GraphPath<?, ?>> comparator = Comparator.comparingInt(
 			GraphPath::getLength);
@@ -127,16 +153,16 @@ public class ScopeTreeUtil {
 		allPaths.sort(comparator.reversed());
 
 		HashMap<String, Set<String>> visitedEdgesMap = new HashMap<>();
-		HashMap<String, Set<String>> visitedVerticesMap = new HashMap<>();
+		HashMap<String, Set<T>> visitedVerticesMap = new HashMap<>();
 
-		for (GraphPath<String, String> path : allPaths) {
+		for (GraphPath<T, String> path : allPaths) {
 			String pathKey = StringBundler.concat(
 				path.getStartVertex(), "#", path.getEndVertex());
 
-			Set<String> visitedVerticesSet = visitedVerticesMap.computeIfAbsent(
+			Set<T> visitedVerticesSet = visitedVerticesMap.computeIfAbsent(
 				pathKey, key -> new HashSet<>());
 
-			List<String> vertexList = path.getVertexList();
+			List<T> vertexList = path.getVertexList();
 
 			Set<String> visitedEdgesSet = visitedEdgesMap.computeIfAbsent(
 				pathKey, key -> new HashSet<>());
