@@ -114,14 +114,14 @@ public class AssignScopesMVCRenderCommand implements MVCRenderCommand {
 		_oAuth2ProviderConfiguration = ConfigurableUtil.createConfigurable(
 			OAuth2ProviderConfiguration.class, properties);
 
-		_scopeMatcherFactoriesServiceTrackerMap =
+		_scopeMatcherFactoryServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, ScopeMatcherFactory.class, "company.id");
 	}
 
 	protected ScopeMatcherFactory getScopeMatcherFactory(long companyId) {
 		ScopeMatcherFactory scopeMatcherFactory =
-			_scopeMatcherFactoriesServiceTrackerMap.getService(
+			_scopeMatcherFactoryServiceTrackerMap.getService(
 				String.valueOf(companyId));
 
 		if (scopeMatcherFactory == null) {
@@ -172,6 +172,6 @@ public class AssignScopesMVCRenderCommand implements MVCRenderCommand {
 	private ScopeLocator _scopeLocator;
 
 	private ServiceTrackerMap<String, ScopeMatcherFactory>
-		_scopeMatcherFactoriesServiceTrackerMap;
+		_scopeMatcherFactoryServiceTrackerMap;
 
 }
