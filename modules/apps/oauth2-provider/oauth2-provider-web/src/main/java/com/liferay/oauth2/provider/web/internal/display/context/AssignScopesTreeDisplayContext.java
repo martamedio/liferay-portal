@@ -153,16 +153,16 @@ public class AssignScopesTreeDisplayContext
 	private Map<String, String> _getScopeAliasesDescriptions(
 		Set<String> scopeAliases) {
 
-		Map<String, String> descriptionsMap = new HashMap<>();
+		Map<String, String> map = new HashMap<>();
 
-		for (String scope : scopeAliases) {
-			String description = _scopeAliasScopeDescriptor.getDescription(
-				scope, _locale, StringPool.COMMA_AND_SPACE);
-
-			descriptionsMap.put(scope, description);
+		for (String scopeAlias : scopeAliases) {
+			map.put(
+				scopeAlias,
+				_scopeAliasScopeDescriptor.getDescription(
+					scopeAlias, _locale, StringPool.COMMA_AND_SPACE));
 		}
 
-		return descriptionsMap;
+		return map;
 	}
 
 	private final Set<String> _assignedDeletedScopeAliases;
