@@ -80,6 +80,8 @@ public class ScopeDescriptorLocatorImpl implements ScopeDescriptorLocator {
 
 	@Deactivate
 	protected void deactivate() {
+		_scopeDescriptorServiceTrackerMap.close();
+
 		_scopedServiceTrackerMap.close();
 	}
 
