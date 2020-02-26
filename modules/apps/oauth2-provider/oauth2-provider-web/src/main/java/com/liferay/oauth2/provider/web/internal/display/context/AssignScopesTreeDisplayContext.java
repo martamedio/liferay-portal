@@ -69,11 +69,12 @@ public class AssignScopesTreeDisplayContext
 			oAuth2ProviderConfiguration, portletRequest, themeDisplay,
 			dlURLHelper);
 
-		_companyId = themeDisplay.getCompanyId();
 		_locale = themeDisplay.getLocale();
 
+		long companyId = themeDisplay.getCompanyId();
+
 		_scopeAliasScopeDescriptor = new ScopeAliasScopeDescriptor(
-			_companyId, scopeDescriptorLocator, scopeLocator);
+			companyId, scopeDescriptorLocator, scopeLocator);
 
 		OAuth2Application oAuth2Application = getOAuth2Application();
 
@@ -82,7 +83,7 @@ public class AssignScopesTreeDisplayContext
 			oAuth2ScopeGrantLocalService);
 
 		Set<String> scopeAliases = new LinkedHashSet<>(
-			scopeLocator.getScopeAliases(_companyId));
+			scopeLocator.getScopeAliases(companyId));
 
 		_assignedDeletedScopeAliases = _getAssignedDeletedScopeAliases(
 			scopeAliases);
@@ -167,7 +168,6 @@ public class AssignScopesTreeDisplayContext
 
 	private final Set<String> _assignedDeletedScopeAliases;
 	private final Set<String> _assignedScopeAliases;
-	private final long _companyId;
 	private final Locale _locale;
 	private final Map<String, String> _scopeAliasesDescriptionMap;
 	private final Tree.Node<String> _scopeAliasesTreeNode;
