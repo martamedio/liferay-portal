@@ -88,12 +88,13 @@ public class AssignScopesTreeDisplayContext
 
 		scopeAliases.addAll(_assignedScopeAliases);
 
-		_scopeAliasesDescriptions = _getScopeAliasesDescriptions(scopeAliases);
+		_scopeAliasesDescriptionMap = _getScopeAliasesDescriptions(
+			scopeAliases);
 
-		_availableScopeAliases = GenerateScopesTreeUtil.getScopesTree(
+		_scopeAliasesTreeNode = GenerateScopesTreeUtil.getScopesTreeNode(
 			scopeAliases, scopeMatcherFactory);
 
-		List<Tree<String>> children = _availableScopeAliases.getChildren();
+		List<Tree<String>> children = _scopeAliasesTreeNode.getChildren();
 
 		children.sort(
 			Comparator.comparing(
@@ -108,12 +109,12 @@ public class AssignScopesTreeDisplayContext
 		return _assignedScopeAliases;
 	}
 
-	public Tree.Node<String> getAvailableScopeAliases() {
-		return _availableScopeAliases;
+	public Map<String, String> getScopeAliasesDescriptionMap() {
+		return _scopeAliasesDescriptionMap;
 	}
 
-	public Map<String, String> getScopeAliasesDescriptions() {
-		return _scopeAliasesDescriptions;
+	public Tree.Node<String> getScopeAliasesTreeNode() {
+		return _scopeAliasesTreeNode;
 	}
 
 	protected Set<String> getAssignedScopeAliases(
@@ -167,10 +168,10 @@ public class AssignScopesTreeDisplayContext
 
 	private final Set<String> _assignedDeletedScopeAliases;
 	private final Set<String> _assignedScopeAliases;
-	private final Tree.Node<String> _availableScopeAliases;
 	private final long _companyId;
 	private final Locale _locale;
-	private final Map<String, String> _scopeAliasesDescriptions;
+	private final Map<String, String> _scopeAliasesDescriptionMap;
+	private final Tree.Node<String> _scopeAliasesTreeNode;
 	private final ScopeAliasScopeDescriptor _scopeAliasScopeDescriptor;
 
 }

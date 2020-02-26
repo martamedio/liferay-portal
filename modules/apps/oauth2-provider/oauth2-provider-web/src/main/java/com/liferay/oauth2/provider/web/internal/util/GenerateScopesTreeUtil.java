@@ -39,7 +39,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
  */
 public class GenerateScopesTreeUtil {
 
-	public static Tree.Node<String> getScopesTree(
+	public static Tree.Node<String> getScopesTreeNode(
 		Set<String> scopeAliases, ScopeMatcherFactory scopeMatcherFactory) {
 
 		DirectedAcyclicGraph<String, String> directedAcyclicGraph =
