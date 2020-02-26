@@ -33,10 +33,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -90,17 +88,10 @@ public class AssignScopesTreeDisplayContext
 
 		scopeAliases.addAll(_assignedScopeAliases);
 
-		_scopeAliasDescriptionMap = _getScopeAliasDescriptionMap(
-			scopeAliases);
+		_scopeAliasDescriptionMap = _getScopeAliasDescriptionMap(scopeAliases);
 
 		_scopeAliasTreeNode = ScopeTreeUtil.getScopeTreeNode(
 			scopeAliases, scopeMatcherFactory);
-
-		List<Tree<String>> children = _scopeAliasTreeNode.getChildren();
-
-		children.sort(
-			Comparator.comparing(
-				Tree::getValue, String.CASE_INSENSITIVE_ORDER));
 	}
 
 	public Set<String> getAssignedDeletedScopeAliases() {
@@ -170,7 +161,7 @@ public class AssignScopesTreeDisplayContext
 	private final Set<String> _assignedScopeAliases;
 	private final Locale _locale;
 	private final Map<String, String> _scopeAliasDescriptionMap;
-	private final Tree.Node<String> _scopeAliasTreeNode;
 	private final ScopeAliasScopeDescriptor _scopeAliasScopeDescriptor;
+	private final Tree.Node<String> _scopeAliasTreeNode;
 
 }

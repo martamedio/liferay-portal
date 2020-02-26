@@ -20,8 +20,9 @@ import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 import com.liferay.oauth2.provider.web.internal.util.ScopeTreeUtil;
 import com.liferay.petra.string.StringPool;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -137,15 +138,13 @@ public class TreeScopesGeneratorTest {
 	}
 
 	private Tree<String> _getChild(Tree.Node<String> node, int indexItem) {
-		final List<Tree<String>> children = node.getChildren();
-
-		children.sort(Comparator.comparing(Tree::getValue));
+		final List<Tree<String>> children = new ArrayList<>(node.getChildren());
 
 		return children.get(indexItem);
 	}
 
 	private Tree<String> _getLastChild(Tree.Node<String> node) {
-		final List<Tree<String>> children = node.getChildren();
+		final Collection<Tree<String>> children = node.getChildren();
 
 		return _getChild(node, children.size() - 1);
 	}
