@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -84,6 +85,19 @@ public class MFAEmailOTPChecker {
 			return;
 		}
 
+		HttpServletRequest originalHttpServletRequest =
+			_portal.getOriginalServletRequest(httpServletRequest);
+
+		HttpSession httpSession = originalHttpServletRequest.getSession();
+
+		long mfaEmailOTPSetAtTime = GetterUtil.getLong(
+			httpSession.getAttribute(
+				MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME),
+			Long.MIN_VALUE);
+
+		httpServletRequest.setAttribute(
+			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME, mfaEmailOTPSetAtTime);
+
 		httpServletRequest.setAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_CONFIGURATION,
 			_getMFAEmailOTPConfiguration(userId));
@@ -96,11 +110,6 @@ public class MFAEmailOTPChecker {
 				"/mfa_email_otp_checker/verify_browser.jsp");
 
 		requestDispatcher.include(httpServletRequest, httpServletResponse);
-
-		HttpServletRequest originalHttpServletRequest =
-			_portal.getOriginalServletRequest(httpServletRequest);
-
-		HttpSession httpSession = originalHttpServletRequest.getSession();
 
 		httpSession.setAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_PHASE, "verify");
