@@ -81,7 +81,7 @@ public class ScopeTreeUtil {
 
 					directedAcyclicGraph.addEdge(
 						element1, element2,
-						element1 + "#" + element2);
+						StringBundler.concat(element1, "#", element2));
 				}
 			}
 		}
