@@ -90,13 +90,12 @@ public class MFAEmailOTPChecker {
 
 		HttpSession httpSession = originalHttpServletRequest.getSession();
 
-		long mfaEmailOTPSetAtTime = GetterUtil.getLong(
-			httpSession.getAttribute(
-				MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME),
-			Long.MIN_VALUE);
-
 		httpServletRequest.setAttribute(
-			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME, mfaEmailOTPSetAtTime);
+			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME,
+			GetterUtil.getLong(
+				httpSession.getAttribute(
+					MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME),
+				Long.MIN_VALUE));
 
 		httpServletRequest.setAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_CONFIGURATION,
