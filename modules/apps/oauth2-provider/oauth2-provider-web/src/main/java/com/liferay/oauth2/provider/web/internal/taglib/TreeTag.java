@@ -37,32 +37,34 @@ public class TreeTag extends SimpleTagSupport {
 		}
 	}
 
-	public JspFragment getAfterParent() {
-		return _afterParent;
+	public JspFragment getAfterParentJspFragment() {
+		return _afterParentJspFragment;
 	}
 
-	public JspFragment getBeforeParent() {
-		return _beforeParent;
+	public JspFragment getBeforeParentJspFragment() {
+		return _beforeParentJspFragment;
 	}
 
-	public JspFragment getLeaf() {
-		return _leaf;
+	public JspFragment getLeafJspFragment() {
+		return _leafJspFragment;
 	}
 
 	public Collection<Tree.Node<?>> getNodes() {
 		return _nodes;
 	}
 
-	public void setAfterParent(JspFragment afterParent) {
-		_afterParent = afterParent;
+	public void setAfterParentJspFragment(JspFragment afterParentJspFragment) {
+		_afterParentJspFragment = afterParentJspFragment;
 	}
 
-	public void setBeforeParent(JspFragment beforeParent) {
-		_beforeParent = beforeParent;
+	public void setBeforeParentJspFragment(
+		JspFragment beforeParentJspFragment) {
+
+		_beforeParentJspFragment = beforeParentJspFragment;
 	}
 
-	public void setLeaf(JspFragment leaf) {
-		_leaf = leaf;
+	public void setLeafJspFragment(JspFragment leafJspFragment) {
+		_leafJspFragment = leafJspFragment;
 	}
 
 	public void setNodes(Collection<Tree.Node<?>> nodes) {
@@ -70,14 +72,14 @@ public class TreeTag extends SimpleTagSupport {
 	}
 
 	private void _invokeAfterParent() throws IOException, JspException {
-		if (_afterParent != null) {
-			_afterParent.invoke(getJspContext().getOut());
+		if (_afterParentJspFragment != null) {
+			_afterParentJspFragment.invoke(getJspContext().getOut());
 		}
 	}
 
 	private void _invokeBeforeParent() throws IOException, JspException {
-		if (_beforeParent != null) {
-			_beforeParent.invoke(getJspContext().getOut());
+		if (_beforeParentJspFragment != null) {
+			_beforeParentJspFragment.invoke(getJspContext().getOut());
 		}
 	}
 
@@ -90,7 +92,7 @@ public class TreeTag extends SimpleTagSupport {
 		jspContext.setAttribute("parents", parents);
 
 		if (tree instanceof Tree.Leaf) {
-			_leaf.invoke(jspContext.getOut());
+			_leafJspFragment.invoke(jspContext.getOut());
 		}
 		else {
 			Tree.Node<?> node = (Tree.Node<?>)tree;
@@ -109,9 +111,9 @@ public class TreeTag extends SimpleTagSupport {
 		}
 	}
 
-	private JspFragment _afterParent;
-	private JspFragment _beforeParent;
-	private JspFragment _leaf;
+	private JspFragment _afterParentJspFragment;
+	private JspFragment _beforeParentJspFragment;
+	private JspFragment _leafJspFragment;
 	private Collection<Tree.Node<?>> _nodes;
 
 }
