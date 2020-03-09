@@ -37,50 +37,28 @@ public class TreeTag extends SimpleTagSupport {
 		}
 	}
 
-	public JspFragment getAfterParentJspFragment() {
-		return _afterParentJspFragment;
-	}
-
-	public JspFragment getBeforeParentJspFragment() {
-		return _beforeParentJspFragment;
-	}
-
 	public JspFragment getLeafJspFragment() {
 		return _leafJspFragment;
+	}
+
+	public JspFragment getNodeJspFragment() {
+		return _nodeJspFragment;
 	}
 
 	public Collection<Tree.Node<?>> getNodes() {
 		return _nodes;
 	}
 
-	public void setAfterParentJspFragment(JspFragment afterParentJspFragment) {
-		_afterParentJspFragment = afterParentJspFragment;
-	}
-
-	public void setBeforeParentJspFragment(
-		JspFragment beforeParentJspFragment) {
-
-		_beforeParentJspFragment = beforeParentJspFragment;
-	}
-
 	public void setLeafJspFragment(JspFragment leafJspFragment) {
 		_leafJspFragment = leafJspFragment;
 	}
 
+	public void setNodeJspFragment(JspFragment nodeJspFragment) {
+		_nodeJspFragment = nodeJspFragment;
+	}
+
 	public void setNodes(Collection<Tree.Node<?>> nodes) {
 		_nodes = nodes;
-	}
-
-	private void _invokeAfterParent() throws IOException, JspException {
-		if (_afterParentJspFragment != null) {
-			_afterParentJspFragment.invoke(getJspContext().getOut());
-		}
-	}
-
-	private void _invokeBeforeParent() throws IOException, JspException {
-		if (_beforeParentJspFragment != null) {
-			_beforeParentJspFragment.invoke(getJspContext().getOut());
-		}
 	}
 
 	private void _renderTree(Tree<?> tree, Deque<Tree.Node<?>> parents)
@@ -97,23 +75,16 @@ public class TreeTag extends SimpleTagSupport {
 		else {
 			Tree.Node<?> node = (Tree.Node<?>)tree;
 
-			_invokeBeforeParent();
-
 			parents.push(node);
 
-			for (Tree<?> children : node.getChildren()) {
-				_renderTree(children, parents);
-			}
+			_nodeJspFragment.invoke(jspContext.getOut());
 
 			parents.pop();
-
-			_invokeAfterParent();
 		}
 	}
 
-	private JspFragment _afterParentJspFragment;
-	private JspFragment _beforeParentJspFragment;
 	private JspFragment _leafJspFragment;
+	private JspFragment _nodeJspFragment;
 	private Collection<Tree.Node<?>> _nodes;
 
 }
