@@ -12,25 +12,20 @@
 		<tag-class>com.liferay.oauth2.provider.web.internal.taglib.TreeTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
-			<name>afterParent</name>
+			<name>leafJspFragment</name>
 			<required>false</required>
 			<fragment>true</fragment>
 		</attribute>
 		<attribute>
-			<name>beforeParent</name>
+			<name>nodeJspFragment</name>
 			<required>false</required>
 			<fragment>true</fragment>
 		</attribute>
 		<attribute>
-			<name>leaf</name>
-			<required>true</required>
-			<fragment>true</fragment>
-		</attribute>
-		<attribute>
-			<name>root</name>
+			<name>trees</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>com.liferay.oauth2.provider.web.internal.taglib.Tree</type>
+			<type>java.util.Collection</type>
 		</attribute>
 	</tag>
 </taglib>

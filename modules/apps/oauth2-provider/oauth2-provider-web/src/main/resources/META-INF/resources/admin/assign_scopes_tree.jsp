@@ -24,7 +24,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 AssignScopesTreeDisplayContext
 	assignScopesTreeDisplayContext = (AssignScopesTreeDisplayContext)oAuth2AdminPortletTreeDisplayContext;
 
-Tree.Node<String> availableScopeAliases = assignScopesTreeDisplayContext.getScopeAliasTreeNode();
+Tree.Node availableScopeAliases = assignScopesTreeDisplayContext.getScopeAliasTreeNode();
 
 Set<String> assignedScopeAliases = assignScopesTreeDisplayContext.getAssignedScopeAliases();
 Set<String> deletedScopeAliases = assignScopesTreeDisplayContext.getAssignedDeletedScopeAliases();
@@ -74,10 +74,10 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 			<aui:form action="<%= assignScopesURL %>" name="fm">
 				<ul class="list-group">
 					<liferay-tree:tree
-						root="<%= availableScopeAliases %>"
+						trees="<%= availableScopeAliases.getChildren() %>"
 					>
 						<jsp:attribute
-							name="beforeParent"
+							name="nodeJspFragment"
 						>
 						<li class="borderless list-group-item<c:if test="${deletedScopeAliases.contains(node.value)}"> removed-scope</c:if>" id="${node.value}-container">
 							<div class="row">
@@ -100,10 +100,14 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 								</div>
 							</div>
 						</li>
+
+						<liferay-tree:tree
+							trees="${node.children}"
+						/>
 						</jsp:attribute>
 
 						<jsp:attribute
-							name="leaf"
+							name="leafJspFragment"
 						>
 						<li class="borderless list-group-item<c:if test="${deletedScopeAliases.contains(node.value)}"> removed-scope</c:if>" id="${node.value}-container">
 							<div class="row">
