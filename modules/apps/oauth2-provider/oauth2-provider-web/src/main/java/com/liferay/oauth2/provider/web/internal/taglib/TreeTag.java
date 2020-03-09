@@ -16,6 +16,7 @@ package com.liferay.oauth2.provider.web.internal.taglib;
 
 import java.io.IOException;
 
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -31,62 +32,56 @@ public class TreeTag extends SimpleTagSupport {
 
 	@Override
 	public void doTag() throws IOException, JspException {
-		for (Tree<String> tree : root.getChildren()) {
+		for (Tree<?> tree : _nodes) {
 			_renderTree(tree, new LinkedList<>());
 		}
 	}
 
 	public JspFragment getAfterParent() {
-		return afterParent;
+		return _afterParent;
 	}
 
 	public JspFragment getBeforeParent() {
-		return beforeParent;
+		return _beforeParent;
 	}
 
 	public JspFragment getLeaf() {
-		return leaf;
+		return _leaf;
 	}
 
-	public Tree.Node getRoot() {
-		return root;
+	public Collection<Tree.Node<?>> getNodes() {
+		return _nodes;
 	}
 
 	public void setAfterParent(JspFragment afterParent) {
-		this.afterParent = afterParent;
+		_afterParent = afterParent;
 	}
 
 	public void setBeforeParent(JspFragment beforeParent) {
-		this.beforeParent = beforeParent;
+		_beforeParent = beforeParent;
 	}
 
 	public void setLeaf(JspFragment leaf) {
-		this.leaf = leaf;
+		_leaf = leaf;
 	}
 
-	public void setRoot(Tree.Node root) {
-		this.root = root;
+	public void setNodes(Collection<Tree.Node<?>> nodes) {
+		_nodes = nodes;
 	}
-
-	public JspFragment afterParent;
-	public JspFragment beforeParent;
-	public JspFragment leaf;
-	public Tree.Node<String> root;
 
 	private void _invokeAfterParent() throws IOException, JspException {
-		if (afterParent != null) {
-			afterParent.invoke(getJspContext().getOut());
+		if (_afterParent != null) {
+			_afterParent.invoke(getJspContext().getOut());
 		}
 	}
 
 	private void _invokeBeforeParent() throws IOException, JspException {
-		if (beforeParent != null) {
-			beforeParent.invoke(getJspContext().getOut());
+		if (_beforeParent != null) {
+			_beforeParent.invoke(getJspContext().getOut());
 		}
 	}
 
-	private void _renderTree(
-			Tree<String> tree, Deque<Tree.Node<String>> parents)
+	private void _renderTree(Tree<?> tree, Deque<Tree.Node<?>> parents)
 		throws IOException, JspException {
 
 		final JspContext jspContext = getJspContext();
@@ -95,16 +90,16 @@ public class TreeTag extends SimpleTagSupport {
 		jspContext.setAttribute("parents", parents);
 
 		if (tree instanceof Tree.Leaf) {
-			leaf.invoke(jspContext.getOut());
+			_leaf.invoke(jspContext.getOut());
 		}
 		else {
-			Tree.Node<String> node = (Tree.Node<String>)tree;
+			Tree.Node<?> node = (Tree.Node<?>)tree;
 
 			_invokeBeforeParent();
 
 			parents.push(node);
 
-			for (Tree<String> children : node.getChildren()) {
+			for (Tree<?> children : node.getChildren()) {
 				_renderTree(children, parents);
 			}
 
@@ -113,5 +108,10 @@ public class TreeTag extends SimpleTagSupport {
 			_invokeAfterParent();
 		}
 	}
+
+	private JspFragment _afterParent;
+	private JspFragment _beforeParent;
+	private JspFragment _leaf;
+	private Collection<Tree.Node<?>> _nodes;
 
 }
