@@ -33,8 +33,32 @@ public class TreeTag extends SimpleTagSupport {
 
 	@Override
 	public void doTag() throws IOException, JspException {
+		final JspContext jspContext = getJspContext();
+
+		Object parentsObject = jspContext.getAttribute("parents");
+
+		if (!(parentsObject instanceof Deque)) {
+			parentsObject = new LinkedList<>();
+
+			jspContext.setAttribute("parents", parentsObject);
+		}
+		else {
+			Deque<Tree.Node<?>> parents = (Deque<Tree.Node<?>>)parentsObject;
+
+			parents.push((Tree.Node<?>)jspContext.getAttribute("node"));
+		}
+
 		for (Tree<?> tree : _trees) {
 			_renderTree(tree);
+		}
+
+		Deque<Tree.Node<?>> parents = (Deque<Tree.Node<?>>)parentsObject;
+
+		if (parents.isEmpty()) {
+			jspContext.removeAttribute("parents");
+		}
+		else {
+			parents.pop();
 		}
 	}
 
@@ -109,30 +133,18 @@ public class TreeTag extends SimpleTagSupport {
 	private void _renderTree(Tree<?> tree) throws IOException, JspException {
 		final JspContext jspContext = getJspContext();
 
+		final Object currentNode = jspContext.getAttribute("node");
+
 		jspContext.setAttribute("node", tree);
-
-		Object parentsObject = jspContext.getAttribute("parents");
-
-		if (!(parentsObject instanceof Deque)) {
-			parentsObject = new LinkedList<>();
-
-			jspContext.setAttribute("parents", parentsObject);
-		}
 
 		if (tree instanceof Tree.Leaf) {
 			_getLeafJspFragment().invoke(jspContext.getOut());
 		}
 		else {
-			Tree.Node<?> node = (Tree.Node<?>)tree;
-
-			Deque<Tree.Node<?>> parents = (Deque<Tree.Node<?>>)parentsObject;
-
-			parents.push(node);
-
 			_getNodeJspFragment().invoke(jspContext.getOut());
-
-			parents.pop();
 		}
+
+		jspContext.setAttribute("node", currentNode);
 	}
 
 	private JspFragment _leafJspFragment;
