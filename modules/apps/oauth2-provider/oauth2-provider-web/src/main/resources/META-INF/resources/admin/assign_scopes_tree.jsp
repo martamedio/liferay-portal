@@ -101,7 +101,7 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 							</div>
 						</li>
 
-						<liferay-tree:tree
+						<liferay-tree:render-children
 							trees="${node.children}"
 						/>
 						</jsp:attribute>

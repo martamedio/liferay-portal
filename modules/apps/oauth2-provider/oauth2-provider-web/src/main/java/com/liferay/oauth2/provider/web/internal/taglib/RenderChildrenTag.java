@@ -17,17 +17,17 @@ package com.liferay.oauth2.provider.web.internal.taglib;
 import java.io.IOException;
 
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Deque;
 
 import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.JspFragment;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+import javax.servlet.jsp.tagext.JspTag;
 
 /**
  * @author Marta Medio
  */
-public class TreeTag extends SimpleTagSupport {
+public class RenderChildrenTag extends TreeTag {
 
 	@Override
 	public void doTag() throws IOException, JspException {
@@ -35,29 +35,57 @@ public class TreeTag extends SimpleTagSupport {
 
 		Object parentsObject = jspContext.getAttribute("parents");
 
+		if (!(parentsObject instanceof Deque)) {
+			throw new IllegalStateException(
+				"Render children has to be used inside the body of a tree");
+		}
+
+		Deque<Tree.Node<?>> parents = (Deque<Tree.Node<?>>)parentsObject;
+
 		try {
-			jspContext.setAttribute("parents", new LinkedList<>());
+			parents.push((Tree.Node<?>)jspContext.getAttribute("node"));
 
 			for (Tree<?> tree : _trees) {
 				renderTree(tree);
 			}
 		}
 		finally {
-			if (parentsObject == null) {
-				jspContext.removeAttribute("parents");
-			}
-			else {
-				jspContext.setAttribute("parents", parentsObject);
-			}
+			parents.pop();
 		}
 	}
 
+	@Override
 	public JspFragment getLeafJspFragment() {
-		return leafJspFragment;
+		if (leafJspFragment != null) {
+			return leafJspFragment;
+		}
+
+		final JspTag jspTag = findAncestorWithClass(this, TreeTag.class);
+
+		if (jspTag instanceof TreeTag) {
+			TreeTag treeTag = (TreeTag)jspTag;
+
+			return treeTag.getLeafJspFragment();
+		}
+
+		throw new IllegalStateException("Can not find leaf fragment");
 	}
 
+	@Override
 	public JspFragment getNodeJspFragment() {
-		return nodeJspFragment;
+		if (nodeJspFragment != null) {
+			return nodeJspFragment;
+		}
+
+		final JspTag jspTag = findAncestorWithClass(this, TreeTag.class);
+
+		if (jspTag instanceof TreeTag) {
+			TreeTag treeTag = (TreeTag)jspTag;
+
+			return treeTag.getNodeJspFragment();
+		}
+
+		throw new IllegalStateException("Can not find node fragment");
 	}
 
 	public Collection<Tree<?>> getTrees() {
@@ -74,31 +102,6 @@ public class TreeTag extends SimpleTagSupport {
 
 	public void setTrees(Collection<Tree<?>> trees) {
 		_trees = trees;
-	}
-
-	protected void renderTree(Tree<?> tree) throws IOException, JspException {
-		final JspContext jspContext = getJspContext();
-
-		final Object nodeObject = jspContext.getAttribute("node");
-
-		try {
-			jspContext.setAttribute("node", tree);
-
-			if (tree instanceof Tree.Leaf) {
-				getLeafJspFragment().invoke(null);
-			}
-			else {
-				getNodeJspFragment().invoke(null);
-			}
-		}
-		finally {
-			if (nodeObject == null) {
-				jspContext.removeAttribute("node");
-			}
-			else {
-				jspContext.setAttribute("node", nodeObject);
-			}
-		}
 	}
 
 	protected JspFragment leafJspFragment;
