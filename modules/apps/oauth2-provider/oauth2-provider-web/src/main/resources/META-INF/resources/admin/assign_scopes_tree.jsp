@@ -82,9 +82,9 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 						<li class="borderless list-group-item<c:if test="${deletedScopeAliases.contains(node.value)}"> removed-scope</c:if>" id="${node.value}-container">
 							<div class="row">
 									<c:choose>
-										<c:when test="${parents.size() > 0}">
+										<c:when test="${parentNodes.size() > 0}">
 										<div class="col-md-6">
-											<div class="scope-children-${parents.size()}">
+											<div class="scope-children-${parentNodes.size()}">
 												<aui:input checked="${assignedScopeAliases.contains(node.value)}" data-has-childrens="true" data-parent="${parents.getFirst().value}" disabled="${deletedScopeAliases.contains(node.value)}" id="${node.value}" label="${node.value}" name="scopeAliases" type="checkbox" value="${node.value}" />
 											</div>
 										</div>
@@ -112,9 +112,9 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 						<li class="borderless list-group-item<c:if test="${deletedScopeAliases.contains(node.value)}"> removed-scope</c:if>" id="${node.value}-container">
 							<div class="row">
 									<c:choose>
-										<c:when test="${parents.size() > 0}">
+										<c:when test="${parentNodes.size() > 0}">
 										<div class="col-md-6">
-											<div class="scope-children-${parents.size()}">
+											<div class="scope-children-${parentNodes.size()}">
 												<aui:input checked="${assignedScopeAliases.contains(node.value)}" data-parent="${parents.getFirst().value}" disabled="${deletedScopeAliases.contains(node.value)}" id="${node.value}" label="${node.value}" name="scopeAliases" type="checkbox" value="${node.value}" />
 											</div>
 										</div>

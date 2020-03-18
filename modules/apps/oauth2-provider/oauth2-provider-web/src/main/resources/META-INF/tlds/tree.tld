@@ -11,6 +11,10 @@
 		<name>render-children</name>
 		<tag-class>com.liferay.oauth2.provider.web.internal.taglib.RenderChildrenTag</tag-class>
 		<body-content>scriptless</body-content>
+		<variable>
+			<name-given>parentNodes</name-given>
+			<variable-class>java.util.Collection</variable-class>
+		</variable>
 		<attribute>
 			<name>leafJspFragment</name>
 			<required>false</required>

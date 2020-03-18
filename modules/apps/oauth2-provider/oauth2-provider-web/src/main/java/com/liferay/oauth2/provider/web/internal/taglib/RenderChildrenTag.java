@@ -33,24 +33,25 @@ public class RenderChildrenTag extends TreeTag {
 	public void doTag() throws IOException, JspException {
 		final JspContext jspContext = getJspContext();
 
-		Object parentsObject = jspContext.getAttribute("parents");
+		Object parentsNodesObject = jspContext.getAttribute("parentNodes");
 
-		if (!(parentsObject instanceof Deque)) {
+		if (!(parentsNodesObject instanceof Deque)) {
 			throw new IllegalStateException(
 				"Render children has to be used inside the body of a tree");
 		}
 
-		Deque<Tree.Node<?>> parents = (Deque<Tree.Node<?>>)parentsObject;
+		Deque<Tree.Node<?>> parentNodes =
+			(Deque<Tree.Node<?>>)parentsNodesObject;
 
 		try {
-			parents.push((Tree.Node<?>)jspContext.getAttribute("node"));
+			parentNodes.push((Tree.Node<?>)jspContext.getAttribute("node"));
 
 			for (Tree<?> tree : _trees) {
 				renderTree(tree);
 			}
 		}
 		finally {
-			parents.pop();
+			parentNodes.pop();
 		}
 	}
 
