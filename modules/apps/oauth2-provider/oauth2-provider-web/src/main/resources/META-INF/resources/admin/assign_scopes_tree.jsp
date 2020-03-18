@@ -79,54 +79,54 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 						<jsp:attribute
 							name="nodeJspFragment"
 						>
-						<li class="borderless list-group-item<c:if test="${deletedScopeAliases.contains(node.value)}"> removed-scope</c:if>" id="${node.value}-container">
+						<li class="borderless list-group-item<c:if test="${deletedScopeAliases.contains(tree.value)}"> removed-scope</c:if>" id="${tree.value}-container">
 							<div class="row">
 									<c:choose>
 										<c:when test="${parentNodes.size() > 0}">
 										<div class="col-md-6">
 											<div class="scope-children-${parentNodes.size()}">
-												<aui:input checked="${assignedScopeAliases.contains(node.value)}" data-has-childrens="true" data-parent="${parents.getFirst().value}" disabled="${deletedScopeAliases.contains(node.value)}" id="${node.value}" label="${node.value}" name="scopeAliases" type="checkbox" value="${node.value}" />
+												<aui:input checked="${assignedScopeAliases.contains(tree.value)}" data-has-childrens="true" data-parent="${parentNodes.getFirst().value}" disabled="${deletedScopeAliases.contains(tree.value)}" id="${tree.value}" label="${tree.value}" name="scopeAliases" type="checkbox" value="${tree.value}" />
 											</div>
 										</div>
 										</c:when>
 										<c:otherwise>
 										<div class="col-md-6">
-											<aui:input checked="${assignedScopeAliases.contains(node.value)}" data-has-childrens="true" disabled="${deletedScopeAliases.contains(node.value)}" id="${node.value}" label="${node.value}" name="scopeAliases" type="checkbox" value="${node.value}" />
+											<aui:input checked="${assignedScopeAliases.contains(tree.value)}" data-has-childrens="true" disabled="${deletedScopeAliases.contains(tree.value)}" id="${tree.value}" label="${tree.value}" name="scopeAliases" type="checkbox" value="${tree.value}" />
 										</div>
 										</c:otherwise>
 									</c:choose>
 								<div class="col-md-6 text-left">
-									${scopeAliasesDescriptions.get(node.value)}
+									${scopeAliasesDescriptions.get(tree.value)}
 								</div>
 							</div>
 						</li>
 
 						<liferay-tree:render-children
-							trees="${node.children}"
+							trees="${tree.trees}"
 						/>
 						</jsp:attribute>
 
 						<jsp:attribute
 							name="leafJspFragment"
 						>
-						<li class="borderless list-group-item<c:if test="${deletedScopeAliases.contains(node.value)}"> removed-scope</c:if>" id="${node.value}-container">
+						<li class="borderless list-group-item<c:if test="${deletedScopeAliases.contains(tree.value)}"> removed-scope</c:if>" id="${tree.value}-container">
 							<div class="row">
 									<c:choose>
 										<c:when test="${parentNodes.size() > 0}">
 										<div class="col-md-6">
 											<div class="scope-children-${parentNodes.size()}">
-												<aui:input checked="${assignedScopeAliases.contains(node.value)}" data-parent="${parents.getFirst().value}" disabled="${deletedScopeAliases.contains(node.value)}" id="${node.value}" label="${node.value}" name="scopeAliases" type="checkbox" value="${node.value}" />
+												<aui:input checked="${assignedScopeAliases.contains(tree.value)}" data-parent="${parentNodes.getFirst().value}" disabled="${deletedScopeAliases.contains(tree.value)}" id="${tree.value}" label="${tree.value}" name="scopeAliases" type="checkbox" value="${tree.value}" />
 											</div>
 										</div>
 										</c:when>
 										<c:otherwise>
 										<div class="col-md-6">
-											<aui:input checked="${assignedScopeAliases.contains(node.value)}" disabled="${deletedScopeAliases.contains(node.value)}" id="${node.value}" label="${node.value}" name="scopeAliases" type="checkbox" value="${node.value}" />
+											<aui:input checked="${assignedScopeAliases.contains(tree.value)}" disabled="${deletedScopeAliases.contains(tree.value)}" id="${tree.value}" label="${tree.value}" name="scopeAliases" type="checkbox" value="${tree.value}" />
 										</div>
 										</c:otherwise>
 									</c:choose>
 								<div class="col-md-6 text-left">
-									${scopeAliasesDescriptions.get(node.value)}
+									${scopeAliasesDescriptions.get(tree.value)}
 								</div>
 							</div>
 						</li>
