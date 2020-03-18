@@ -138,13 +138,13 @@ public class TreeScopesGeneratorTest {
 	}
 
 	private Tree<String> _getChild(Tree.Node<String> node, int indexItem) {
-		final List<Tree<String>> children = new ArrayList<>(node.getChildren());
+		final List<Tree<String>> children = new ArrayList<>(node.getTrees());
 
 		return children.get(indexItem);
 	}
 
 	private Tree<String> _getLastChild(Tree.Node<String> node) {
-		final Collection<Tree<String>> children = node.getChildren();
+		final Collection<Tree<String>> children = node.getTrees();
 
 		return _getChild(node, children.size() - 1);
 	}

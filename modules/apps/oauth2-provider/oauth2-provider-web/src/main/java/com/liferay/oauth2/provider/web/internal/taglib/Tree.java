@@ -42,17 +42,17 @@ public interface Tree<T> {
 
 	public static final class Node<T> implements Tree<T> {
 
-		public Node(T value, Collection<Tree<T>> children) {
+		public Node(T value, Collection<Tree<T>> trees) {
 			_value = value;
-			_children = Collections.unmodifiableCollection(children);
+			_trees = Collections.unmodifiableCollection(trees);
 		}
 
-		public Node(T value, Tree<T>... children) {
-			this(value, Arrays.asList(children));
+		public Node(T value, Tree<T>... trees) {
+			this(value, Arrays.asList(trees));
 		}
 
-		public Collection<Tree<T>> getChildren() {
-			return _children;
+		public Collection<Tree<T>> getTrees() {
+			return _trees;
 		}
 
 		@Override
@@ -60,7 +60,7 @@ public interface Tree<T> {
 			return _value;
 		}
 
-		private final Collection<Tree<T>> _children;
+		private final Collection<Tree<T>> _trees;
 		private T _value;
 
 	}
