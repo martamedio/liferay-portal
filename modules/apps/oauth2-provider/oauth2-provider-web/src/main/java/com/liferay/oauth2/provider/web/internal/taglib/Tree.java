@@ -52,7 +52,7 @@ public interface Tree<T> {
 			this(value, Arrays.asList(trees));
 		}
 
-		public Collection<Tree<T>> getTrees() {
+		public List<Tree<T>> getTrees() {
 			return _trees;
 		}
 

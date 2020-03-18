@@ -63,5 +63,5 @@ page import="java.util.Iterator" %>
 
 <%
 OAuth2AdminPortletDisplayContext oAuth2AdminPortletDisplayContext = (OAuth2AdminPortletDisplayContext)request.getAttribute(OAuth2ProviderWebKeys.OAUTH2_ADMIN_PORTLET_DISPLAY_CONTEXT);
-OAuth2AdminPortletDisplayContext oAuth2AdminPortletTreeDisplayContext = (OAuth2AdminPortletDisplayContext)request.getAttribute(OAuth2ProviderWebKeys.OAUTH2_ADMIN_PORTLET_TREE_DISPLAY_CONTEXT);
+AssignScopesTreeDisplayContext oAuth2AdminPortletTreeDisplayContext = (AssignScopesTreeDisplayContext)request.getAttribute(OAuth2ProviderWebKeys.OAUTH2_ADMIN_PORTLET_TREE_DISPLAY_CONTEXT);
 %>

@@ -74,7 +74,7 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 			<aui:form action="<%= assignScopesURL %>" name="fm">
 				<ul class="list-group">
 					<liferay-tree:tree
-						trees="<%= availableScopeAliases.getTrees() %>"
+						trees="<%= oAuth2AdminPortletTreeDisplayContext.sort(availableScopeAliases.getTrees()) %>"
 					>
 						<jsp:attribute
 							name="nodeJspFragment"
