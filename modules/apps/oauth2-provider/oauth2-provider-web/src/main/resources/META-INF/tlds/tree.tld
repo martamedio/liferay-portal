@@ -15,6 +15,10 @@
 			<name-given>parentNodes</name-given>
 			<variable-class>java.util.Collection</variable-class>
 		</variable>
+		<variable>
+			<name-given>tree</name-given>
+			<variable-class>com.liferay.oauth2.provider.web.internal.taglib.Tree</variable-class>
+		</variable>
 		<attribute>
 			<name>leafJspFragment</name>
 			<required>false</required>
@@ -36,6 +40,14 @@
 		<name>tree</name>
 		<tag-class>com.liferay.oauth2.provider.web.internal.taglib.TreeTag</tag-class>
 		<body-content>scriptless</body-content>
+		<variable>
+			<name-given>parentNodes</name-given>
+			<variable-class>java.util.Collection</variable-class>
+		</variable>
+		<variable>
+			<name-given>tree</name-given>
+			<variable-class>com.liferay.oauth2.provider.web.internal.taglib.Tree</variable-class>
+		</variable>
 		<attribute>
 			<name>leafJspFragment</name>
 			<required>true</required>

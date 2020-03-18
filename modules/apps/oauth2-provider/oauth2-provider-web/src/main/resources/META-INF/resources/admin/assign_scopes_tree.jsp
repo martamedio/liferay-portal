@@ -34,8 +34,6 @@ Map<String, String> scopeAliasesDescriptions = assignScopesTreeDisplayContext.ge
 pageContext.setAttribute("assignedScopeAliases", assignedScopeAliases);
 pageContext.setAttribute("deletedScopeAliases", deletedScopeAliases);
 pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
-
-Comparator<Tree<String>> comparator = Comparator.comparing(Tree::getValue, String.CASE_INSENSITIVE_ORDER);
 %>
 
 <div class="container-fluid container-fluid-max-xl container-view">
@@ -104,7 +102,7 @@ Comparator<Tree<String>> comparator = Comparator.comparing(Tree::getValue, Strin
 						</li>
 
 						<liferay-tree:render-children
-							trees="${Collections.sort(tree.trees, comparator)}"
+							trees="${OAUTH2_ADMIN_PORTLET_TREE_DISPLAY_CONTEXT.sort(tree.trees)}"
 						/>
 						</jsp:attribute>
 

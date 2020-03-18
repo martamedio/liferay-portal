@@ -17,6 +17,7 @@ package com.liferay.oauth2.provider.web.internal.taglib;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Marta Medio
@@ -42,9 +43,9 @@ public interface Tree<T> {
 
 	public static final class Node<T> implements Tree<T> {
 
-		public Node(T value, Collection<Tree<T>> trees) {
+		public Node(T value, List<Tree<T>> trees) {
 			_value = value;
-			_trees = Collections.unmodifiableCollection(trees);
+			_trees = Collections.unmodifiableList(trees);
 		}
 
 		public Node(T value, Tree<T>... trees) {
@@ -60,7 +61,7 @@ public interface Tree<T> {
 			return _value;
 		}
 
-		private final Collection<Tree<T>> _trees;
+		private final List<Tree<T>> _trees;
 		private T _value;
 
 	}

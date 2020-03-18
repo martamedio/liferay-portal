@@ -31,10 +31,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -108,6 +111,13 @@ public class AssignScopesTreeDisplayContext
 
 	public Tree.Node<String> getScopeAliasTreeNode() {
 		return _scopeAliasTreeNode;
+	}
+
+	public List<Tree<String>> sort(List<Tree<String>> list) {
+		return ListUtil.sort(
+			list,
+			Comparator.comparing(
+				Tree::getValue, String.CASE_INSENSITIVE_ORDER));
 	}
 
 	protected Set<String> getAssignedScopeAliases(

@@ -102,7 +102,7 @@ public class RenderChildrenTag extends TreeTag {
 	}
 
 	public void setTrees(Collection trees) {
-		_trees = (Collection) trees;
+		_trees = (Collection)trees;
 	}
 
 	protected JspFragment leafJspFragment;

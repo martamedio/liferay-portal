@@ -21,16 +21,13 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -103,9 +100,7 @@ public class ScopeTreeUtil {
 			directedAcyclicGraph, rootValue, initialVertices);
 	}
 
-	private static <T, E> Tree<T> _createTree(
-		Graph<T, E> graph, T t) {
-
+	private static <T, E> Tree<T> _createTree(Graph<T, E> graph, T t) {
 		if (graph.outDegreeOf(t) == 0) {
 			return new Tree.Leaf<>(t);
 		}
@@ -122,7 +117,7 @@ public class ScopeTreeUtil {
 	private static <T> Tree.Node<T> _createTreeNode(
 		Graph<T, ?> graph, T value, Set<T> children) {
 
-		Collection<Tree<T>> trees = new ArrayList<>();
+		List<Tree<T>> trees = new ArrayList<>();
 
 		for (T child : children) {
 			trees.add(_createTree(graph, child));
