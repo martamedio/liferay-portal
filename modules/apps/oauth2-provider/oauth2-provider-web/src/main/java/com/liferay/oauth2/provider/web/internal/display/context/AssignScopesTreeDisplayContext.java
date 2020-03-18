@@ -67,18 +67,7 @@ public class AssignScopesTreeDisplayContext
 			oAuth2ProviderConfiguration, portletRequest, themeDisplay,
 			dlURLHelper);
 
-		_locale = themeDisplay.getLocale();
-
 		long companyId = themeDisplay.getCompanyId();
-
-		_scopeAliasScopeDescriptor = new ScopeAliasScopeDescriptor(
-			companyId, scopeDescriptorLocator, scopeLocator);
-
-		OAuth2Application oAuth2Application = getOAuth2Application();
-
-		_assignedScopeAliases = getAssignedScopeAliases(
-			oAuth2Application.getOAuth2ApplicationScopeAliasesId(),
-			oAuth2ScopeGrantLocalService);
 
 		Set<String> scopeAliases = new LinkedHashSet<>(
 			scopeLocator.getScopeAliases(companyId));
@@ -86,12 +75,24 @@ public class AssignScopesTreeDisplayContext
 		_assignedDeletedScopeAliases = _getAssignedDeletedScopeAliases(
 			scopeAliases);
 
+		OAuth2Application oAuth2Application = getOAuth2Application();
+
+		_assignedScopeAliases = getAssignedScopeAliases(
+			oAuth2Application.getOAuth2ApplicationScopeAliasesId(),
+			oAuth2ScopeGrantLocalService);
+
+		_locale = themeDisplay.getLocale();
+
 		scopeAliases.addAll(_assignedScopeAliases);
 
 		_scopeAliasDescriptionMap = _getScopeAliasDescriptionMap(scopeAliases);
 
+		_scopeAliasScopeDescriptor = new ScopeAliasScopeDescriptor(
+			companyId, scopeDescriptorLocator, scopeLocator);
+
 		_scopeAliasTreeNode = ScopeTreeUtil.getScopeTreeNode(
 			scopeAliases, scopeMatcherFactory);
+
 	}
 
 	public Set<String> getAssignedDeletedScopeAliases() {
