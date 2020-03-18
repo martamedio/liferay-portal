@@ -92,7 +92,6 @@ public class AssignScopesTreeDisplayContext
 
 		_scopeAliasTreeNode = ScopeTreeUtil.getScopeTreeNode(
 			scopeAliases, scopeMatcherFactory);
-
 	}
 
 	public Set<String> getAssignedDeletedScopeAliases() {
