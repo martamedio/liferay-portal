@@ -24,7 +24,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 AssignScopesTreeDisplayContext
 	assignScopesTreeDisplayContext = (AssignScopesTreeDisplayContext)oAuth2AdminPortletTreeDisplayContext;
 
-Tree.Node availableScopeAliases = assignScopesTreeDisplayContext.getScopeAliasTreeNode();
+Tree.Node<String> availableScopeAliases = assignScopesTreeDisplayContext.getScopeAliasTreeNode();
 
 Set<String> assignedScopeAliases = assignScopesTreeDisplayContext.getAssignedScopeAliases();
 Set<String> deletedScopeAliases = assignScopesTreeDisplayContext.getAssignedDeletedScopeAliases();
@@ -34,6 +34,8 @@ Map<String, String> scopeAliasesDescriptions = assignScopesTreeDisplayContext.ge
 pageContext.setAttribute("assignedScopeAliases", assignedScopeAliases);
 pageContext.setAttribute("deletedScopeAliases", deletedScopeAliases);
 pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
+
+Comparator<Tree<String>> comparator = Comparator.comparing(Tree::getValue, String.CASE_INSENSITIVE_ORDER);
 %>
 
 <div class="container-fluid container-fluid-max-xl container-view">
@@ -102,7 +104,7 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 						</li>
 
 						<liferay-tree:render-children
-							trees="${tree.trees}"
+							trees="${Collections.sort(tree.trees, comparator)}"
 						/>
 						</jsp:attribute>
 

@@ -20,6 +20,7 @@ import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -55,15 +56,11 @@ public class ScopeTreeUtil {
 						scopeAlias1, scopeMatcherFactory::create);
 
 				return scopeMatcher.match(scopeAlias2);
-			},
-			() -> new TreeSet<Tree<String>>(
-				Comparator.comparing(
-					Tree::getValue, String.CASE_INSENSITIVE_ORDER)));
+			});
 	}
 
 	public static <T> Tree.Node<T> getTreeNode(
-		Set<T> set, T rootValue, BiPredicate<T, T> biPredicate,
-		Supplier<Collection<Tree<T>>> collectionSupplier) {
+		Set<T> set, T rootValue, BiPredicate<T, T> biPredicate) {
 
 		DirectedAcyclicGraph<T, String> directedAcyclicGraph =
 			new DirectedAcyclicGraph<>(String.class);
@@ -103,13 +100,11 @@ public class ScopeTreeUtil {
 			directedAcyclicGraph, initialVertices, endingVertices);
 
 		return _createTreeNode(
-			directedAcyclicGraph, rootValue, initialVertices,
-			collectionSupplier);
+			directedAcyclicGraph, rootValue, initialVertices);
 	}
 
 	private static <T, E> Tree<T> _createTree(
-		Graph<T, E> graph, T t,
-		Supplier<Collection<Tree<T>>> collectionSupplier) {
+		Graph<T, E> graph, T t) {
 
 		if (graph.outDegreeOf(t) == 0) {
 			return new Tree.Leaf<>(t);
@@ -121,17 +116,16 @@ public class ScopeTreeUtil {
 			set.add(graph.getEdgeTarget(edge));
 		}
 
-		return _createTreeNode(graph, t, set, collectionSupplier);
+		return _createTreeNode(graph, t, set);
 	}
 
 	private static <T> Tree.Node<T> _createTreeNode(
-		Graph<T, ?> graph, T value, Set<T> children,
-		Supplier<Collection<Tree<T>>> collectionSupplier) {
+		Graph<T, ?> graph, T value, Set<T> children) {
 
-		Collection<Tree<T>> trees = collectionSupplier.get();
+		Collection<Tree<T>> trees = new ArrayList<>();
 
 		for (T child : children) {
-			trees.add(_createTree(graph, child, collectionSupplier));
+			trees.add(_createTree(graph, child));
 		}
 
 		return new Tree.Node<>(value, trees);
