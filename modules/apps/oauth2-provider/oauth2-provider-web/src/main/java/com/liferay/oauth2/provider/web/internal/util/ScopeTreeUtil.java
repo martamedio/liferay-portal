@@ -33,7 +33,7 @@ public class ScopeTreeUtil {
 
 		final HashMap<String, ScopeMatcher> scopeMatcherMap = new HashMap<>();
 
-		return TreeNodeUtil.getTreeNode(
+		return TreeUtil.getTreeNode(
 			scopeAliases, StringPool.BLANK,
 			(scopeAlias1, scopeAlias2) -> {
 				final ScopeMatcher scopeMatcher =

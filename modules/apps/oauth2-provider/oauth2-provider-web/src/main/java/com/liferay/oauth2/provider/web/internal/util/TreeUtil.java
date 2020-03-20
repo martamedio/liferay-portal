@@ -34,7 +34,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 /**
  * @author Carlos Sierra Andrés
  */
-public class TreeNodeUtil {
+public class TreeUtil {
 
 	public static <T> Tree.Node<T> getTreeNode(
 		Set<T> set, T rootValue, BiPredicate<T, T> biPredicate) {
