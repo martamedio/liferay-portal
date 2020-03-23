@@ -19,10 +19,11 @@ import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcherFactory;
 import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 import com.liferay.oauth2.provider.web.internal.util.ScopeTreeUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.ListUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -138,7 +139,7 @@ public class TreeScopesGeneratorTest {
 	}
 
 	private Tree<String> _getChild(Tree.Node<String> node, int indexItem) {
-		final List<Tree<String>> children = new ArrayList<>(node.getTrees());
+		final List<Tree<String>> children = _getSortedChildren(node);
 
 		return children.get(indexItem);
 	}
@@ -147,6 +148,13 @@ public class TreeScopesGeneratorTest {
 		final Collection<Tree<String>> children = node.getTrees();
 
 		return _getChild(node, children.size() - 1);
+	}
+
+	private List<Tree<String>> _getSortedChildren(Tree.Node<String> root) {
+		return ListUtil.sort(
+			root.getTrees(),
+			Comparator.comparing(
+				Tree::getValue, String.CASE_INSENSITIVE_ORDER));
 	}
 
 	private ScopeMatcherFactory _scopeMatcherFactory;

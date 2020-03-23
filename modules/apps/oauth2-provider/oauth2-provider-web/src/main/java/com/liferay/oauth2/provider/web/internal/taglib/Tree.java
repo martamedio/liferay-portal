@@ -15,7 +15,6 @@
 package com.liferay.oauth2.provider.web.internal.taglib;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

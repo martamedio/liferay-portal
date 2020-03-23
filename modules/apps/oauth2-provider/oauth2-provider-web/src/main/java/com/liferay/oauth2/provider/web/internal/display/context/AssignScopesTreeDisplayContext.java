@@ -18,13 +18,14 @@ import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.model.OAuth2ScopeGrant;
+import com.liferay.oauth2.provider.scope.liferay.LiferayOAuth2Scope;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.oauth2.provider.scope.liferay.spi.ScopeDescriptorLocator;
+import com.liferay.oauth2.provider.scope.spi.scope.descriptor.ScopeDescriptor;
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcherFactory;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationService;
 import com.liferay.oauth2.provider.service.OAuth2ScopeGrantLocalService;
-import com.liferay.oauth2.provider.web.internal.ScopeAliasScopeDescriptor;
 import com.liferay.oauth2.provider.web.internal.taglib.Tree;
 import com.liferay.oauth2.provider.web.internal.util.ScopeTreeUtil;
 import com.liferay.petra.string.StringPool;
@@ -72,10 +73,9 @@ public class AssignScopesTreeDisplayContext
 
 		_locale = themeDisplay.getLocale();
 
-		long companyId = themeDisplay.getCompanyId();
-
-		_scopeAliasScopeDescriptor = new ScopeAliasScopeDescriptor(
-			companyId, scopeDescriptorLocator, scopeLocator);
+		_companyId = themeDisplay.getCompanyId();
+		_scopeDescriptorLocator = scopeDescriptorLocator;
+		_scopeLocator = scopeLocator;
 
 		OAuth2Application oAuth2Application = getOAuth2Application();
 
@@ -84,7 +84,7 @@ public class AssignScopesTreeDisplayContext
 			oAuth2ScopeGrantLocalService);
 
 		Set<String> scopeAliases = new LinkedHashSet<>(
-			scopeLocator.getScopeAliases(companyId));
+			scopeLocator.getScopeAliases(_companyId));
 
 		_assignedDeletedScopeAliases = _getAssignedDeletedScopeAliases(
 			scopeAliases);
@@ -152,6 +152,39 @@ public class AssignScopesTreeDisplayContext
 		);
 	}
 
+	private String _getDescription(
+		String scopeAlias, Locale locale, String delimiter) {
+
+		ScopeDescriptor scopeDescriptor =
+			_scopeDescriptorLocator.getScopeDescriptor(_companyId);
+
+		if (scopeDescriptor != null) {
+			return scopeDescriptor.describeScope(scopeAlias, locale);
+		}
+
+		Set<String> descriptions = new LinkedHashSet<>();
+
+		for (LiferayOAuth2Scope liferayOAuth2Scope :
+				_scopeLocator.getLiferayOAuth2Scopes(_companyId, scopeAlias)) {
+
+			ScopeDescriptor applicationScopeDescriptor =
+				_scopeDescriptorLocator.getScopeDescriptor(
+					_companyId, liferayOAuth2Scope.getApplicationName());
+
+			descriptions.add(
+				applicationScopeDescriptor.describeScope(
+					liferayOAuth2Scope.getScope(), locale));
+		}
+
+		if (!descriptions.isEmpty()) {
+			Stream<String> streamDescriptions = descriptions.stream();
+
+			return streamDescriptions.collect(Collectors.joining(delimiter));
+		}
+
+		return StringPool.BLANK;
+	}
+
 	private Map<String, String> _getScopeAliasDescriptionMap(
 		Set<String> scopeAliases) {
 
@@ -160,7 +193,7 @@ public class AssignScopesTreeDisplayContext
 		for (String scopeAlias : scopeAliases) {
 			map.put(
 				scopeAlias,
-				_scopeAliasScopeDescriptor.getDescription(
+				_getDescription(
 					scopeAlias, _locale, StringPool.COMMA_AND_SPACE));
 		}
 
@@ -169,9 +202,11 @@ public class AssignScopesTreeDisplayContext
 
 	private final Set<String> _assignedDeletedScopeAliases;
 	private final Set<String> _assignedScopeAliases;
+	private final long _companyId;
 	private final Locale _locale;
 	private final Map<String, String> _scopeAliasDescriptionMap;
-	private final ScopeAliasScopeDescriptor _scopeAliasScopeDescriptor;
 	private final Tree.Node<String> _scopeAliasTreeNode;
+	private final ScopeDescriptorLocator _scopeDescriptorLocator;
+	private final ScopeLocator _scopeLocator;
 
 }
