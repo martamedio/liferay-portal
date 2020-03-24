@@ -73,7 +73,7 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 
 			<aui:form action="<%= assignScopesURL %>" name="fm">
 				<ul class="list-group">
-					<liferay-tree:tree
+					<oauth2-tree:tree
 						trees="<%= oAuth2AdminPortletTreeDisplayContext.sort(availableScopeAliases.getTrees()) %>"
 					>
 						<jsp:attribute
@@ -101,7 +101,7 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 							</div>
 						</li>
 
-						<liferay-tree:render-children
+						<oauth2-tree:render-children
 							trees="${OAUTH2_ADMIN_PORTLET_TREE_DISPLAY_CONTEXT.sort(tree.trees)}"
 						/>
 						</jsp:attribute>
@@ -131,7 +131,7 @@ pageContext.setAttribute("scopeAliasesDescriptions", scopeAliasesDescriptions);
 							</div>
 						</li>
 						</jsp:attribute>
-					</liferay-tree:tree>
+					</oauth2-tree:tree>
 					</li>
 				</ul>
 

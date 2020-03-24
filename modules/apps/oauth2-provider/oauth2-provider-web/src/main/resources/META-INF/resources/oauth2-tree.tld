@@ -3,10 +3,10 @@
 		xmlns="http://java.sun.com/xml/ns/javaee"
 		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
 		version="2.1">
-	<display-name>Tree util</display-name>
+	<display-name>OAuth2 Tree Util</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>tree</short-name>
-	<uri>http://liferay.com/tld/tree</uri>
+	<uri>http://liferay.com/tld/oauth2-tree</uri>
 	<tag>
 		<name>render-children</name>
 		<tag-class>com.liferay.oauth2.provider.web.internal.taglib.RenderChildrenTag</tag-class>

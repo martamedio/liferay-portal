@@ -152,9 +152,7 @@ public class AssignScopesTreeDisplayContext
 		);
 	}
 
-	private String _getDescription(
-		String scopeAlias, Locale locale, String delimiter) {
-
+	private String _getDescription(String scopeAlias, Locale locale) {
 		ScopeDescriptor scopeDescriptor =
 			_scopeDescriptorLocator.getScopeDescriptor(_companyId);
 
@@ -179,7 +177,8 @@ public class AssignScopesTreeDisplayContext
 		if (!descriptions.isEmpty()) {
 			Stream<String> streamDescriptions = descriptions.stream();
 
-			return streamDescriptions.collect(Collectors.joining(delimiter));
+			return streamDescriptions.collect(
+				Collectors.joining(StringPool.COMMA_AND_SPACE));
 		}
 
 		return StringPool.BLANK;
@@ -191,10 +190,7 @@ public class AssignScopesTreeDisplayContext
 		Map<String, String> map = new HashMap<>();
 
 		for (String scopeAlias : scopeAliases) {
-			map.put(
-				scopeAlias,
-				_getDescription(
-					scopeAlias, _locale, StringPool.COMMA_AND_SPACE));
+			map.put(scopeAlias, _getDescription(scopeAlias, _locale));
 		}
 
 		return map;
