@@ -19,7 +19,8 @@ import com.liferay.multi.factor.authentication.email.otp.service.MFAEmailOTPEntr
 import com.liferay.multi.factor.authentication.email.otp.web.internal.audit.MFAEmailOTPAuditMessageBuilder;
 import com.liferay.multi.factor.authentication.email.otp.web.internal.configuration.MFAEmailOTPConfiguration;
 import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.MFAEmailOTPWebKeys;
-import com.liferay.multi.factor.authentication.email.otp.web.internal.system.configuration.MFAEmailOTPSystemConfiguration;
+import com.liferay.multi.factor.authentication.verifier.web.checker.MFABrowserChecker;
+import com.liferay.multi.factor.authentication.verifier.web.configuration.MFASystemConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.log.Log;
@@ -63,12 +64,13 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
  * @author Arthur Chan
  */
 @Component(
-	configurationPid = "com.liferay.multi.factor.authentication.email.otp.web.internal.system.configuration.MFAEmailOTPSystemConfiguration",
+	configurationPid = "com.liferay.multi.factor.authentication.verifier.configuration.MFASystemConfiguration",
 	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
 	service = {}
 )
-public class MFAEmailOTPChecker {
+public class MFAEmailOTPChecker implements MFABrowserChecker {
 
+	@Override
 	public void includeBrowserVerification(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
@@ -232,11 +234,11 @@ public class MFAEmailOTPChecker {
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		MFAEmailOTPSystemConfiguration mfaEmailOTPSystemConfiguration =
+		MFASystemConfiguration mfaSystemConfiguration =
 			ConfigurableUtil.createConfigurable(
-				MFAEmailOTPSystemConfiguration.class, properties);
+				MFASystemConfiguration.class, properties);
 
-		if (mfaEmailOTPSystemConfiguration.disableGlobally()) {
+		if (mfaSystemConfiguration.disableGlobally()) {
 			if (_serviceRegistration != null) {
 				deactivate();
 			}
