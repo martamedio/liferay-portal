@@ -19,23 +19,23 @@
 <%
 String redirect = ParamUtil.getString(request, "redirect");
 
-MFAEmailOTPChecker mfaEmailOTPChecker = (MFAEmailOTPChecker)request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_CHECKER);
+MFABrowserChecker mfaBrowserChecker = (MFABrowserChecker)request.getAttribute(MFAWebKeys.MFA_CHECKER);
 
-long mfaEmailOTPUserId = (Long)request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_USER_ID);
+long mfaUserId = (Long)request.getAttribute(MFAWebKeys.MFA_USER_ID);
 %>
 
-<portlet:actionURL name="/mfa_email_otp_verify/verify" var="verifyURL">
-	<portlet:param name="mvcRenderCommandName" value="/mfa_email_otp_verify/verify" />
+<portlet:actionURL name="/mfa_verify/verify" var="verifyURL">
+	<portlet:param name="mvcRenderCommandName" value="/mfa_verify/verify" />
 </portlet:actionURL>
 
 <aui:form action="<%= verifyURL %>" cssClass="container-fluid-1280 sign-in-form" data-senna-off="true" method="post" name="fm">
 	<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 
-	<liferay-ui:error key="mfaEmailOTPFailed" message="multi-factor-authentication-has-failed" />
+	<liferay-ui:error key="mfaFailedVerification" message="multi-factor-authentication-has-failed" />
 
 	<%
-	mfaEmailOTPChecker.includeBrowserVerification(request, response, mfaEmailOTPUserId);
+	mfaBrowserChecker.includeBrowserVerification(request, response, mfaUserId);
 	%>
 
 	<aui:button-row>
