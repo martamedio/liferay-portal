@@ -32,8 +32,10 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 )
 public interface MFAEmailOTPConfiguration {
 
-	@Meta.AD(deflt = "false", name = "enabled", required = false)
-	public boolean enabled();
+	@Meta.AD(
+		deflt = "mfa-email-otp-configuration", name = "name", required = false
+	)
+	public String name();
 
 	@Meta.AD(
 		deflt = "6", description = "otp-size-description", name = "otp-size",
