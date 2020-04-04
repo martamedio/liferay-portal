@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.email.otp.web.internal.system.configuration;
+package com.liferay.multi.factor.authentication.verifier.web.configuration;
 
 import aQute.bnd.annotation.metatype.Meta;
 
@@ -26,11 +26,10 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	scope = ExtendedObjectClassDefinition.Scope.SYSTEM
 )
 @Meta.OCD(
-	id = "com.liferay.multi.factor.authentication.email.otp.web.internal.system.configuration.MFAEmailOTPSystemConfiguration",
-	localization = "content/Language",
-	name = "mfa-email-otp-system-configuration-name"
+	id = "com.liferay.multi.factor.authentication.verifier.web.configuration.MFASystemConfiguration",
+	localization = "content/Language", name = "mfa-system-configuration-name"
 )
-public interface MFAEmailOTPSystemConfiguration {
+public interface MFASystemConfiguration {
 
 	@Meta.AD(
 		deflt = "false", description = "disable-globally-description",
