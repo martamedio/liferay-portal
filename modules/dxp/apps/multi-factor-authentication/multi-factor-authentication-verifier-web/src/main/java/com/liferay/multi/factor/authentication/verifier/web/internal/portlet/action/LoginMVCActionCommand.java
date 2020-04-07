@@ -114,6 +114,8 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 					httpServletRequest, userId)) {
 
 				_redirectToVerify(userId, actionRequest, actionResponse);
+
+				return;
 			}
 		}
 
