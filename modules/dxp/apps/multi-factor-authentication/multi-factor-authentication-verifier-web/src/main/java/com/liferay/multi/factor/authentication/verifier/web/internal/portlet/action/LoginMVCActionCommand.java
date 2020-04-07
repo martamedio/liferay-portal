@@ -132,10 +132,10 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 
 		HttpSession httpSession = httpServletRequest.getSession();
 
-		String mfaDigest = (String)httpSession.getAttribute(
+		String mfaWebDigest = (String)httpSession.getAttribute(
 			MFAWebKeys.MFA_WEB_DIGEST);
 
-		if (!StringUtil.equals(DigesterUtil.digest(state), mfaDigest)) {
+		if (!StringUtil.equals(DigesterUtil.digest(state), mfaWebDigest)) {
 			throw new PrincipalException("User sent unverified state");
 		}
 
