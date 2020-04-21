@@ -25,11 +25,12 @@ Tree.Node<String> scopeAliasTreeNode = assignScopesTreeDisplayContext.getScopeAl
 
 Set<String> assignedScopeAliases = assignScopesTreeDisplayContext.getAssignedScopeAliases();
 Set<String> assignedDeletedScopeAliases = assignScopesTreeDisplayContext.getAssignedDeletedScopeAliases();
-Map<String, String> scopeAliasDescriptionMap = assignScopesTreeDisplayContext.getScopeAliasDescriptionMap();
+Map<String, String> scopeAliasesDescriptionsMap = assignScopesTreeDisplayContext.getScopeAliasesDescriptionsMap();
 
 pageContext.setAttribute("assignedScopeAliases", assignedScopeAliases);
 pageContext.setAttribute("assignedDeletedScopeAliases", assignedDeletedScopeAliases);
-pageContext.setAttribute("scopeAliasDescriptionMap", scopeAliasDescriptionMap);
+pageContext.setAttribute("scopeAliasesDescriptionsMap",
+	scopeAliasesDescriptionsMap);
 %>
 
 <div class="container-fluid container-fluid-max-xl container-view">
@@ -92,7 +93,7 @@ pageContext.setAttribute("scopeAliasDescriptionMap", scopeAliasDescriptionMap);
 										</c:otherwise>
 									</c:choose>
 								<div class="col-md-6 text-left">
-									${scopeAliasDescriptionMap.get(tree.value)}
+									${scopeAliasesDescriptionsMap.get(tree.value)}
 								</div>
 							</div>
 						</li>
@@ -120,7 +121,7 @@ pageContext.setAttribute("scopeAliasDescriptionMap", scopeAliasDescriptionMap);
 										</c:otherwise>
 									</c:choose>
 								<div class="col-md-6 text-left">
-									${scopeAliasDescriptionMap.get(tree.value)}
+									${scopeAliasesDescriptionsMap.get(tree.value)}
 								</div>
 							</div>
 						</li>

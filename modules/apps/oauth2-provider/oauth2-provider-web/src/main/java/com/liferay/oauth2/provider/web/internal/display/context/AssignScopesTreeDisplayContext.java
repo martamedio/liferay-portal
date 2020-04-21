@@ -86,7 +86,8 @@ public class AssignScopesTreeDisplayContext
 
 		scopeAliases.addAll(_assignedScopeAliases);
 
-		_scopeAliasDescriptionMap = _getScopeAliasDescriptionMap(scopeAliases);
+		_scopeAliasesDescriptionsMap = _getScopeAliasesDescriptionsMap(
+			scopeAliases);
 
 		_scopeAliasTreeNode = ScopeTreeUtil.getScopeTreeNode(
 			scopeAliases, scopeMatcherFactory);
@@ -100,8 +101,8 @@ public class AssignScopesTreeDisplayContext
 		return _assignedScopeAliases;
 	}
 
-	public Map<String, String> getScopeAliasDescriptionMap() {
-		return _scopeAliasDescriptionMap;
+	public Map<String, String> getScopeAliasesDescriptionsMap() {
+		return _scopeAliasesDescriptionsMap;
 	}
 
 	public Tree.Node<String> getScopeAliasTreeNode() {
@@ -180,7 +181,7 @@ public class AssignScopesTreeDisplayContext
 		return StringPool.BLANK;
 	}
 
-	private Map<String, String> _getScopeAliasDescriptionMap(
+	private Map<String, String> _getScopeAliasesDescriptionsMap(
 		Set<String> scopeAliases) {
 
 		Map<String, String> map = new HashMap<>();
@@ -196,7 +197,7 @@ public class AssignScopesTreeDisplayContext
 
 	private final Set<String> _assignedDeletedScopeAliases;
 	private final Set<String> _assignedScopeAliases;
-	private final Map<String, String> _scopeAliasDescriptionMap;
+	private final Map<String, String> _scopeAliasesDescriptionsMap;
 	private final Tree.Node<String> _scopeAliasTreeNode;
 	private final ScopeDescriptorLocator _scopeDescriptorLocator;
 	private final ScopeLocator _scopeLocator;
