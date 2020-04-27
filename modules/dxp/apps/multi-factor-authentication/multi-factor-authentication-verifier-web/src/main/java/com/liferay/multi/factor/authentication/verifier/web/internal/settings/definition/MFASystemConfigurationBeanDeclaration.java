@@ -12,9 +12,9 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.email.otp.web.internal.settings.definition;
+package com.liferay.multi.factor.authentication.verifier.web.internal.settings.definition;
 
-import com.liferay.multi.factor.authentication.email.otp.web.internal.system.configuration.MFAEmailOTPSystemConfiguration;
+import com.liferay.multi.factor.authentication.verifier.web.configuration.MFASystemConfiguration;
 import com.liferay.portal.kernel.settings.definition.ConfigurationBeanDeclaration;
 
 import org.osgi.service.component.annotations.Component;
@@ -23,12 +23,12 @@ import org.osgi.service.component.annotations.Component;
  * @author Arthur Chan
  */
 @Component(service = ConfigurationBeanDeclaration.class)
-public class MFAEmailOTPSystemConfigurationBeanDeclaration
+public class MFASystemConfigurationBeanDeclaration
 	implements ConfigurationBeanDeclaration {
 
 	@Override
 	public Class<?> getConfigurationBeanClass() {
-		return MFAEmailOTPSystemConfiguration.class;
+		return MFASystemConfiguration.class;
 	}
 
 }

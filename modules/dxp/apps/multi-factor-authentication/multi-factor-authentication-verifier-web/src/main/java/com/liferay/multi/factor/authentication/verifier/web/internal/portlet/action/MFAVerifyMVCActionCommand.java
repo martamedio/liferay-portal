@@ -12,11 +12,11 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.email.otp.web.internal.portlet.action;
+package com.liferay.multi.factor.authentication.verifier.web.internal.portlet.action;
 
-import com.liferay.multi.factor.authentication.email.otp.web.internal.checker.MFAEmailOTPChecker;
-import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.MFAEmailOTPPortletKeys;
-import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.MFAEmailOTPWebKeys;
+import com.liferay.multi.factor.authentication.verifier.web.checker.MFABrowserChecker;
+import com.liferay.multi.factor.authentication.verifier.web.constants.MFAPortletKeys;
+import com.liferay.multi.factor.authentication.verifier.web.constants.MFAWebKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -37,24 +37,25 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Tomas Polesovsky
+ * @author Marta Medio
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + MFAEmailOTPPortletKeys.MFA_EMAIL_OTP_VERIFY_PORTLET,
-		"mvc.command.name=/mfa_email_otp_verify/verify"
+		"javax.portlet.name=" + MFAPortletKeys.MFA_VERIFY_PORTLET_KEY,
+		"mvc.command.name=/mfa_verify/verify"
 	},
 	service = MVCActionCommand.class
 )
-public class MFAEmailOTPVerifyMVCActionCommand extends BaseMVCActionCommand {
+public class MFAVerifyMVCActionCommand extends BaseMVCActionCommand {
 
 	@Override
 	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		long mfaEmailOTPUserId = _getMFAEmailOTPUserId(actionRequest);
+		long mfaUserId = _getMFAUserId(actionRequest);
 
-		if (mfaEmailOTPUserId == 0) {
+		if (mfaUserId == 0) {
 			SessionErrors.add(actionRequest, "sessionExpired");
 
 			actionResponse.setRenderParameter("mvcPath", "/error.jsp");
@@ -64,12 +65,11 @@ public class MFAEmailOTPVerifyMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		try {
-			if (!_mfaEmailOTPChecker.verifyBrowserRequest(
+			if (!_mfaBrowserChecker.verifyBrowserRequest(
 					_portal.getHttpServletRequest(actionRequest),
-					_portal.getHttpServletResponse(actionResponse),
-					mfaEmailOTPUserId)) {
+					_portal.getHttpServletResponse(actionResponse), mfaUserId)) {
 
-				SessionErrors.add(actionRequest, "mfaEmailOTPFailed");
+				SessionErrors.add(actionRequest, "mfaFailedVerification");
 
 				return;
 			}
@@ -83,7 +83,7 @@ public class MFAEmailOTPVerifyMVCActionCommand extends BaseMVCActionCommand {
 		sendRedirect(actionRequest, actionResponse);
 	}
 
-	private long _getMFAEmailOTPUserId(PortletRequest portletRequest) {
+	private long _getMFAUserId(PortletRequest portletRequest) {
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
@@ -98,11 +98,11 @@ public class MFAEmailOTPVerifyMVCActionCommand extends BaseMVCActionCommand {
 		HttpSession httpSession = httpServletRequest.getSession();
 
 		return GetterUtil.getLong(
-			httpSession.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_USER_ID));
+			httpSession.getAttribute(MFAWebKeys.MFA_USER_ID));
 	}
 
 	@Reference
-	private MFAEmailOTPChecker _mfaEmailOTPChecker;
+	private MFABrowserChecker _mfaBrowserChecker;
 
 	@Reference
 	private Portal _portal;
