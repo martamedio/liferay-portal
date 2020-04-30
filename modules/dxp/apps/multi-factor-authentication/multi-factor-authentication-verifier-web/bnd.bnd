@@ -1,0 +1,7 @@
+Bundle-Name: Liferay Multi-Factor Authentication Verifier Web
+Bundle-SymbolicName: com.liferay.multi.factor.authentication.verifier.web
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.multi.factor.authentication.verifier.web.configuration,\
+	com.liferay.multi.factor.authentication.verifier.web.policy
+Web-ContextPath: /multi-factor-authentication-verifier-web
