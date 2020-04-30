@@ -12,18 +12,22 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.email.otp.web.internal.portlet.action;
+package com.liferay.multi.factor.authentication.verifier.web.internal.portlet.action;
 
-import com.liferay.multi.factor.authentication.email.otp.web.internal.checker.MFAEmailOTPChecker;
-import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.MFAEmailOTPPortletKeys;
-import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.MFAEmailOTPWebKeys;
+import com.liferay.multi.factor.authentication.verifier.spi.checker.MFABrowserChecker;
+import com.liferay.multi.factor.authentication.verifier.web.internal.constants.MFAPortletKeys;
+import com.liferay.multi.factor.authentication.verifier.web.internal.constants.MFAWebKeys;
+import com.liferay.multi.factor.authentication.verifier.web.policy.MFAPolicy;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -37,53 +41,65 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Tomas Polesovsky
+ * @author Marta Medio
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + MFAEmailOTPPortletKeys.MFA_EMAIL_OTP_VERIFY_PORTLET,
-		"mvc.command.name=/mfa_email_otp_verify/verify"
+		"javax.portlet.name=" + MFAPortletKeys.MFA_VERIFY_PORTLET_KEY,
+		"mvc.command.name=/mfa_verify/verify"
 	},
 	service = MVCActionCommand.class
 )
-public class MFAEmailOTPVerifyMVCActionCommand extends BaseMVCActionCommand {
+public class MFAVerifyMVCActionCommand extends BaseMVCActionCommand {
 
 	@Override
 	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		long mfaEmailOTPUserId = _getMFAEmailOTPUserId(actionRequest);
+		long userId = _getMFAUserId(actionRequest);
 
-		if (mfaEmailOTPUserId == 0) {
+		if (userId == 0) {
 			SessionErrors.add(actionRequest, "sessionExpired");
 
-			actionResponse.setRenderParameter("mvcPath", "/error.jsp");
 			actionResponse.setRenderParameter("mvcRenderCommandName", "/");
+			actionResponse.setRenderParameter("mvcPath", "/error.jsp");
 
 			return;
 		}
 
+		List<MFABrowserChecker> availableBrowserCheckers =
+			_mfaPolicy.getAvailableBrowserCheckers(
+				_portal.getCompanyId(actionRequest), userId);
+
+		int mfaCheckerIndex = ParamUtil.getInteger(
+			actionRequest, "mfaCheckerIndex");
+
+		MFABrowserChecker mfaBrowserChecker;
+
+		if ((mfaCheckerIndex > -1) &&
+			(mfaCheckerIndex < availableBrowserCheckers.size())) {
+
+			mfaBrowserChecker = availableBrowserCheckers.get(mfaCheckerIndex);
+		}
+		else {
+			mfaBrowserChecker = availableBrowserCheckers.get(0);
+		}
+
 		try {
-			if (!_mfaEmailOTPChecker.verifyBrowserRequest(
+			if (!mfaBrowserChecker.verifyBrowserRequest(
 					_portal.getHttpServletRequest(actionRequest),
-					_portal.getHttpServletResponse(actionResponse),
-					mfaEmailOTPUserId)) {
+					_portal.getHttpServletResponse(actionResponse), userId)) {
 
-				SessionErrors.add(actionRequest, "mfaEmailOTPFailed");
-
-				return;
+				SessionErrors.add(actionRequest, "mfaFailedVerification");
 			}
 		}
 		catch (Exception exception) {
 			SessionErrors.add(actionRequest, exception.getClass(), exception);
-
-			return;
 		}
-
-		sendRedirect(actionRequest, actionResponse);
 	}
 
-	private long _getMFAEmailOTPUserId(PortletRequest portletRequest) {
+	private long _getMFAUserId(PortletRequest portletRequest) {
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
@@ -98,11 +114,11 @@ public class MFAEmailOTPVerifyMVCActionCommand extends BaseMVCActionCommand {
 		HttpSession httpSession = httpServletRequest.getSession();
 
 		return GetterUtil.getLong(
-			httpSession.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_USER_ID));
+			httpSession.getAttribute(MFAWebKeys.MFA_USER_ID));
 	}
 
 	@Reference
-	private MFAEmailOTPChecker _mfaEmailOTPChecker;
+	private MFAPolicy _mfaPolicy;
 
 	@Reference
 	private Portal _portal;

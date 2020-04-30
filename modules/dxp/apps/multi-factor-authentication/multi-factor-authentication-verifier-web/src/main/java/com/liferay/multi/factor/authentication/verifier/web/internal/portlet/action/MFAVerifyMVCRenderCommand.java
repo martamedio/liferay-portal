@@ -12,17 +12,21 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.email.otp.web.internal.portlet.action;
+package com.liferay.multi.factor.authentication.verifier.web.internal.portlet.action;
 
-import com.liferay.multi.factor.authentication.email.otp.web.internal.checker.MFAEmailOTPChecker;
-import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.MFAEmailOTPPortletKeys;
-import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.MFAEmailOTPWebKeys;
+import com.liferay.multi.factor.authentication.verifier.spi.checker.MFABrowserChecker;
+import com.liferay.multi.factor.authentication.verifier.web.internal.constants.MFAPortletKeys;
+import com.liferay.multi.factor.authentication.verifier.web.internal.constants.MFAWebKeys;
+import com.liferay.multi.factor.authentication.verifier.web.policy.MFAPolicy;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.List;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
@@ -36,37 +40,56 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Tomas Polesovsky
+ * @author Marta Medio
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + MFAEmailOTPPortletKeys.MFA_EMAIL_OTP_VERIFY_PORTLET,
-		"mvc.command.name=/mfa_email_otp_verify/verify"
+		"javax.portlet.name=" + MFAPortletKeys.MFA_VERIFY_PORTLET_KEY,
+		"mvc.command.name=/mfa_verify/view"
 	},
 	service = MVCRenderCommand.class
 )
-public class MFAEmailOTPVerifyMVCRenderCommand implements MVCRenderCommand {
+public class MFAVerifyMVCRenderCommand implements MVCRenderCommand {
 
 	@Override
 	public String render(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
-		long mfaEmailOTPUserId = _getMFAEmailOTPUserId(renderRequest);
+		long mfaUserId = _getMFAUserId(renderRequest);
 
-		if (mfaEmailOTPUserId == 0) {
+		if (mfaUserId == 0) {
 			SessionErrors.add(renderRequest, "sessionExpired");
 
 			return "/error.jsp";
 		}
 
-		renderRequest.setAttribute(
-			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_CHECKER, _mfaEmailOTPChecker);
-		renderRequest.setAttribute(
-			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_USER_ID, mfaEmailOTPUserId);
+		List<MFABrowserChecker> availableBrowserCheckers =
+			_mfaPolicy.getAvailableBrowserCheckers(
+				_portal.getCompanyId(renderRequest), mfaUserId);
 
-		return "/mfa_email_otp_verify/verify.jsp";
+		int mfaCheckerIndex = ParamUtil.getInteger(
+			renderRequest, "mfaCheckerIndex");
+
+		MFABrowserChecker mfaBrowserChecker;
+
+		if ((mfaCheckerIndex > -1) &&
+			(mfaCheckerIndex < availableBrowserCheckers.size())) {
+
+			mfaBrowserChecker = availableBrowserCheckers.get(mfaCheckerIndex);
+		}
+		else {
+			mfaBrowserChecker = availableBrowserCheckers.get(0);
+		}
+
+		renderRequest.setAttribute(
+			MFAWebKeys.MFA_AVAILABLE_CHECKERS, availableBrowserCheckers);
+		renderRequest.setAttribute(MFAWebKeys.MFA_CHECKER, mfaBrowserChecker);
+		renderRequest.setAttribute(MFAWebKeys.MFA_USER_ID, mfaUserId);
+
+		return "/mfa_verify/verify.jsp";
 	}
 
-	private long _getMFAEmailOTPUserId(PortletRequest portletRequest) {
+	private long _getMFAUserId(PortletRequest portletRequest) {
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
@@ -81,11 +104,11 @@ public class MFAEmailOTPVerifyMVCRenderCommand implements MVCRenderCommand {
 		HttpSession httpSession = httpServletRequest.getSession();
 
 		return GetterUtil.getLong(
-			httpSession.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_USER_ID));
+			httpSession.getAttribute(MFAWebKeys.MFA_USER_ID));
 	}
 
 	@Reference
-	private MFAEmailOTPChecker _mfaEmailOTPChecker;
+	private MFAPolicy _mfaPolicy;
 
 	@Reference
 	private Portal _portal;
