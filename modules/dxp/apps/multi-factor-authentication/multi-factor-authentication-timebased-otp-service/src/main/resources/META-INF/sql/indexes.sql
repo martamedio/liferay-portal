@@ -1,0 +1,1 @@
+create index IX_14DEAA05 on MFATimebasedOTPEntry (userId);
