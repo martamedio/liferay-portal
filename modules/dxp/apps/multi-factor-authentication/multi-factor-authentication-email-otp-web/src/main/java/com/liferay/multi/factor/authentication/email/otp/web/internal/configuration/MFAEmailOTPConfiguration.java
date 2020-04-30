@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 
 /**
  * @author Tomas Polesovsky
+ * @author Marta Medio
  */
 @ExtendedObjectClassDefinition(
 	category = "multi-factor-authentication",
@@ -32,8 +33,17 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 )
 public interface MFAEmailOTPConfiguration {
 
-	@Meta.AD(deflt = "false", name = "enabled", required = false)
+	@Meta.AD(
+		deflt = "false", description = "mfa-email-otp-enabled-description",
+		name = "enabled", required = false
+	)
 	public boolean enabled();
+
+	@Meta.AD(
+		deflt = "100", description = "order-description",
+		id = "service.ranking", name = "order", required = false
+	)
+	public int order();
 
 	@Meta.AD(
 		deflt = "6", description = "otp-size-description", name = "otp-size",

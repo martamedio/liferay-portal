@@ -19,18 +19,15 @@ import com.liferay.multi.factor.authentication.email.otp.service.MFAEmailOTPEntr
 import com.liferay.multi.factor.authentication.email.otp.web.internal.audit.MFAEmailOTPAuditMessageBuilder;
 import com.liferay.multi.factor.authentication.email.otp.web.internal.configuration.MFAEmailOTPConfiguration;
 import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.MFAEmailOTPWebKeys;
-import com.liferay.multi.factor.authentication.email.otp.web.internal.system.configuration.MFAEmailOTPSystemConfiguration;
+import com.liferay.multi.factor.authentication.verifier.spi.checker.MFABrowserChecker;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Time;
@@ -49,8 +46,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -61,14 +56,16 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 
 /**
  * @author Arthur Chan
+ * @author Marta Medio
  */
 @Component(
-	configurationPid = "com.liferay.multi.factor.authentication.email.otp.web.internal.system.configuration.MFAEmailOTPSystemConfiguration",
-	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
-	service = {}
+	configurationPid = "com.liferay.multi.factor.authentication.email.otp.web.internal.configuration.MFAEmailOTPConfiguration.scoped",
+	configurationPolicy = ConfigurationPolicy.OPTIONAL,
+	service = MFABrowserChecker.class
 )
-public class MFAEmailOTPChecker {
+public class MFAEmailOTPChecker implements MFABrowserChecker {
 
+	@Override
 	public void includeBrowserVerification(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
@@ -91,9 +88,6 @@ public class MFAEmailOTPChecker {
 
 		HttpSession httpSession = originalHttpServletRequest.getSession();
 
-		httpServletRequest.setAttribute(
-			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_CONFIGURATION,
-			_getMFAEmailOTPConfiguration(userId));
 		httpServletRequest.setAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SEND_TO_ADDRESS,
 			user.getEmailAddress());
@@ -131,6 +125,11 @@ public class MFAEmailOTPChecker {
 		return false;
 	}
 
+	@Override
+	public boolean isEnabled() {
+		return _mfaEmailOTPConfiguration.enabled();
+	}
+
 	public boolean verifyBrowserRequest(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
@@ -162,18 +161,15 @@ public class MFAEmailOTPChecker {
 				_mfaEmailOTPEntryLocalService.addMFAEmailOTPEntry(userId);
 		}
 
-		MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
-			_getMFAEmailOTPConfiguration(userId);
-
-		if ((mfaEmailOTPConfiguration.failedAttemptsAllowed() >= 0) &&
-			(mfaEmailOTPConfiguration.failedAttemptsAllowed() <=
+		if ((_mfaEmailOTPConfiguration.failedAttemptsAllowed() >= 0) &&
+			(_mfaEmailOTPConfiguration.failedAttemptsAllowed() <=
 				mfaEmailOTPEntry.getFailedAttempts()) &&
-			(mfaEmailOTPConfiguration.retryTimeout() >= 0)) {
+			(_mfaEmailOTPConfiguration.retryTimeout() >= 0)) {
 
 			Date lastFailDate = mfaEmailOTPEntry.getLastFailDate();
 
 			long time =
-				(mfaEmailOTPConfiguration.retryTimeout() * Time.SECOND) +
+				(_mfaEmailOTPConfiguration.retryTimeout() * Time.SECOND) +
 					lastFailDate.getTime();
 
 			if (time <= System.currentTimeMillis()) {
@@ -229,28 +225,9 @@ public class MFAEmailOTPChecker {
 
 	@Activate
 	@Modified
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
-		MFAEmailOTPSystemConfiguration mfaEmailOTPSystemConfiguration =
-			ConfigurableUtil.createConfigurable(
-				MFAEmailOTPSystemConfiguration.class, properties);
-
-		if (mfaEmailOTPSystemConfiguration.disableGlobally()) {
-			if (_serviceRegistration != null) {
-				deactivate();
-			}
-
-			return;
-		}
-
-		if (_serviceRegistration != null) {
-			return;
-		}
-
-		_serviceRegistration = bundleContext.registerService(
-			MFAEmailOTPChecker.class, this,
-			new HashMapDictionary<>(properties));
+	protected void activate(Map<String, Object> properties) {
+		_mfaEmailOTPConfiguration = ConfigurableUtil.createConfigurable(
+			MFAEmailOTPConfiguration.class, properties);
 
 		if (!PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
 			return;
@@ -270,14 +247,6 @@ public class MFAEmailOTPChecker {
 
 	@Deactivate
 	protected void deactivate() {
-		if (_serviceRegistration == null) {
-			return;
-		}
-
-		_serviceRegistration.unregister();
-
-		_serviceRegistration = null;
-
 		if (!PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
 			return;
 		}
@@ -321,10 +290,10 @@ public class MFAEmailOTPChecker {
 			return false;
 		}
 
-		Object mfaEmailOTPValidatedUserID = httpSession.getAttribute(
+		Object mfaEmailOTPValidatedUserId = httpSession.getAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_VALIDATED_USER_ID);
 
-		if (mfaEmailOTPValidatedUserID == null) {
+		if (mfaEmailOTPValidatedUserId == null) {
 			_routeAuditMessage(
 				_mfaEmailOTPAuditMessageBuilder.buildNotVerifiedAuditMessage(
 					user, _getClassName(), "Not verified yet"));
@@ -332,7 +301,7 @@ public class MFAEmailOTPChecker {
 			return false;
 		}
 
-		if (!Objects.equals(mfaEmailOTPValidatedUserID, userId)) {
+		if (!Objects.equals(mfaEmailOTPValidatedUserId, userId)) {
 			_routeAuditMessage(
 				_mfaEmailOTPAuditMessageBuilder.buildNotVerifiedAuditMessage(
 					user, _getClassName(), "Not the same user"));
@@ -340,15 +309,12 @@ public class MFAEmailOTPChecker {
 			return false;
 		}
 
-		MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
-			_getMFAEmailOTPConfiguration(userId);
-
-		if (mfaEmailOTPConfiguration.validationExpirationTime() < 0) {
+		if (_mfaEmailOTPConfiguration.validationExpirationTime() < 0) {
 			return true;
 		}
 
 		long time =
-			mfaEmailOTPConfiguration.validationExpirationTime() * Time.SECOND;
+			_mfaEmailOTPConfiguration.validationExpirationTime() * Time.SECOND;
 
 		time += (long)httpSession.getAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_VALIDATED_AT_TIME);
@@ -372,24 +338,6 @@ public class MFAEmailOTPChecker {
 		Class<?> clazz = getClass();
 
 		return clazz.getName();
-	}
-
-	private MFAEmailOTPConfiguration _getMFAEmailOTPConfiguration(long userId) {
-		User user = _userLocalService.fetchUser(userId);
-
-		if (user == null) {
-			throw new IllegalStateException(
-				"Requested one-time password email verification for " +
-					"nonexistent user " + userId);
-		}
-
-		try {
-			return ConfigurationProviderUtil.getCompanyConfiguration(
-				MFAEmailOTPConfiguration.class, user.getCompanyId());
-		}
-		catch (ConfigurationException configurationException) {
-			throw new IllegalStateException(configurationException);
-		}
 	}
 
 	private void _routeAuditMessage(AuditMessage auditMessage) {
@@ -421,14 +369,13 @@ public class MFAEmailOTPChecker {
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
 	private MFAEmailOTPAuditMessageBuilder _mfaEmailOTPAuditMessageBuilder;
 
+	private MFAEmailOTPConfiguration _mfaEmailOTPConfiguration;
+
 	@Reference
 	private MFAEmailOTPEntryLocalService _mfaEmailOTPEntryLocalService;
 
 	@Reference
 	private Portal _portal;
-
-	private volatile ServiceRegistration<MFAEmailOTPChecker>
-		_serviceRegistration;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.multi.factor.authentication.email.otp.web)"
