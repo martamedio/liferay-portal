@@ -125,11 +125,6 @@ public class MFAEmailOTPChecker implements MFABrowserChecker {
 		return false;
 	}
 
-	@Override
-	public boolean isEnabled() {
-		return _mfaEmailOTPConfiguration.enabled();
-	}
-
 	public boolean verifyBrowserRequest(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
