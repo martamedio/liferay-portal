@@ -48,6 +48,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -103,18 +104,21 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 				_portal.getOriginalServletRequest(
 					_portal.getHttpServletRequest(actionRequest));
 
-			long userId = AuthenticatedSessionManagerUtil.
-				getAuthenticatedUserId(
+			long userId =
+				AuthenticatedSessionManagerUtil.getAuthenticatedUserId(
 					httpServletRequest, login, password, null);
 
-			MFAHeadlessChecker mfaHeadlessChecker =
+			Optional<MFAHeadlessChecker> optionalMFAHeadlessChecker =
 				_mfaPolicy.getMFAHeadlessChecker(companyId);
 
-			if ((mfaHeadlessChecker == null) ||
-				((mfaHeadlessChecker != null) &&
-				 !mfaHeadlessChecker.verifyHeadlessRequest(
-					 httpServletRequest, userId))) {
+			boolean headlessVerified = optionalMFAHeadlessChecker.map(
+				mfaHeadlessChecker -> mfaHeadlessChecker.verifyHeadlessRequest(
+					httpServletRequest, userId)
+			).orElse(
+				false
+			);
 
+			if (!headlessVerified) {
 				MFABrowserChecker verifiedBrowserChecker =
 					_getVerifiedBrowserChecker(
 						companyId, userId, httpServletRequest);

@@ -26,6 +26,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
+import java.util.Optional;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
@@ -49,8 +51,16 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		MFASetupChecker mfaSetupChecker = _mfaPolicy.getMFASetupChecker(
-			_portal.getCompanyId(actionRequest));
+		Optional<MFASetupChecker> optionalMfaSetupChecker =
+			_mfaPolicy.getMFASetupChecker(_portal.getCompanyId(actionRequest));
+
+		if (!optionalMfaSetupChecker.isPresent()) {
+			//TODO: log
+
+			return;
+		};
+
+		MFASetupChecker mfaSetupChecker = optionalMfaSetupChecker.get();
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);

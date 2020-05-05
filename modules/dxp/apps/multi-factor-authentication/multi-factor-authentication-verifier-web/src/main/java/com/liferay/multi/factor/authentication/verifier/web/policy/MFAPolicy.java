@@ -15,16 +15,15 @@
 package com.liferay.multi.factor.authentication.verifier.web.policy;
 
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFABrowserChecker;
-import com.liferay.multi.factor.authentication.verifier.spi.checker.MFAChecker;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFAHeadlessChecker;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.osgi.framework.BundleContext;
@@ -54,42 +53,28 @@ public class MFAPolicy {
 		);
 	}
 
-	public MFAHeadlessChecker getMFAHeadlessChecker(long companyId) {
+	public Optional<MFAHeadlessChecker> getMFAHeadlessChecker(long companyId) {
 		List<MFAHeadlessChecker> mfaHeadlessCheckerList =
 			_mfaHeadlessCheckerServiceTrackerMap.getService(
 				String.valueOf(companyId));
 
 		if (!ListUtil.isEmpty(mfaHeadlessCheckerList)) {
-			Stream<MFAHeadlessChecker> stream = mfaHeadlessCheckerList.stream();
-
-			MFAHeadlessChecker mfaHeadlessChecker = stream.findFirst(
-			).get();
-
-			if (mfaHeadlessChecker.isEnabled()) {
-				return mfaHeadlessChecker;
-			}
+			return Optional.of(mfaHeadlessCheckerList.get(0));
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
-	public MFASetupChecker getMFASetupChecker(long companyId) {
+	public Optional<MFASetupChecker> getMFASetupChecker(long companyId) {
 		List<MFASetupChecker> mfaSetupCheckerList =
 			_mfaSetupCheckerServiceTrackerMap.getService(
 				String.valueOf(companyId));
 
 		if (!ListUtil.isEmpty(mfaSetupCheckerList)) {
-			Stream<MFASetupChecker> stream = mfaSetupCheckerList.stream();
-
-			MFASetupChecker mfaSetupChecker = stream.findFirst(
-			).get();
-
-			if (mfaSetupChecker.isEnabled()) {
-				return mfaSetupChecker;
-			}
+			return Optional.of(mfaSetupCheckerList.get(0));
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
 	public boolean isMFAEnabled(long companyId) {
