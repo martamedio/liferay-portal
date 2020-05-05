@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -33,10 +34,12 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
@@ -45,15 +48,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
  */
 @Component(
 	configurationPid = "com.liferay.multi.factor.authentication.ip.otp.web.internal.configuration.MFAIpOTPConfiguration.scoped",
-	configurationPolicy = ConfigurationPolicy.OPTIONAL,
-	service = MFAHeadlessChecker.class
+	configurationPolicy = ConfigurationPolicy.OPTIONAL, service = {}
 )
 public class MFAIpOTPChecker implements MFAHeadlessChecker {
-
-	@Override
-	public boolean isEnabled() {
-		return _enabled;
-	}
 
 	@Override
 	public boolean verifyHeadlessRequest(
@@ -96,16 +93,30 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 	}
 
 	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
 		MFAIpOTPConfiguration mfaIpOTPConfiguration =
 			ConfigurableUtil.createConfigurable(
 				MFAIpOTPConfiguration.class, properties);
 
-		_enabled = mfaIpOTPConfiguration.enabled();
-
 		_allowedIPsWithMasks = new HashSet<>(
 			Arrays.asList(mfaIpOTPConfiguration.allowedIPsWithMasks()));
+
+		if (mfaIpOTPConfiguration.enabled()) {
+			_serviceRegistration = bundleContext.registerService(
+				MFAHeadlessChecker.class, this,
+				new HashMapDictionary<>(properties));
+		}
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		if (_serviceRegistration != null) {
+			_serviceRegistration.unregister();
+
+			_serviceRegistration = null;
+		}
 	}
 
 	private String _getClassName() {
@@ -124,10 +135,11 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 		MFAIpOTPChecker.class);
 
 	private Set<String> _allowedIPsWithMasks;
-	private boolean _enabled;
 
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
 	private MFAIpOTPAuditMessageBuilder _mfaIpOTPAuditMessageBuilder;
+
+	private ServiceRegistration<MFAHeadlessChecker> _serviceRegistration;
 
 	@Reference
 	private UserLocalService _userLocalService;

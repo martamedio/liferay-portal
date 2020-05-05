@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface MFAHeadlessChecker {
 
-	public boolean isEnabled();
-
 	public boolean verifyHeadlessRequest(
 		HttpServletRequest httpServletRequest, long userId);
 
