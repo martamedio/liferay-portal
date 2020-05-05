@@ -56,7 +56,8 @@ public class MFAPolicy {
 
 	public MFAHeadlessChecker getMFAHeadlessChecker(long companyId) {
 		List<MFAHeadlessChecker> mfaHeadlessCheckerList =
-			_mfaHeadlessCheckerServiceTrackerMap.getService(companyId);
+			_mfaHeadlessCheckerServiceTrackerMap.getService(
+				String.valueOf(companyId));
 
 		if (!ListUtil.isEmpty(mfaHeadlessCheckerList)) {
 			Stream<MFAHeadlessChecker> stream = mfaHeadlessCheckerList.stream();
@@ -74,7 +75,8 @@ public class MFAPolicy {
 
 	public MFASetupChecker getMFASetupChecker(long companyId) {
 		List<MFASetupChecker> mfaSetupCheckerList =
-			_mfaSetupCheckerServiceTrackerMap.getService(companyId);
+			_mfaSetupCheckerServiceTrackerMap.getService(
+				String.valueOf(companyId));
 
 		if (!ListUtil.isEmpty(mfaSetupCheckerList)) {
 			Stream<MFASetupChecker> stream = mfaSetupCheckerList.stream();
@@ -100,24 +102,13 @@ public class MFAPolicy {
 	protected void activate(BundleContext bundleContext) {
 		_mfaBrowserCheckerServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
-				bundleContext, MFABrowserChecker.class, "(companyId=*)",
-				(serviceReference, emitter) -> emitter.emit(
-					GetterUtil.getLong(
-						serviceReference.getProperty("companyId"))));
-
+				bundleContext, MFABrowserChecker.class, "companyId");
 		_mfaHeadlessCheckerServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
-				bundleContext, MFAHeadlessChecker.class, "(companyId=*)",
-				(serviceReference, emitter) -> emitter.emit(
-					GetterUtil.getLong(
-						serviceReference.getProperty("companyId"))));
-
+				bundleContext, MFAHeadlessChecker.class, "companyId");
 		_mfaSetupCheckerServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
-				bundleContext, MFASetupChecker.class, "(companyId=*)",
-				(serviceReference, emitter) -> emitter.emit(
-					GetterUtil.getLong(
-						serviceReference.getProperty("companyId"))));
+				bundleContext, MFASetupChecker.class, "companyId");
 	}
 
 	@Deactivate
@@ -127,11 +118,11 @@ public class MFAPolicy {
 		_mfaSetupCheckerServiceTrackerMap.close();
 	}
 
-	private ServiceTrackerMap<Long, List<MFABrowserChecker>>
+	private ServiceTrackerMap<String, List<MFABrowserChecker>>
 		_mfaBrowserCheckerServiceTrackerMap;
-	private ServiceTrackerMap<Long, List<MFAHeadlessChecker>>
+	private ServiceTrackerMap<String, List<MFAHeadlessChecker>>
 		_mfaHeadlessCheckerServiceTrackerMap;
-	private ServiceTrackerMap<Long, List<MFASetupChecker>>
+	private ServiceTrackerMap<String, List<MFASetupChecker>>
 		_mfaSetupCheckerServiceTrackerMap;
 
 }
