@@ -18,7 +18,6 @@ import com.liferay.configuration.admin.display.ConfigurationVisibilityController
 import com.liferay.multi.factor.authentication.verifier.web.policy.MFAPolicy;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 
 import java.io.Serializable;
 
@@ -40,9 +39,7 @@ public class MFATimebasedOTPConfigurationVisibilityController
 	public boolean isVisible(
 		ExtendedObjectClassDefinition.Scope scope, Serializable scopePK) {
 
-		if (_mfaPolicy.isMFAEnabled(
-				CompanyThreadLocal.getCompanyId(),
-				PrincipalThreadLocal.getUserId()) &&
+		if (_mfaPolicy.isMFAEnabled(CompanyThreadLocal.getCompanyId()) &&
 			(ExtendedObjectClassDefinition.Scope.COMPANY == scope)) {
 
 			return true;

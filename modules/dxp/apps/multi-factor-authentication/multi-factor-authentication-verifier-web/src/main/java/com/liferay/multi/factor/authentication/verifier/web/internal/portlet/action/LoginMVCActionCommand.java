@@ -82,9 +82,8 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		throws Exception {
 
 		long companyId = _portal.getCompanyId(actionRequest);
-		long userId = _portal.getUserId(actionRequest);
 
-		if (!_mfaPolicy.isMFAEnabled(companyId, userId)) {
+		if (!_mfaPolicy.isMFAEnabled(companyId)) {
 			_loginMVCActionCommand.processAction(actionRequest, actionResponse);
 
 			return;
@@ -104,8 +103,9 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 				_portal.getOriginalServletRequest(
 					_portal.getHttpServletRequest(actionRequest));
 
-			userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(
-				httpServletRequest, login, password, null);
+			long userId = AuthenticatedSessionManagerUtil.
+				getAuthenticatedUserId(
+					httpServletRequest, login, password, null);
 
 			MFAHeadlessChecker mfaHeadlessChecker =
 				_mfaPolicy.getMFAHeadlessChecker(companyId);

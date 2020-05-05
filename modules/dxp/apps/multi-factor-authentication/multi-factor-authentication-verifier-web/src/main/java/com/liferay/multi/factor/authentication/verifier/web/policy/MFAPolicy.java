@@ -104,23 +104,10 @@ public class MFAPolicy {
 		return null;
 	}
 
-	public boolean isMFAEnabled(long companyId, long userId) {
-		List<MFABrowserChecker> availableBrowserCheckers =
-			getAvailableBrowserCheckers(companyId, userId);
-
-		if (ListUtil.isNotEmpty(availableBrowserCheckers)) {
-			Stream<MFABrowserChecker> stream =
-				availableBrowserCheckers.stream();
-
-			MFABrowserChecker mfaBrowserChecker = stream.findFirst(
-			).get();
-
-			if ((mfaBrowserChecker != null) && mfaBrowserChecker.isEnabled()) {
-				return true;
-			}
-		}
-
-		return false;
+	public boolean isMFAEnabled(long companyId) {
+		return !ListUtil.isEmpty(
+			_mfaBrowserCheckerServiceTrackerMap.getService(
+				String.valueOf(companyId)));
 	}
 
 	@Activate
