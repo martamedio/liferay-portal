@@ -36,8 +36,6 @@ public interface MFASetupChecker {
 			HttpServletResponse httpServletResponse, long userId)
 		throws IOException;
 
-	public boolean isEnabled();
-
 	public boolean isUserSetupComplete(long userId);
 
 	public void removeExistingSetup(long userId);

@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.SecureRandomUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -64,12 +65,13 @@ import javax.servlet.http.HttpSession;
 import jodd.util.Base32;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
@@ -80,7 +82,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 @Component(
 	configurationPid = "com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimebasedOTPConfiguration.scoped",
 	configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true,
-	service = {MFABrowserChecker.class, MFASetupChecker.class}
+	service = {}
 )
 public class MFATimebasedOTPChecker
 	implements MFABrowserChecker, MFASetupChecker {
@@ -204,11 +206,6 @@ public class MFATimebasedOTPChecker
 		}
 
 		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return _enabled;
 	}
 
 	@Override
@@ -358,14 +355,14 @@ public class MFATimebasedOTPChecker
 	}
 
 	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
 		MFATimebasedOTPConfiguration mfaTimebasedOTPConfiguration =
 			ConfigurableUtil.createConfigurable(
 				MFATimebasedOTPConfiguration.class, properties);
 
 		_algorithmKeySize = mfaTimebasedOTPConfiguration.algorithmKeySize();
-		_enabled = mfaTimebasedOTPConfiguration.enabled();
 		_clockSkew = mfaTimebasedOTPConfiguration.clockSkew();
 		_digitsCount = mfaTimebasedOTPConfiguration.digitsCount();
 		_timeWindow = mfaTimebasedOTPConfiguration.timeWindow();
@@ -383,10 +380,25 @@ public class MFATimebasedOTPChecker
 			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES =
 				sessionPhishingProtectedAttributesList.toArray(new String[0]);
 		}
+
+		if (mfaTimebasedOTPConfiguration.enabled()) {
+			_serviceRegistration = bundleContext.registerService(
+				new String[] {
+					MFABrowserChecker.class.getName(),
+					MFASetupChecker.class.getName()
+				},
+				this, new HashMapDictionary<>(properties));
+		}
 	}
 
 	@Deactivate
 	protected void deactivate() {
+		if (_serviceRegistration != null) {
+			_serviceRegistration.unregister();
+
+			_serviceRegistration = null;
+		}
+
 		if (PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
 			List<String> sessionPhishingProtectedAttributesList =
 				new ArrayList<>(
@@ -405,7 +417,7 @@ public class MFATimebasedOTPChecker
 			_mfaTimebasedOTPEntryLocalService.fetchMFATimebasedOTPEntryByUserId(
 				userId);
 
-		if (_enabled && (mfaTimebasedOTPEntry != null)) {
+		if (mfaTimebasedOTPEntry != null) {
 			return true;
 		}
 
@@ -567,7 +579,6 @@ public class MFATimebasedOTPChecker
 	private int _algorithmKeySize;
 	private long _clockSkew;
 	private int _digitsCount;
-	private boolean _enabled;
 
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
 	private MFATimebasedOTPAuditMessageBuilder
@@ -578,6 +589,8 @@ public class MFATimebasedOTPChecker
 
 	@Reference
 	private Portal _portal;
+
+	private ServiceRegistration<?> _serviceRegistration;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.multi.factor.authentication.timebased.otp.web)"

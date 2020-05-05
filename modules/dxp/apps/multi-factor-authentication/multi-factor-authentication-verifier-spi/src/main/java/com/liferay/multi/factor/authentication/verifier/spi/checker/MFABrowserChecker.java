@@ -31,8 +31,6 @@ public interface MFABrowserChecker {
 	public boolean isBrowserVerified(
 		HttpServletRequest httpServletRequest, long userId);
 
-	public boolean isEnabled();
-
 	public boolean verifyBrowserRequest(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
