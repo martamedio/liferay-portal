@@ -15,6 +15,7 @@
 package com.liferay.multi.factor.authentication.verifier.web.policy;
 
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFABrowserChecker;
+import com.liferay.multi.factor.authentication.verifier.spi.checker.MFAChecker;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFAHeadlessChecker;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -41,31 +42,16 @@ public class MFAPolicy {
 		long companyId, long userId) {
 
 		List<MFABrowserChecker> activeMfaBrowserCheckers =
-			_mfaBrowserCheckerServiceTrackerMap.getService(companyId);
+			_mfaBrowserCheckerServiceTrackerMap.getService(
+				String.valueOf(companyId));
 
-		List<MFABrowserChecker> availableMfaBrowserCheckers = null;
+		Stream<MFABrowserChecker> stream = activeMfaBrowserCheckers.stream();
 
-		if (ListUtil.isNotEmpty(activeMfaBrowserCheckers)) {
-			availableMfaBrowserCheckers = new ArrayList<>();
-
-			for (MFABrowserChecker mfaBrowserChecker :
-					activeMfaBrowserCheckers) {
-
-				if (mfaBrowserChecker instanceof MFASetupChecker) {
-					MFASetupChecker mfaSetupChecker =
-						(MFASetupChecker)mfaBrowserChecker;
-
-					if (mfaSetupChecker.isUserSetupComplete(userId)) {
-						availableMfaBrowserCheckers.add(mfaBrowserChecker);
-					}
-				}
-				else {
-					availableMfaBrowserCheckers.add(mfaBrowserChecker);
-				}
-			}
-		}
-
-		return availableMfaBrowserCheckers;
+		return stream.filter(
+			mfaBrowserChecker -> mfaBrowserChecker.isAvailable(userId)
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	public MFAHeadlessChecker getMFAHeadlessChecker(long companyId) {

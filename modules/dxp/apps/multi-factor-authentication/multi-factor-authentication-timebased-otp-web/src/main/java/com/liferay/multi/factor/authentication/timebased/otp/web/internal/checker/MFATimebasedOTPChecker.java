@@ -193,6 +193,19 @@ public class MFATimebasedOTPChecker
 	}
 
 	@Override
+	public boolean isAvailable(long userId) {
+		MFATimebasedOTPEntry mfaTimebasedOTPEntry =
+			_mfaTimebasedOTPEntryLocalService.fetchMFATimebasedOTPEntryByUserId(
+				userId);
+
+		if (mfaTimebasedOTPEntry != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
 	public boolean isBrowserVerified(
 		HttpServletRequest httpServletRequest, long userId) {
 
@@ -206,11 +219,6 @@ public class MFATimebasedOTPChecker
 		}
 
 		return false;
-	}
-
-	@Override
-	public boolean isUserSetupComplete(long userId) {
-		return isUserSetUp(userId);
 	}
 
 	@Override
@@ -286,7 +294,7 @@ public class MFATimebasedOTPChecker
 			return false;
 		}
 
-		if (!isUserSetUp(user.getUserId())) {
+		if (!isAvailable(user.getUserId())) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Requested timebased one time password for user" + userId +
@@ -410,18 +418,6 @@ public class MFATimebasedOTPChecker
 			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES =
 				sessionPhishingProtectedAttributesList.toArray(new String[0]);
 		}
-	}
-
-	protected boolean isUserSetUp(long userId) {
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry =
-			_mfaTimebasedOTPEntryLocalService.fetchMFATimebasedOTPEntryByUserId(
-				userId);
-
-		if (mfaTimebasedOTPEntry != null) {
-			return true;
-		}
-
-		return false;
 	}
 
 	protected boolean isVerified(HttpSession httpSession, long userId) {

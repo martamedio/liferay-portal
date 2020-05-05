@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Tomas Polesovsky
  * @author Marta Medio
  */
-public interface MFASetupChecker {
+public interface MFASetupChecker extends MFAChecker {
 
 	public String getName();
 
@@ -36,7 +36,7 @@ public interface MFASetupChecker {
 			HttpServletResponse httpServletResponse, long userId)
 		throws IOException;
 
-	public boolean isUserSetupComplete(long userId);
+	public boolean isAvailable(long userId);
 
 	public void removeExistingSetup(long userId);
 
