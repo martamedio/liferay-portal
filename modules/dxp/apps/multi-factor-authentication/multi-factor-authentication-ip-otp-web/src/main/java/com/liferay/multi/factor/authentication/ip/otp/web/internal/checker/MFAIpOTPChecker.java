@@ -73,23 +73,22 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 			return false;
 		}
 
-		boolean accessAllowed = AccessControlUtil.isAccessAllowed(
-			httpServletRequest, _allowedIPsWithMasks);
+		if (AccessControlUtil.isAccessAllowed(
+				httpServletRequest, _allowedIPsWithMasks)) {
 
-		if (accessAllowed) {
 			_routeAuditMessage(
 				_mfaIpOTPAuditMessageBuilder.
 					buildVerificationSuccessAuditMessage(
 						user, _getClassName()));
-		}
-		else {
-			_routeAuditMessage(
-				_mfaIpOTPAuditMessageBuilder.
-					buildVerificationFailureAuditMessage(
-						user, _getClassName(), "Ip not allowed"));
+
+			return true;
 		}
 
-		return accessAllowed;
+		_routeAuditMessage(
+			_mfaIpOTPAuditMessageBuilder.buildVerificationFailureAuditMessage(
+				user, _getClassName(), "Ip not allowed"));
+
+		return false;
 	}
 
 	@Activate
