@@ -40,8 +40,8 @@ public interface MFATimebasedOTPConfiguration {
 	public boolean enabled();
 
 	@Meta.AD(
-		deflt = "10", description = "order-description", id = "service.ranking",
-		name = "order", required = false
+		deflt = "100", description = "order-description",
+		id = "service.ranking", name = "order", required = false
 	)
 	public int order();
 

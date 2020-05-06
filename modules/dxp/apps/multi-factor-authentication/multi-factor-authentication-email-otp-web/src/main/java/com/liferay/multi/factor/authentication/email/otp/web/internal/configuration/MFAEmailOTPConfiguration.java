@@ -40,8 +40,8 @@ public interface MFAEmailOTPConfiguration {
 	public boolean enabled();
 
 	@Meta.AD(
-		deflt = "100", description = "order-description",
-		id = "service.ranking", name = "order", required = false
+		deflt = "10", description = "order-description", id = "service.ranking",
+		name = "order", required = false
 	)
 	public int order();
 
