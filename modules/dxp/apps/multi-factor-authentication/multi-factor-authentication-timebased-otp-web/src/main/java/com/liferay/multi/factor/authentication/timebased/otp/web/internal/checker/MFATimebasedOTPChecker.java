@@ -367,6 +367,10 @@ public class MFATimebasedOTPChecker
 			ConfigurableUtil.createConfigurable(
 				MFATimebasedOTPConfiguration.class, properties);
 
+		if (!mfaTimebasedOTPConfiguration.enabled()) {
+			return;
+		}
+
 		_algorithmKeySize = mfaTimebasedOTPConfiguration.algorithmKeySize();
 		_clockSkew = mfaTimebasedOTPConfiguration.clockSkew();
 		_digitsCount = mfaTimebasedOTPConfiguration.digitsCount();
@@ -386,24 +390,24 @@ public class MFATimebasedOTPChecker
 				sessionPhishingProtectedAttributesList.toArray(new String[0]);
 		}
 
-		if (mfaTimebasedOTPConfiguration.enabled()) {
-			_serviceRegistration = bundleContext.registerService(
-				new String[] {
-					MFABrowserChecker.class.getName(),
-					MFASetupChecker.class.getName()
-				},
-				this, new HashMapDictionary<>(properties));
-		}
-
 		_requestDispatcher = _servletContext.getRequestDispatcher(
 			"/verify_timebased_otp.jsp");
+
+		_serviceRegistration = bundleContext.registerService(
+			new String[] {
+				MFABrowserChecker.class.getName(),
+				MFASetupChecker.class.getName()
+			},
+			this, new HashMapDictionary<>(properties));
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		if (_serviceRegistration != null) {
-			_serviceRegistration.unregister();
+		if (_serviceRegistration == null) {
+			return;
 		}
+
+		_serviceRegistration.unregister();
 
 		if (PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
 			List<String> sessionPhishingProtectedAttributesList =

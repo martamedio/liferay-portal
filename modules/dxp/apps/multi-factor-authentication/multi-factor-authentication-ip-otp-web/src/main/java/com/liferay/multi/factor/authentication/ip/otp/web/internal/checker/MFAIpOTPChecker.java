@@ -99,21 +99,25 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 			ConfigurableUtil.createConfigurable(
 				MFAIpOTPConfiguration.class, properties);
 
+		if (!mfaIpOTPConfiguration.enabled()) {
+			return;
+		}
+
 		_allowedIPsWithMasks = new HashSet<>(
 			Arrays.asList(mfaIpOTPConfiguration.allowedIPsWithMasks()));
 
-		if (mfaIpOTPConfiguration.enabled()) {
-			_serviceRegistration = bundleContext.registerService(
-				MFAHeadlessChecker.class, this,
-				new HashMapDictionary<>(properties));
-		}
+		_serviceRegistration = bundleContext.registerService(
+			MFAHeadlessChecker.class, this,
+			new HashMapDictionary<>(properties));
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		if (_serviceRegistration != null) {
-			_serviceRegistration.unregister();
+		if (_serviceRegistration == null) {
+			return;
 		}
+
+		_serviceRegistration.unregister();
 	}
 
 	private String _getClassName() {
