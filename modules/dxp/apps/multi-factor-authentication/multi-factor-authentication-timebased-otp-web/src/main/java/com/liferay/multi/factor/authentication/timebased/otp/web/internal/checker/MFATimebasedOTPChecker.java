@@ -107,11 +107,8 @@ public class MFATimebasedOTPChecker
 			HttpServletResponse httpServletResponse, long userId)
 		throws IOException {
 
-		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher("/verify_timebased_otp.jsp");
-
 		try {
-			requestDispatcher.include(httpServletRequest, httpServletResponse);
+			_requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
 		catch (ServletException servletException) {
 			throw new IOException(
@@ -397,6 +394,9 @@ public class MFATimebasedOTPChecker
 				},
 				this, new HashMapDictionary<>(properties));
 		}
+
+		_requestDispatcher = _servletContext.getRequestDispatcher(
+			"/verify_timebased_otp.jsp");
 	}
 
 	@Deactivate
@@ -584,6 +584,7 @@ public class MFATimebasedOTPChecker
 	@Reference
 	private Portal _portal;
 
+	private RequestDispatcher _requestDispatcher;
 	private ServiceRegistration<?> _serviceRegistration;
 
 	@Reference(

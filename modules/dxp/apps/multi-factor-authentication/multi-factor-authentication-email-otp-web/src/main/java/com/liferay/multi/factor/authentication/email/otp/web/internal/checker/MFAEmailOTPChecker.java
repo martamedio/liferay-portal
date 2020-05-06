@@ -97,11 +97,7 @@ public class MFAEmailOTPChecker implements MFABrowserChecker {
 					MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME),
 				Long.MIN_VALUE));
 
-		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher(
-				"/mfa_email_otp_checker/verify_browser.jsp");
-
-		requestDispatcher.include(httpServletRequest, httpServletResponse);
+		_requestDispatcher.include(httpServletRequest, httpServletResponse);
 
 		httpSession.setAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_PHASE, "verify");
@@ -254,6 +250,9 @@ public class MFAEmailOTPChecker implements MFABrowserChecker {
 
 		PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES =
 			sessionPhishingProtectedAttributes.toArray(new String[0]);
+
+		_requestDispatcher = _servletContext.getRequestDispatcher(
+			"/mfa_email_otp_checker/verify_browser.jsp");
 	}
 
 	protected boolean isVerified(HttpSession httpSession, long userId) {
@@ -369,6 +368,8 @@ public class MFAEmailOTPChecker implements MFABrowserChecker {
 
 	@Reference
 	private Portal _portal;
+
+	private RequestDispatcher _requestDispatcher;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.multi.factor.authentication.email.otp.web)"
