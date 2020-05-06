@@ -403,8 +403,6 @@ public class MFATimebasedOTPChecker
 	protected void deactivate() {
 		if (_serviceRegistration != null) {
 			_serviceRegistration.unregister();
-
-			_serviceRegistration = null;
 		}
 
 		if (PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {

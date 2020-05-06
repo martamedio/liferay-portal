@@ -113,8 +113,6 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 	protected void deactivate() {
 		if (_serviceRegistration != null) {
 			_serviceRegistration.unregister();
-
-			_serviceRegistration = null;
 		}
 	}
 
