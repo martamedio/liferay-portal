@@ -3,12 +3,12 @@
 
 <service-builder auto-import-default-references="false" auto-namespace-tables="false" mvcc-enabled="true" package-path="com.liferay.multi.factor.authentication.timebased.otp">
 	<author>Arthur Chan</author>
-	<namespace>MFATimebasedOTP</namespace>
-	<entity local-service="true" name="MFATimebasedOTPEntry" remote-service="false">
+	<namespace>MFATimeBasedOTP</namespace>
+	<entity local-service="true" name="MFATimeBasedOTPEntry" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="mfaTimebasedOTPEntryId" primary="true" type="long" />
+		<column name="mfaTimeBasedOTPEntryId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -29,7 +29,7 @@
 
 		<!-- Finder methods -->
 
-		<finder name="UserId" return-type="MFATimebasedOTP">
+		<finder name="UserId" return-type="MFATimeBasedOTP">
 			<finder-column name="userId" />
 		</finder>
 
