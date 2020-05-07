@@ -18,6 +18,7 @@ import com.liferay.multi.factor.authentication.timebased.otp.model.MFATimeBasedO
 import com.liferay.multi.factor.authentication.timebased.otp.service.MFATimeBasedOTPEntryLocalService;
 import com.liferay.multi.factor.authentication.timebased.otp.web.internal.audit.MFATimeBasedOTPAuditMessageBuilder;
 import com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimeBasedOTPConfiguration;
+import com.liferay.multi.factor.authentication.timebased.otp.web.internal.constants.MFATimeBasedOTPWebKeys;
 import com.liferay.multi.factor.authentication.timebased.otp.web.internal.util.MFATimeBasedOTPUtil;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFABrowserChecker;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
@@ -140,14 +141,18 @@ public class MFATimeBasedOTPChecker
 			else {
 				String sharedSecret = _generateSharedSecret();
 
-				httpServletRequest.setAttribute("sharedSecret", sharedSecret);
+				httpServletRequest.setAttribute(
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
+					sharedSecret);
 
 				HttpServletRequest originalHttpServletRequest =
 					_portal.getOriginalServletRequest(httpServletRequest);
 
 				HttpSession session = originalHttpServletRequest.getSession();
 
-				session.setAttribute("sharedSecret", sharedSecret);
+				session.setAttribute(
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
+					sharedSecret);
 
 				Company company = _portal.getCompany(httpServletRequest);
 
