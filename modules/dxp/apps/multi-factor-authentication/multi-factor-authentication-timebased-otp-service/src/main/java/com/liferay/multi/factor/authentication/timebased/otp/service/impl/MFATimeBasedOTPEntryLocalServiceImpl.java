@@ -95,7 +95,7 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 	}
 
 	public MFATimeBasedOTPEntry updateAttempts(
-			long userId, String ip, boolean success)
+			long userId, String ipAddress, boolean success)
 		throws PortalException {
 
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
@@ -110,13 +110,13 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 			mfaTimeBasedOTPEntry.setLastFailDate(null);
 			mfaTimeBasedOTPEntry.setLastFailIP(null);
 			mfaTimeBasedOTPEntry.setLastSuccessDate(new Date());
-			mfaTimeBasedOTPEntry.setLastSuccessIP(ip);
+			mfaTimeBasedOTPEntry.setLastSuccessIP(ipAddress);
 		}
 		else {
 			mfaTimeBasedOTPEntry.setFailedAttempts(
 				mfaTimeBasedOTPEntry.getFailedAttempts() + 1);
 			mfaTimeBasedOTPEntry.setLastFailDate(new Date());
-			mfaTimeBasedOTPEntry.setLastFailIP(ip);
+			mfaTimeBasedOTPEntry.setLastFailIP(ipAddress);
 		}
 
 		return mfaTimeBasedOTPEntryPersistence.update(mfaTimeBasedOTPEntry);

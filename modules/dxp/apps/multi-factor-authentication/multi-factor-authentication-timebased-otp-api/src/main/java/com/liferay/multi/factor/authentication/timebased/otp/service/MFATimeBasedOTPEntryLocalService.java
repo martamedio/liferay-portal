@@ -247,7 +247,7 @@ public interface MFATimeBasedOTPEntryLocalService
 		throws PortalException;
 
 	public MFATimeBasedOTPEntry updateAttempts(
-			long userId, String ip, boolean success)
+			long userId, String ipAddress, boolean success)
 		throws PortalException;
 
 	/**

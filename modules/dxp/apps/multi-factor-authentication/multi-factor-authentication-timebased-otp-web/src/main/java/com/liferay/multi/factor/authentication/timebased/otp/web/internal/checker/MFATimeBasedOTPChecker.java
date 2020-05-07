@@ -317,7 +317,7 @@ public class MFATimeBasedOTPChecker
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
-		String userIP = originalHttpServletRequest.getRemoteAddr();
+		String remoteAddress = originalHttpServletRequest.getRemoteAddr();
 
 		if (verified) {
 			long validatedAt = System.currentTimeMillis();
@@ -336,7 +336,7 @@ public class MFATimeBasedOTPChecker
 			validatedMap.put("validatedAt", validatedAt);
 
 			_mfaTimeBasedOTPEntryLocalService.updateAttempts(
-				userId, userIP, true);
+				userId, remoteAddress, true);
 
 			_routeAuditMessage(
 				_mfaTimeBasedOTPAuditMessageBuilder.
@@ -345,7 +345,7 @@ public class MFATimeBasedOTPChecker
 		}
 		else {
 			_mfaTimeBasedOTPEntryLocalService.updateAttempts(
-				user.getUserId(), userIP, false);
+				user.getUserId(), remoteAddress, false);
 
 			_routeAuditMessage(
 				_mfaTimeBasedOTPAuditMessageBuilder.

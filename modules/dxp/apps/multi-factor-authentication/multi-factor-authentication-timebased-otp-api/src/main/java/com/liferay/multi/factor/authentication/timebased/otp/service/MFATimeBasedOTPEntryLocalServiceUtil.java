@@ -295,10 +295,10 @@ public class MFATimeBasedOTPEntryLocalServiceUtil {
 
 	public static com.liferay.multi.factor.authentication.timebased.otp.model.
 		MFATimeBasedOTPEntry updateAttempts(
-				long userId, String ip, boolean success)
+				long userId, String ipAddress, boolean success)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
-		return getService().updateAttempts(userId, ip, success);
+		return getService().updateAttempts(userId, ipAddress, success);
 	}
 
 	/**
