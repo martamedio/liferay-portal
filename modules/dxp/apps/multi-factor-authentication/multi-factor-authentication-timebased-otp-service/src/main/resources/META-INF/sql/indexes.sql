@@ -1,1 +1,1 @@
-create index IX_14DEAA05 on MFATimebasedOTPEntry (userId);
+create index IX_CEAB81E5 on MFATimeBasedOTPEntry (userId);

@@ -24,7 +24,7 @@ import org.osgi.framework.FrameworkUtil;
  * @author Arthur Chan
  * @generated
  */
-public class MFATimebasedOTPPersistenceConstants {
+public class MFATimeBasedOTPPersistenceConstants {
 
 	public static final String BUNDLE_SYMBOLIC_NAME =
 		"com.liferay.multi.factor.authentication.timebased.otp.service";
@@ -37,7 +37,7 @@ public class MFATimebasedOTPPersistenceConstants {
 
 	static {
 		Bundle bundle = FrameworkUtil.getBundle(
-			MFATimebasedOTPPersistenceConstants.class);
+			MFATimeBasedOTPPersistenceConstants.class);
 
 		if (!BUNDLE_SYMBOLIC_NAME.equals(bundle.getSymbolicName())) {
 			throw new IllegalStateException(

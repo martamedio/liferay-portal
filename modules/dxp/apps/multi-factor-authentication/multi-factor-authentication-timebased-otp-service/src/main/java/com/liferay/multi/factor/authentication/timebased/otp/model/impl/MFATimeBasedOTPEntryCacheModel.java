@@ -14,7 +14,7 @@
 
 package com.liferay.multi.factor.authentication.timebased.otp.model.impl;
 
-import com.liferay.multi.factor.authentication.timebased.otp.model.MFATimebasedOTPEntry;
+import com.liferay.multi.factor.authentication.timebased.otp.model.MFATimeBasedOTPEntry;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
@@ -28,13 +28,13 @@ import java.io.ObjectOutput;
 import java.util.Date;
 
 /**
- * The cache model class for representing MFATimebasedOTPEntry in entity cache.
+ * The cache model class for representing MFATimeBasedOTPEntry in entity cache.
  *
  * @author Arthur Chan
  * @generated
  */
-public class MFATimebasedOTPEntryCacheModel
-	implements CacheModel<MFATimebasedOTPEntry>, Externalizable, MVCCModel {
+public class MFATimeBasedOTPEntryCacheModel
+	implements CacheModel<MFATimeBasedOTPEntry>, Externalizable, MVCCModel {
 
 	@Override
 	public boolean equals(Object obj) {
@@ -42,16 +42,16 @@ public class MFATimebasedOTPEntryCacheModel
 			return true;
 		}
 
-		if (!(obj instanceof MFATimebasedOTPEntryCacheModel)) {
+		if (!(obj instanceof MFATimeBasedOTPEntryCacheModel)) {
 			return false;
 		}
 
-		MFATimebasedOTPEntryCacheModel mfaTimebasedOTPEntryCacheModel =
-			(MFATimebasedOTPEntryCacheModel)obj;
+		MFATimeBasedOTPEntryCacheModel mfaTimeBasedOTPEntryCacheModel =
+			(MFATimeBasedOTPEntryCacheModel)obj;
 
-		if ((mfaTimebasedOTPEntryId ==
-				mfaTimebasedOTPEntryCacheModel.mfaTimebasedOTPEntryId) &&
-			(mvccVersion == mfaTimebasedOTPEntryCacheModel.mvccVersion)) {
+		if ((mfaTimeBasedOTPEntryId ==
+				mfaTimeBasedOTPEntryCacheModel.mfaTimeBasedOTPEntryId) &&
+			(mvccVersion == mfaTimeBasedOTPEntryCacheModel.mvccVersion)) {
 
 			return true;
 		}
@@ -61,7 +61,7 @@ public class MFATimebasedOTPEntryCacheModel
 
 	@Override
 	public int hashCode() {
-		int hashCode = HashUtil.hash(0, mfaTimebasedOTPEntryId);
+		int hashCode = HashUtil.hash(0, mfaTimeBasedOTPEntryId);
 
 		return HashUtil.hash(hashCode, mvccVersion);
 	}
@@ -82,8 +82,8 @@ public class MFATimebasedOTPEntryCacheModel
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
-		sb.append(", mfaTimebasedOTPEntryId=");
-		sb.append(mfaTimebasedOTPEntryId);
+		sb.append(", mfaTimeBasedOTPEntryId=");
+		sb.append(mfaTimeBasedOTPEntryId);
 		sb.append(", companyId=");
 		sb.append(companyId);
 		sb.append(", userId=");
@@ -112,85 +112,85 @@ public class MFATimebasedOTPEntryCacheModel
 	}
 
 	@Override
-	public MFATimebasedOTPEntry toEntityModel() {
-		MFATimebasedOTPEntryImpl mfaTimebasedOTPEntryImpl =
-			new MFATimebasedOTPEntryImpl();
+	public MFATimeBasedOTPEntry toEntityModel() {
+		MFATimeBasedOTPEntryImpl mfaTimeBasedOTPEntryImpl =
+			new MFATimeBasedOTPEntryImpl();
 
-		mfaTimebasedOTPEntryImpl.setMvccVersion(mvccVersion);
-		mfaTimebasedOTPEntryImpl.setMfaTimebasedOTPEntryId(
-			mfaTimebasedOTPEntryId);
-		mfaTimebasedOTPEntryImpl.setCompanyId(companyId);
-		mfaTimebasedOTPEntryImpl.setUserId(userId);
+		mfaTimeBasedOTPEntryImpl.setMvccVersion(mvccVersion);
+		mfaTimeBasedOTPEntryImpl.setMfaTimeBasedOTPEntryId(
+			mfaTimeBasedOTPEntryId);
+		mfaTimeBasedOTPEntryImpl.setCompanyId(companyId);
+		mfaTimeBasedOTPEntryImpl.setUserId(userId);
 
 		if (userName == null) {
-			mfaTimebasedOTPEntryImpl.setUserName("");
+			mfaTimeBasedOTPEntryImpl.setUserName("");
 		}
 		else {
-			mfaTimebasedOTPEntryImpl.setUserName(userName);
+			mfaTimeBasedOTPEntryImpl.setUserName(userName);
 		}
 
 		if (createDate == Long.MIN_VALUE) {
-			mfaTimebasedOTPEntryImpl.setCreateDate(null);
+			mfaTimeBasedOTPEntryImpl.setCreateDate(null);
 		}
 		else {
-			mfaTimebasedOTPEntryImpl.setCreateDate(new Date(createDate));
+			mfaTimeBasedOTPEntryImpl.setCreateDate(new Date(createDate));
 		}
 
 		if (modifiedDate == Long.MIN_VALUE) {
-			mfaTimebasedOTPEntryImpl.setModifiedDate(null);
+			mfaTimeBasedOTPEntryImpl.setModifiedDate(null);
 		}
 		else {
-			mfaTimebasedOTPEntryImpl.setModifiedDate(new Date(modifiedDate));
+			mfaTimeBasedOTPEntryImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		mfaTimebasedOTPEntryImpl.setFailedAttempts(failedAttempts);
+		mfaTimeBasedOTPEntryImpl.setFailedAttempts(failedAttempts);
 
 		if (lastFailDate == Long.MIN_VALUE) {
-			mfaTimebasedOTPEntryImpl.setLastFailDate(null);
+			mfaTimeBasedOTPEntryImpl.setLastFailDate(null);
 		}
 		else {
-			mfaTimebasedOTPEntryImpl.setLastFailDate(new Date(lastFailDate));
+			mfaTimeBasedOTPEntryImpl.setLastFailDate(new Date(lastFailDate));
 		}
 
 		if (lastFailIP == null) {
-			mfaTimebasedOTPEntryImpl.setLastFailIP("");
+			mfaTimeBasedOTPEntryImpl.setLastFailIP("");
 		}
 		else {
-			mfaTimebasedOTPEntryImpl.setLastFailIP(lastFailIP);
+			mfaTimeBasedOTPEntryImpl.setLastFailIP(lastFailIP);
 		}
 
 		if (lastSuccessDate == Long.MIN_VALUE) {
-			mfaTimebasedOTPEntryImpl.setLastSuccessDate(null);
+			mfaTimeBasedOTPEntryImpl.setLastSuccessDate(null);
 		}
 		else {
-			mfaTimebasedOTPEntryImpl.setLastSuccessDate(
+			mfaTimeBasedOTPEntryImpl.setLastSuccessDate(
 				new Date(lastSuccessDate));
 		}
 
 		if (lastSuccessIP == null) {
-			mfaTimebasedOTPEntryImpl.setLastSuccessIP("");
+			mfaTimeBasedOTPEntryImpl.setLastSuccessIP("");
 		}
 		else {
-			mfaTimebasedOTPEntryImpl.setLastSuccessIP(lastSuccessIP);
+			mfaTimeBasedOTPEntryImpl.setLastSuccessIP(lastSuccessIP);
 		}
 
 		if (sharedSecret == null) {
-			mfaTimebasedOTPEntryImpl.setSharedSecret("");
+			mfaTimeBasedOTPEntryImpl.setSharedSecret("");
 		}
 		else {
-			mfaTimebasedOTPEntryImpl.setSharedSecret(sharedSecret);
+			mfaTimeBasedOTPEntryImpl.setSharedSecret(sharedSecret);
 		}
 
-		mfaTimebasedOTPEntryImpl.resetOriginalValues();
+		mfaTimeBasedOTPEntryImpl.resetOriginalValues();
 
-		return mfaTimebasedOTPEntryImpl;
+		return mfaTimeBasedOTPEntryImpl;
 	}
 
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
 
-		mfaTimebasedOTPEntryId = objectInput.readLong();
+		mfaTimeBasedOTPEntryId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
@@ -211,7 +211,7 @@ public class MFATimebasedOTPEntryCacheModel
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		objectOutput.writeLong(mvccVersion);
 
-		objectOutput.writeLong(mfaTimebasedOTPEntryId);
+		objectOutput.writeLong(mfaTimeBasedOTPEntryId);
 
 		objectOutput.writeLong(companyId);
 
@@ -255,7 +255,7 @@ public class MFATimebasedOTPEntryCacheModel
 	}
 
 	public long mvccVersion;
-	public long mfaTimebasedOTPEntryId;
+	public long mfaTimeBasedOTPEntryId;
 	public long companyId;
 	public long userId;
 	public String userName;

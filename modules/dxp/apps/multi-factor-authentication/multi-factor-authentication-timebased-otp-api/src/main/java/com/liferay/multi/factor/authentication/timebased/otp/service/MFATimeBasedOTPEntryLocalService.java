@@ -14,7 +14,7 @@
 
 package com.liferay.multi.factor.authentication.timebased.otp.service;
 
-import com.liferay.multi.factor.authentication.timebased.otp.model.MFATimebasedOTPEntry;
+import com.liferay.multi.factor.authentication.timebased.otp.model.MFATimeBasedOTPEntry;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -38,13 +38,13 @@ import java.util.List;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * Provides the local service interface for MFATimebasedOTPEntry. Methods of this
+ * Provides the local service interface for MFATimeBasedOTPEntry. Methods of this
  * service will not have security checks based on the propagated JAAS
  * credentials because this service can only be accessed from within the same
  * VM.
  *
  * @author Arthur Chan
- * @see MFATimebasedOTPEntryLocalServiceUtil
+ * @see MFATimeBasedOTPEntryLocalServiceUtil
  * @generated
  */
 @ProviderType
@@ -52,60 +52,60 @@ import org.osgi.annotation.versioning.ProviderType;
 	isolation = Isolation.PORTAL,
 	rollbackFor = {PortalException.class, SystemException.class}
 )
-public interface MFATimebasedOTPEntryLocalService
+public interface MFATimeBasedOTPEntryLocalService
 	extends BaseLocalService, PersistedModelLocalService {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link MFATimebasedOTPEntryLocalServiceUtil} to access the mfa timebased otp entry local service. Add custom service methods to <code>com.liferay.multi.factor.authentication.timebased.otp.service.impl.MFATimebasedOTPEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify or reference this interface directly. Always use {@link MFATimeBasedOTPEntryLocalServiceUtil} to access the mfa time based otp entry local service. Add custom service methods to <code>com.liferay.multi.factor.authentication.timebased.otp.service.impl.MFATimeBasedOTPEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 
 	/**
-	 * Adds the mfa timebased otp entry to the database. Also notifies the appropriate model listeners.
+	 * Adds the mfa time based otp entry to the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param mfaTimebasedOTPEntry the mfa timebased otp entry
-	 * @return the mfa timebased otp entry that was added
+	 * @param mfaTimeBasedOTPEntry the mfa time based otp entry
+	 * @return the mfa time based otp entry that was added
 	 */
 	@Indexable(type = IndexableType.REINDEX)
-	public MFATimebasedOTPEntry addMFATimebasedOTPEntry(
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry);
+	public MFATimeBasedOTPEntry addMFATimeBasedOTPEntry(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry);
 
-	public MFATimebasedOTPEntry addTimebasedOTPEntry(
+	public MFATimeBasedOTPEntry addTimeBasedOTPEntry(
 			String sharedSecret, long userId)
 		throws PortalException;
 
 	/**
-	 * Creates a new mfa timebased otp entry with the primary key. Does not add the mfa timebased otp entry to the database.
+	 * Creates a new mfa time based otp entry with the primary key. Does not add the mfa time based otp entry to the database.
 	 *
-	 * @param mfaTimebasedOTPEntryId the primary key for the new mfa timebased otp entry
-	 * @return the new mfa timebased otp entry
+	 * @param mfaTimeBasedOTPEntryId the primary key for the new mfa time based otp entry
+	 * @return the new mfa time based otp entry
 	 */
 	@Transactional(enabled = false)
-	public MFATimebasedOTPEntry createMFATimebasedOTPEntry(
-		long mfaTimebasedOTPEntryId);
+	public MFATimeBasedOTPEntry createMFATimeBasedOTPEntry(
+		long mfaTimeBasedOTPEntryId);
 
 	/**
-	 * Deletes the mfa timebased otp entry with the primary key from the database. Also notifies the appropriate model listeners.
+	 * Deletes the mfa time based otp entry with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param mfaTimebasedOTPEntryId the primary key of the mfa timebased otp entry
-	 * @return the mfa timebased otp entry that was removed
-	 * @throws PortalException if a mfa timebased otp entry with the primary key could not be found
+	 * @param mfaTimeBasedOTPEntryId the primary key of the mfa time based otp entry
+	 * @return the mfa time based otp entry that was removed
+	 * @throws PortalException if a mfa time based otp entry with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	public MFATimebasedOTPEntry deleteMFATimebasedOTPEntry(
-			long mfaTimebasedOTPEntryId)
+	public MFATimeBasedOTPEntry deleteMFATimeBasedOTPEntry(
+			long mfaTimeBasedOTPEntryId)
 		throws PortalException;
 
 	/**
-	 * Deletes the mfa timebased otp entry from the database. Also notifies the appropriate model listeners.
+	 * Deletes the mfa time based otp entry from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param mfaTimebasedOTPEntry the mfa timebased otp entry
-	 * @return the mfa timebased otp entry that was removed
+	 * @param mfaTimeBasedOTPEntry the mfa time based otp entry
+	 * @return the mfa time based otp entry that was removed
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	public MFATimebasedOTPEntry deleteMFATimebasedOTPEntry(
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry);
+	public MFATimeBasedOTPEntry deleteMFATimeBasedOTPEntry(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry);
 
 	/**
 	 * @throws PortalException
@@ -130,7 +130,7 @@ public interface MFATimebasedOTPEntryLocalService
 	 * Performs a dynamic query on the database and returns a range of the matching rows.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.multi.factor.authentication.timebased.otp.model.impl.MFATimebasedOTPEntryModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.multi.factor.authentication.timebased.otp.model.impl.MFATimeBasedOTPEntryModelImpl</code>.
 	 * </p>
 	 *
 	 * @param dynamicQuery the dynamic query
@@ -146,7 +146,7 @@ public interface MFATimebasedOTPEntryLocalService
 	 * Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.multi.factor.authentication.timebased.otp.model.impl.MFATimebasedOTPEntryModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.multi.factor.authentication.timebased.otp.model.impl.MFATimeBasedOTPEntryModelImpl</code>.
 	 * </p>
 	 *
 	 * @param dynamicQuery the dynamic query
@@ -181,11 +181,11 @@ public interface MFATimebasedOTPEntryLocalService
 		DynamicQuery dynamicQuery, Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MFATimebasedOTPEntry fetchMFATimebasedOTPEntry(
-		long mfaTimebasedOTPEntryId);
+	public MFATimeBasedOTPEntry fetchMFATimeBasedOTPEntry(
+		long mfaTimeBasedOTPEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MFATimebasedOTPEntry fetchMFATimebasedOTPEntryByUserId(long userId);
+	public MFATimeBasedOTPEntry fetchMFATimeBasedOTPEntryByUserId(long userId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -194,38 +194,38 @@ public interface MFATimebasedOTPEntryLocalService
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
-	 * Returns a range of all the mfa timebased otp entries.
+	 * Returns a range of all the mfa time based otp entries.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.multi.factor.authentication.timebased.otp.model.impl.MFATimebasedOTPEntryModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.multi.factor.authentication.timebased.otp.model.impl.MFATimeBasedOTPEntryModelImpl</code>.
 	 * </p>
 	 *
-	 * @param start the lower bound of the range of mfa timebased otp entries
-	 * @param end the upper bound of the range of mfa timebased otp entries (not inclusive)
-	 * @return the range of mfa timebased otp entries
+	 * @param start the lower bound of the range of mfa time based otp entries
+	 * @param end the upper bound of the range of mfa time based otp entries (not inclusive)
+	 * @return the range of mfa time based otp entries
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MFATimebasedOTPEntry> getMFATimebasedOTPEntries(
+	public List<MFATimeBasedOTPEntry> getMFATimeBasedOTPEntries(
 		int start, int end);
 
 	/**
-	 * Returns the number of mfa timebased otp entries.
+	 * Returns the number of mfa time based otp entries.
 	 *
-	 * @return the number of mfa timebased otp entries
+	 * @return the number of mfa time based otp entries
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getMFATimebasedOTPEntriesCount();
+	public int getMFATimeBasedOTPEntriesCount();
 
 	/**
-	 * Returns the mfa timebased otp entry with the primary key.
+	 * Returns the mfa time based otp entry with the primary key.
 	 *
-	 * @param mfaTimebasedOTPEntryId the primary key of the mfa timebased otp entry
-	 * @return the mfa timebased otp entry
-	 * @throws PortalException if a mfa timebased otp entry with the primary key could not be found
+	 * @param mfaTimeBasedOTPEntryId the primary key of the mfa time based otp entry
+	 * @return the mfa time based otp entry
+	 * @throws PortalException if a mfa time based otp entry with the primary key could not be found
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MFATimebasedOTPEntry getMFATimebasedOTPEntry(
-			long mfaTimebasedOTPEntryId)
+	public MFATimeBasedOTPEntry getMFATimeBasedOTPEntry(
+			long mfaTimeBasedOTPEntryId)
 		throws PortalException;
 
 	/**
@@ -243,21 +243,21 @@ public interface MFATimebasedOTPEntryLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public MFATimebasedOTPEntry resetFailedAttempts(long userId)
+	public MFATimeBasedOTPEntry resetFailedAttempts(long userId)
 		throws PortalException;
 
-	public MFATimebasedOTPEntry updateAttempts(
+	public MFATimeBasedOTPEntry updateAttempts(
 			long userId, String ip, boolean success)
 		throws PortalException;
 
 	/**
-	 * Updates the mfa timebased otp entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 * Updates the mfa time based otp entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
-	 * @param mfaTimebasedOTPEntry the mfa timebased otp entry
-	 * @return the mfa timebased otp entry that was updated
+	 * @param mfaTimeBasedOTPEntry the mfa time based otp entry
+	 * @return the mfa time based otp entry that was updated
 	 */
 	@Indexable(type = IndexableType.REINDEX)
-	public MFATimebasedOTPEntry updateMFATimebasedOTPEntry(
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry);
+	public MFATimeBasedOTPEntry updateMFATimeBasedOTPEntry(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry);
 
 }

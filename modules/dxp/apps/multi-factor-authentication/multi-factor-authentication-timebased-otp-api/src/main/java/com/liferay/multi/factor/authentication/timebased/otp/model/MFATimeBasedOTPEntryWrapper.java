@@ -23,21 +23,21 @@ import java.util.Map;
 
 /**
  * <p>
- * This class is a wrapper for {@link MFATimebasedOTPEntry}.
+ * This class is a wrapper for {@link MFATimeBasedOTPEntry}.
  * </p>
  *
  * @author Arthur Chan
- * @see MFATimebasedOTPEntry
+ * @see MFATimeBasedOTPEntry
  * @generated
  */
-public class MFATimebasedOTPEntryWrapper
-	extends BaseModelWrapper<MFATimebasedOTPEntry>
-	implements MFATimebasedOTPEntry, ModelWrapper<MFATimebasedOTPEntry> {
+public class MFATimeBasedOTPEntryWrapper
+	extends BaseModelWrapper<MFATimeBasedOTPEntry>
+	implements MFATimeBasedOTPEntry, ModelWrapper<MFATimeBasedOTPEntry> {
 
-	public MFATimebasedOTPEntryWrapper(
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry) {
+	public MFATimeBasedOTPEntryWrapper(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry) {
 
-		super(mfaTimebasedOTPEntry);
+		super(mfaTimeBasedOTPEntry);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class MFATimebasedOTPEntryWrapper
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("mvccVersion", getMvccVersion());
-		attributes.put("mfaTimebasedOTPEntryId", getMfaTimebasedOTPEntryId());
+		attributes.put("mfaTimeBasedOTPEntryId", getMfaTimeBasedOTPEntryId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -69,11 +69,11 @@ public class MFATimebasedOTPEntryWrapper
 			setMvccVersion(mvccVersion);
 		}
 
-		Long mfaTimebasedOTPEntryId = (Long)attributes.get(
-			"mfaTimebasedOTPEntryId");
+		Long mfaTimeBasedOTPEntryId = (Long)attributes.get(
+			"mfaTimeBasedOTPEntryId");
 
-		if (mfaTimebasedOTPEntryId != null) {
-			setMfaTimebasedOTPEntryId(mfaTimebasedOTPEntryId);
+		if (mfaTimeBasedOTPEntryId != null) {
+			setMfaTimeBasedOTPEntryId(mfaTimeBasedOTPEntryId);
 		}
 
 		Long companyId = (Long)attributes.get("companyId");
@@ -144,9 +144,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the company ID of this mfa timebased otp entry.
+	 * Returns the company ID of this mfa time based otp entry.
 	 *
-	 * @return the company ID of this mfa timebased otp entry
+	 * @return the company ID of this mfa time based otp entry
 	 */
 	@Override
 	public long getCompanyId() {
@@ -154,9 +154,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the create date of this mfa timebased otp entry.
+	 * Returns the create date of this mfa time based otp entry.
 	 *
-	 * @return the create date of this mfa timebased otp entry
+	 * @return the create date of this mfa time based otp entry
 	 */
 	@Override
 	public Date getCreateDate() {
@@ -164,9 +164,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the failed attempts of this mfa timebased otp entry.
+	 * Returns the failed attempts of this mfa time based otp entry.
 	 *
-	 * @return the failed attempts of this mfa timebased otp entry
+	 * @return the failed attempts of this mfa time based otp entry
 	 */
 	@Override
 	public int getFailedAttempts() {
@@ -174,9 +174,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the last fail date of this mfa timebased otp entry.
+	 * Returns the last fail date of this mfa time based otp entry.
 	 *
-	 * @return the last fail date of this mfa timebased otp entry
+	 * @return the last fail date of this mfa time based otp entry
 	 */
 	@Override
 	public Date getLastFailDate() {
@@ -184,9 +184,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the last fail ip of this mfa timebased otp entry.
+	 * Returns the last fail ip of this mfa time based otp entry.
 	 *
-	 * @return the last fail ip of this mfa timebased otp entry
+	 * @return the last fail ip of this mfa time based otp entry
 	 */
 	@Override
 	public String getLastFailIP() {
@@ -194,9 +194,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the last success date of this mfa timebased otp entry.
+	 * Returns the last success date of this mfa time based otp entry.
 	 *
-	 * @return the last success date of this mfa timebased otp entry
+	 * @return the last success date of this mfa time based otp entry
 	 */
 	@Override
 	public Date getLastSuccessDate() {
@@ -204,9 +204,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the last success ip of this mfa timebased otp entry.
+	 * Returns the last success ip of this mfa time based otp entry.
 	 *
-	 * @return the last success ip of this mfa timebased otp entry
+	 * @return the last success ip of this mfa time based otp entry
 	 */
 	@Override
 	public String getLastSuccessIP() {
@@ -214,19 +214,19 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the mfa timebased otp entry ID of this mfa timebased otp entry.
+	 * Returns the mfa time based otp entry ID of this mfa time based otp entry.
 	 *
-	 * @return the mfa timebased otp entry ID of this mfa timebased otp entry
+	 * @return the mfa time based otp entry ID of this mfa time based otp entry
 	 */
 	@Override
-	public long getMfaTimebasedOTPEntryId() {
-		return model.getMfaTimebasedOTPEntryId();
+	public long getMfaTimeBasedOTPEntryId() {
+		return model.getMfaTimeBasedOTPEntryId();
 	}
 
 	/**
-	 * Returns the modified date of this mfa timebased otp entry.
+	 * Returns the modified date of this mfa time based otp entry.
 	 *
-	 * @return the modified date of this mfa timebased otp entry
+	 * @return the modified date of this mfa time based otp entry
 	 */
 	@Override
 	public Date getModifiedDate() {
@@ -234,9 +234,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the mvcc version of this mfa timebased otp entry.
+	 * Returns the mvcc version of this mfa time based otp entry.
 	 *
-	 * @return the mvcc version of this mfa timebased otp entry
+	 * @return the mvcc version of this mfa time based otp entry
 	 */
 	@Override
 	public long getMvccVersion() {
@@ -244,9 +244,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the primary key of this mfa timebased otp entry.
+	 * Returns the primary key of this mfa time based otp entry.
 	 *
-	 * @return the primary key of this mfa timebased otp entry
+	 * @return the primary key of this mfa time based otp entry
 	 */
 	@Override
 	public long getPrimaryKey() {
@@ -254,9 +254,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the shared secret of this mfa timebased otp entry.
+	 * Returns the shared secret of this mfa time based otp entry.
 	 *
-	 * @return the shared secret of this mfa timebased otp entry
+	 * @return the shared secret of this mfa time based otp entry
 	 */
 	@Override
 	public String getSharedSecret() {
@@ -264,9 +264,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the user ID of this mfa timebased otp entry.
+	 * Returns the user ID of this mfa time based otp entry.
 	 *
-	 * @return the user ID of this mfa timebased otp entry
+	 * @return the user ID of this mfa time based otp entry
 	 */
 	@Override
 	public long getUserId() {
@@ -274,9 +274,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the user name of this mfa timebased otp entry.
+	 * Returns the user name of this mfa time based otp entry.
 	 *
-	 * @return the user name of this mfa timebased otp entry
+	 * @return the user name of this mfa time based otp entry
 	 */
 	@Override
 	public String getUserName() {
@@ -284,9 +284,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Returns the user uuid of this mfa timebased otp entry.
+	 * Returns the user uuid of this mfa time based otp entry.
 	 *
-	 * @return the user uuid of this mfa timebased otp entry
+	 * @return the user uuid of this mfa time based otp entry
 	 */
 	@Override
 	public String getUserUuid() {
@@ -299,9 +299,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the company ID of this mfa timebased otp entry.
+	 * Sets the company ID of this mfa time based otp entry.
 	 *
-	 * @param companyId the company ID of this mfa timebased otp entry
+	 * @param companyId the company ID of this mfa time based otp entry
 	 */
 	@Override
 	public void setCompanyId(long companyId) {
@@ -309,9 +309,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the create date of this mfa timebased otp entry.
+	 * Sets the create date of this mfa time based otp entry.
 	 *
-	 * @param createDate the create date of this mfa timebased otp entry
+	 * @param createDate the create date of this mfa time based otp entry
 	 */
 	@Override
 	public void setCreateDate(Date createDate) {
@@ -319,9 +319,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the failed attempts of this mfa timebased otp entry.
+	 * Sets the failed attempts of this mfa time based otp entry.
 	 *
-	 * @param failedAttempts the failed attempts of this mfa timebased otp entry
+	 * @param failedAttempts the failed attempts of this mfa time based otp entry
 	 */
 	@Override
 	public void setFailedAttempts(int failedAttempts) {
@@ -329,9 +329,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the last fail date of this mfa timebased otp entry.
+	 * Sets the last fail date of this mfa time based otp entry.
 	 *
-	 * @param lastFailDate the last fail date of this mfa timebased otp entry
+	 * @param lastFailDate the last fail date of this mfa time based otp entry
 	 */
 	@Override
 	public void setLastFailDate(Date lastFailDate) {
@@ -339,9 +339,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the last fail ip of this mfa timebased otp entry.
+	 * Sets the last fail ip of this mfa time based otp entry.
 	 *
-	 * @param lastFailIP the last fail ip of this mfa timebased otp entry
+	 * @param lastFailIP the last fail ip of this mfa time based otp entry
 	 */
 	@Override
 	public void setLastFailIP(String lastFailIP) {
@@ -349,9 +349,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the last success date of this mfa timebased otp entry.
+	 * Sets the last success date of this mfa time based otp entry.
 	 *
-	 * @param lastSuccessDate the last success date of this mfa timebased otp entry
+	 * @param lastSuccessDate the last success date of this mfa time based otp entry
 	 */
 	@Override
 	public void setLastSuccessDate(Date lastSuccessDate) {
@@ -359,9 +359,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the last success ip of this mfa timebased otp entry.
+	 * Sets the last success ip of this mfa time based otp entry.
 	 *
-	 * @param lastSuccessIP the last success ip of this mfa timebased otp entry
+	 * @param lastSuccessIP the last success ip of this mfa time based otp entry
 	 */
 	@Override
 	public void setLastSuccessIP(String lastSuccessIP) {
@@ -369,19 +369,19 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the mfa timebased otp entry ID of this mfa timebased otp entry.
+	 * Sets the mfa time based otp entry ID of this mfa time based otp entry.
 	 *
-	 * @param mfaTimebasedOTPEntryId the mfa timebased otp entry ID of this mfa timebased otp entry
+	 * @param mfaTimeBasedOTPEntryId the mfa time based otp entry ID of this mfa time based otp entry
 	 */
 	@Override
-	public void setMfaTimebasedOTPEntryId(long mfaTimebasedOTPEntryId) {
-		model.setMfaTimebasedOTPEntryId(mfaTimebasedOTPEntryId);
+	public void setMfaTimeBasedOTPEntryId(long mfaTimeBasedOTPEntryId) {
+		model.setMfaTimeBasedOTPEntryId(mfaTimeBasedOTPEntryId);
 	}
 
 	/**
-	 * Sets the modified date of this mfa timebased otp entry.
+	 * Sets the modified date of this mfa time based otp entry.
 	 *
-	 * @param modifiedDate the modified date of this mfa timebased otp entry
+	 * @param modifiedDate the modified date of this mfa time based otp entry
 	 */
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
@@ -389,9 +389,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the mvcc version of this mfa timebased otp entry.
+	 * Sets the mvcc version of this mfa time based otp entry.
 	 *
-	 * @param mvccVersion the mvcc version of this mfa timebased otp entry
+	 * @param mvccVersion the mvcc version of this mfa time based otp entry
 	 */
 	@Override
 	public void setMvccVersion(long mvccVersion) {
@@ -399,9 +399,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the primary key of this mfa timebased otp entry.
+	 * Sets the primary key of this mfa time based otp entry.
 	 *
-	 * @param primaryKey the primary key of this mfa timebased otp entry
+	 * @param primaryKey the primary key of this mfa time based otp entry
 	 */
 	@Override
 	public void setPrimaryKey(long primaryKey) {
@@ -409,9 +409,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the shared secret of this mfa timebased otp entry.
+	 * Sets the shared secret of this mfa time based otp entry.
 	 *
-	 * @param sharedSecret the shared secret of this mfa timebased otp entry
+	 * @param sharedSecret the shared secret of this mfa time based otp entry
 	 */
 	@Override
 	public void setSharedSecret(String sharedSecret) {
@@ -419,9 +419,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the user ID of this mfa timebased otp entry.
+	 * Sets the user ID of this mfa time based otp entry.
 	 *
-	 * @param userId the user ID of this mfa timebased otp entry
+	 * @param userId the user ID of this mfa time based otp entry
 	 */
 	@Override
 	public void setUserId(long userId) {
@@ -429,9 +429,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the user name of this mfa timebased otp entry.
+	 * Sets the user name of this mfa time based otp entry.
 	 *
-	 * @param userName the user name of this mfa timebased otp entry
+	 * @param userName the user name of this mfa time based otp entry
 	 */
 	@Override
 	public void setUserName(String userName) {
@@ -439,9 +439,9 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	/**
-	 * Sets the user uuid of this mfa timebased otp entry.
+	 * Sets the user uuid of this mfa time based otp entry.
 	 *
-	 * @param userUuid the user uuid of this mfa timebased otp entry
+	 * @param userUuid the user uuid of this mfa time based otp entry
 	 */
 	@Override
 	public void setUserUuid(String userUuid) {
@@ -449,10 +449,10 @@ public class MFATimebasedOTPEntryWrapper
 	}
 
 	@Override
-	protected MFATimebasedOTPEntryWrapper wrap(
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry) {
+	protected MFATimeBasedOTPEntryWrapper wrap(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry) {
 
-		return new MFATimebasedOTPEntryWrapper(mfaTimebasedOTPEntry);
+		return new MFATimeBasedOTPEntryWrapper(mfaTimeBasedOTPEntry);
 	}
 
 }

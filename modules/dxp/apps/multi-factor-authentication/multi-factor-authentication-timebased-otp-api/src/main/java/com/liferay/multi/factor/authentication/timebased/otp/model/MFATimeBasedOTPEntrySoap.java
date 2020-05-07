@@ -26,15 +26,15 @@ import java.util.List;
  * @author Arthur Chan
  * @generated
  */
-public class MFATimebasedOTPEntrySoap implements Serializable {
+public class MFATimeBasedOTPEntrySoap implements Serializable {
 
-	public static MFATimebasedOTPEntrySoap toSoapModel(
-		MFATimebasedOTPEntry model) {
+	public static MFATimeBasedOTPEntrySoap toSoapModel(
+		MFATimeBasedOTPEntry model) {
 
-		MFATimebasedOTPEntrySoap soapModel = new MFATimebasedOTPEntrySoap();
+		MFATimeBasedOTPEntrySoap soapModel = new MFATimeBasedOTPEntrySoap();
 
 		soapModel.setMvccVersion(model.getMvccVersion());
-		soapModel.setMfaTimebasedOTPEntryId(model.getMfaTimebasedOTPEntryId());
+		soapModel.setMfaTimeBasedOTPEntryId(model.getMfaTimeBasedOTPEntryId());
 		soapModel.setCompanyId(model.getCompanyId());
 		soapModel.setUserId(model.getUserId());
 		soapModel.setUserName(model.getUserName());
@@ -50,11 +50,11 @@ public class MFATimebasedOTPEntrySoap implements Serializable {
 		return soapModel;
 	}
 
-	public static MFATimebasedOTPEntrySoap[] toSoapModels(
-		MFATimebasedOTPEntry[] models) {
+	public static MFATimeBasedOTPEntrySoap[] toSoapModels(
+		MFATimeBasedOTPEntry[] models) {
 
-		MFATimebasedOTPEntrySoap[] soapModels =
-			new MFATimebasedOTPEntrySoap[models.length];
+		MFATimeBasedOTPEntrySoap[] soapModels =
+			new MFATimeBasedOTPEntrySoap[models.length];
 
 		for (int i = 0; i < models.length; i++) {
 			soapModels[i] = toSoapModel(models[i]);
@@ -63,17 +63,17 @@ public class MFATimebasedOTPEntrySoap implements Serializable {
 		return soapModels;
 	}
 
-	public static MFATimebasedOTPEntrySoap[][] toSoapModels(
-		MFATimebasedOTPEntry[][] models) {
+	public static MFATimeBasedOTPEntrySoap[][] toSoapModels(
+		MFATimeBasedOTPEntry[][] models) {
 
-		MFATimebasedOTPEntrySoap[][] soapModels = null;
+		MFATimeBasedOTPEntrySoap[][] soapModels = null;
 
 		if (models.length > 0) {
 			soapModels =
-				new MFATimebasedOTPEntrySoap[models.length][models[0].length];
+				new MFATimeBasedOTPEntrySoap[models.length][models[0].length];
 		}
 		else {
-			soapModels = new MFATimebasedOTPEntrySoap[0][0];
+			soapModels = new MFATimeBasedOTPEntrySoap[0][0];
 		}
 
 		for (int i = 0; i < models.length; i++) {
@@ -83,29 +83,29 @@ public class MFATimebasedOTPEntrySoap implements Serializable {
 		return soapModels;
 	}
 
-	public static MFATimebasedOTPEntrySoap[] toSoapModels(
-		List<MFATimebasedOTPEntry> models) {
+	public static MFATimeBasedOTPEntrySoap[] toSoapModels(
+		List<MFATimeBasedOTPEntry> models) {
 
-		List<MFATimebasedOTPEntrySoap> soapModels =
-			new ArrayList<MFATimebasedOTPEntrySoap>(models.size());
+		List<MFATimeBasedOTPEntrySoap> soapModels =
+			new ArrayList<MFATimeBasedOTPEntrySoap>(models.size());
 
-		for (MFATimebasedOTPEntry model : models) {
+		for (MFATimeBasedOTPEntry model : models) {
 			soapModels.add(toSoapModel(model));
 		}
 
 		return soapModels.toArray(
-			new MFATimebasedOTPEntrySoap[soapModels.size()]);
+			new MFATimeBasedOTPEntrySoap[soapModels.size()]);
 	}
 
-	public MFATimebasedOTPEntrySoap() {
+	public MFATimeBasedOTPEntrySoap() {
 	}
 
 	public long getPrimaryKey() {
-		return _mfaTimebasedOTPEntryId;
+		return _mfaTimeBasedOTPEntryId;
 	}
 
 	public void setPrimaryKey(long pk) {
-		setMfaTimebasedOTPEntryId(pk);
+		setMfaTimeBasedOTPEntryId(pk);
 	}
 
 	public long getMvccVersion() {
@@ -116,12 +116,12 @@ public class MFATimebasedOTPEntrySoap implements Serializable {
 		_mvccVersion = mvccVersion;
 	}
 
-	public long getMfaTimebasedOTPEntryId() {
-		return _mfaTimebasedOTPEntryId;
+	public long getMfaTimeBasedOTPEntryId() {
+		return _mfaTimeBasedOTPEntryId;
 	}
 
-	public void setMfaTimebasedOTPEntryId(long mfaTimebasedOTPEntryId) {
-		_mfaTimebasedOTPEntryId = mfaTimebasedOTPEntryId;
+	public void setMfaTimeBasedOTPEntryId(long mfaTimeBasedOTPEntryId) {
+		_mfaTimeBasedOTPEntryId = mfaTimeBasedOTPEntryId;
 	}
 
 	public long getCompanyId() {
@@ -213,7 +213,7 @@ public class MFATimebasedOTPEntrySoap implements Serializable {
 	}
 
 	private long _mvccVersion;
-	private long _mfaTimebasedOTPEntryId;
+	private long _mfaTimeBasedOTPEntryId;
 	private long _companyId;
 	private long _userId;
 	private String _userName;

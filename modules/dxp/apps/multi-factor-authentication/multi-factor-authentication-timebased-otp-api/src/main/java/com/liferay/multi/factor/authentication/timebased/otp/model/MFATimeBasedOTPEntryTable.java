@@ -22,62 +22,62 @@ import java.sql.Types;
 import java.util.Date;
 
 /**
- * The table class for the &quot;MFATimebasedOTPEntry&quot; database table.
+ * The table class for the &quot;MFATimeBasedOTPEntry&quot; database table.
  *
  * @author Arthur Chan
- * @see MFATimebasedOTPEntry
+ * @see MFATimeBasedOTPEntry
  * @generated
  */
-public class MFATimebasedOTPEntryTable
-	extends BaseTable<MFATimebasedOTPEntryTable> {
+public class MFATimeBasedOTPEntryTable
+	extends BaseTable<MFATimeBasedOTPEntryTable> {
 
-	public static final MFATimebasedOTPEntryTable INSTANCE =
-		new MFATimebasedOTPEntryTable();
+	public static final MFATimeBasedOTPEntryTable INSTANCE =
+		new MFATimeBasedOTPEntryTable();
 
-	public final Column<MFATimebasedOTPEntryTable, Long> mvccVersion =
+	public final Column<MFATimeBasedOTPEntryTable, Long> mvccVersion =
 		createColumn(
 			"mvccVersion", Long.class, Types.BIGINT, Column.FLAG_NULLITY);
-	public final Column<MFATimebasedOTPEntryTable, Long>
-		mfaTimebasedOTPEntryId = createColumn(
-			"mfaTimebasedOTPEntryId", Long.class, Types.BIGINT,
+	public final Column<MFATimeBasedOTPEntryTable, Long>
+		mfaTimeBasedOTPEntryId = createColumn(
+			"mfaTimeBasedOTPEntryId", Long.class, Types.BIGINT,
 			Column.FLAG_PRIMARY);
-	public final Column<MFATimebasedOTPEntryTable, Long> companyId =
+	public final Column<MFATimeBasedOTPEntryTable, Long> companyId =
 		createColumn(
 			"companyId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, Long> userId = createColumn(
+	public final Column<MFATimeBasedOTPEntryTable, Long> userId = createColumn(
 		"userId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, String> userName =
+	public final Column<MFATimeBasedOTPEntryTable, String> userName =
 		createColumn(
 			"userName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, Date> createDate =
+	public final Column<MFATimeBasedOTPEntryTable, Date> createDate =
 		createColumn(
 			"createDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, Date> modifiedDate =
+	public final Column<MFATimeBasedOTPEntryTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, Integer> failedAttempts =
+	public final Column<MFATimeBasedOTPEntryTable, Integer> failedAttempts =
 		createColumn(
 			"failedAttempts", Integer.class, Types.INTEGER,
 			Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, Date> lastFailDate =
+	public final Column<MFATimeBasedOTPEntryTable, Date> lastFailDate =
 		createColumn(
 			"lastFailDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, String> lastFailIP =
+	public final Column<MFATimeBasedOTPEntryTable, String> lastFailIP =
 		createColumn(
 			"lastFailIP", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, Date> lastSuccessDate =
+	public final Column<MFATimeBasedOTPEntryTable, Date> lastSuccessDate =
 		createColumn(
 			"lastSuccessDate", Date.class, Types.TIMESTAMP,
 			Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, String> lastSuccessIP =
+	public final Column<MFATimeBasedOTPEntryTable, String> lastSuccessIP =
 		createColumn(
 			"lastSuccessIP", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<MFATimebasedOTPEntryTable, String> sharedSecret =
+	public final Column<MFATimeBasedOTPEntryTable, String> sharedSecret =
 		createColumn(
 			"sharedSecret", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
-	private MFATimebasedOTPEntryTable() {
-		super("MFATimebasedOTPEntry", MFATimebasedOTPEntryTable::new);
+	private MFATimeBasedOTPEntryTable() {
+		super("MFATimeBasedOTPEntry", MFATimeBasedOTPEntryTable::new);
 	}
 
 }

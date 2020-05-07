@@ -1,6 +1,6 @@
-create table MFATimebasedOTPEntry (
+create table MFATimeBasedOTPEntry (
 	mvccVersion LONG default 0 not null,
-	mfaTimebasedOTPEntryId LONG not null primary key,
+	mfaTimeBasedOTPEntryId LONG not null primary key,
 	companyId LONG,
 	userId LONG,
 	userName VARCHAR(75) null,
