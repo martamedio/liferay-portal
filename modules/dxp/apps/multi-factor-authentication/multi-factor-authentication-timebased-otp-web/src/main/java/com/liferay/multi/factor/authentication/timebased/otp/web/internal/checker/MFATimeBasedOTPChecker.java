@@ -109,7 +109,8 @@ public class MFATimeBasedOTPChecker
 		throws IOException {
 
 		try {
-			_requestDispatcher.include(httpServletRequest, httpServletResponse);
+			_verificationRequestDispatcher.include(
+				httpServletRequest, httpServletResponse);
 		}
 		catch (ServletException servletException) {
 			throw new IOException(
@@ -131,11 +132,7 @@ public class MFATimeBasedOTPChecker
 
 		try {
 			if (mfaTimeBasedOTPEntry != null) {
-				RequestDispatcher requestDispatcher =
-					_servletContext.getRequestDispatcher(
-						"/setup_timebased_otp_completed.jsp");
-
-				requestDispatcher.include(
+				_setupCompletedRequestDispatcher.include(
 					httpServletRequest, httpServletResponse);
 			}
 			else {
@@ -174,11 +171,7 @@ public class MFATimeBasedOTPChecker
 					"qrCodeLibraryUrl",
 					_getQRCodeLibraryUrl(httpServletRequest));
 
-				RequestDispatcher requestDispatcher =
-					_servletContext.getRequestDispatcher(
-						"/setup_timebased_otp.jsp");
-
-				requestDispatcher.include(
+				_setupRequestDispatcher.include(
 					httpServletRequest, httpServletResponse);
 			}
 		}
@@ -395,7 +388,11 @@ public class MFATimeBasedOTPChecker
 				sessionPhishingProtectedAttributesList.toArray(new String[0]);
 		}
 
-		_requestDispatcher = _servletContext.getRequestDispatcher(
+		_setupRequestDispatcher = _servletContext.getRequestDispatcher(
+			"/setup_timebased_otp.jsp");
+		_setupCompletedRequestDispatcher = _servletContext.getRequestDispatcher(
+			"/setup_timebased_otp_completed.jsp");
+		_verificationRequestDispatcher = _servletContext.getRequestDispatcher(
 			"/verify_timebased_otp.jsp");
 
 		_serviceRegistration = bundleContext.registerService(
@@ -593,7 +590,6 @@ public class MFATimeBasedOTPChecker
 	@Reference
 	private Portal _portal;
 
-	private RequestDispatcher _requestDispatcher;
 	private ServiceRegistration<?> _serviceRegistration;
 
 	@Reference(
@@ -601,11 +597,14 @@ public class MFATimeBasedOTPChecker
 	)
 	private ServletContext _servletContext;
 
+	private RequestDispatcher _setupCompletedRequestDispatcher;
+	private RequestDispatcher _setupRequestDispatcher;
 	private long _timeWindow = 30 * 1000;
 
 	@Reference
 	private UserLocalService _userLocalService;
 
 	private long _validationExpirationTime;
+	private RequestDispatcher _verificationRequestDispatcher;
 
 }
