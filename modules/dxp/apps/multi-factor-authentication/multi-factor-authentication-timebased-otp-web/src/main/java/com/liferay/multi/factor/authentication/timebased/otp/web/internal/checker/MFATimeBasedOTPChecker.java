@@ -237,19 +237,19 @@ public class MFATimeBasedOTPChecker
 
 		String sharedSecret = (String)session.getAttribute("sharedSecret");
 
-		String timebasedOtpValue = ParamUtil.getString(
-			httpServletRequest, "timebasedOtp");
+		String timeBasedOtpValue = ParamUtil.getString(
+			httpServletRequest, "timeBasedOtp");
 
 		try {
 			if (MFATimeBasedOTPUtil.verifyTimeBasedOTP(
-					Base32.decode(sharedSecret), timebasedOtpValue, _clockSkew,
+					Base32.decode(sharedSecret), timeBasedOtpValue, _clockSkew,
 					_timeWindow, _digitsCount)) {
 
-				MFATimeBasedOTPEntry timebasedOTPEntry =
+				MFATimeBasedOTPEntry timeBasedOTPEntry =
 					_mfaTimeBasedOTPEntryLocalService.addTimeBasedOTPEntry(
 						sharedSecret, userId);
 
-				if (timebasedOTPEntry != null) {
+				if (timeBasedOTPEntry != null) {
 					return true;
 				}
 			}
@@ -257,7 +257,7 @@ public class MFATimeBasedOTPChecker
 		catch (Exception exception) {
 			_log.error(
 				StringBundler.concat(
-					"Unable to generate timebased one-time password for user ",
+					"Unable to generate time-based one-time password for user ",
 					userId, ": ", exception.getMessage()),
 				exception);
 		}
@@ -276,7 +276,7 @@ public class MFATimeBasedOTPChecker
 		if (user == null) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"Requested one-time password email verification for " +
+					"Requested one-time password time-based verification for " +
 						"nonexistent user " + userId);
 			}
 
@@ -292,7 +292,7 @@ public class MFATimeBasedOTPChecker
 		if (!isAvailable(user.getUserId())) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"Requested timebased one time password for user" + userId +
+					"Requested time-based one time password for user" + userId +
 						" with incomplete configuration");
 			}
 
@@ -305,14 +305,14 @@ public class MFATimeBasedOTPChecker
 			return false;
 		}
 
-		String timebasedOtp = ParamUtil.getString(
-			httpServletRequest, "timebasedOtp");
+		String timeBasedOtp = ParamUtil.getString(
+			httpServletRequest, "timeBasedOtp");
 
-		if (Validator.isBlank(timebasedOtp)) {
+		if (Validator.isBlank(timeBasedOtp)) {
 			return false;
 		}
 
-		boolean verified = verifyTimeBasedOTP(timebasedOtp, user.getUserId());
+		boolean verified = verifyTimeBasedOTP(timeBasedOtp, user.getUserId());
 
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
@@ -351,7 +351,7 @@ public class MFATimeBasedOTPChecker
 				_mfaTimeBasedOTPAuditMessageBuilder.
 					buildVerificationFailureAuditMessage(
 						user, _getClassName(),
-						"Incorrect timebased one-time password"));
+						"Incorrect time-based one-time password"));
 		}
 
 		return verified;
@@ -493,7 +493,7 @@ public class MFATimeBasedOTPChecker
 	}
 
 	protected boolean verifyTimeBasedOTP(
-		String timebasedOtpValue, long userId) {
+		String timeBasedOtpValue, long userId) {
 
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
 			_mfaTimeBasedOTPEntryLocalService.fetchMFATimeBasedOTPEntryByUserId(
@@ -503,7 +503,7 @@ public class MFATimeBasedOTPChecker
 			try {
 				return MFATimeBasedOTPUtil.verifyTimeBasedOTP(
 					Base32.decode(mfaTimeBasedOTPEntry.getSharedSecret()),
-					timebasedOtpValue, _clockSkew, _timeWindow, _digitsCount);
+					timeBasedOtpValue, _clockSkew, _timeWindow, _digitsCount);
 			}
 			catch (Exception exception) {
 				_log.error(
