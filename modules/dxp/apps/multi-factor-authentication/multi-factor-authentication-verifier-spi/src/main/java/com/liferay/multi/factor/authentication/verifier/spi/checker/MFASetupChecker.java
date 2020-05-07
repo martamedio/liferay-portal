@@ -29,6 +29,8 @@ public interface MFASetupChecker extends MFAChecker {
 
 	public String getName();
 
+	/* Let's try to generalize this like we do in OAuth2 scope descriptors or
+	application descriptors*/
 	public String getSetupLabelConfigurationKey(Locale locale);
 
 	public void includeSetup(
