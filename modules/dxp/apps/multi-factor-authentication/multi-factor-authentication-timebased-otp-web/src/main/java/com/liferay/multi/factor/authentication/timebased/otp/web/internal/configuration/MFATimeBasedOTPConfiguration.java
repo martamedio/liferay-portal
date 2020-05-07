@@ -27,11 +27,11 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	scope = ExtendedObjectClassDefinition.Scope.COMPANY
 )
 @Meta.OCD(
-	id = "com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimebasedOTPConfiguration",
+	id = "com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimeBasedOTPConfiguration",
 	localization = "content/Language",
 	name = "mfa-timebased-otp-configuration-name"
 )
-public interface MFATimebasedOTPConfiguration {
+public interface MFATimeBasedOTPConfiguration {
 
 	@Meta.AD(
 		deflt = "false", description = "mfa-timebased-otp-enabled-description",

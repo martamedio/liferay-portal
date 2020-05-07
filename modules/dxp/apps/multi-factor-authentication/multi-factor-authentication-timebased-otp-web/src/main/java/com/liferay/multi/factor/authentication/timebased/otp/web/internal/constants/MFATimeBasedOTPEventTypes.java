@@ -17,7 +17,7 @@ package com.liferay.multi.factor.authentication.timebased.otp.web.internal.const
 /**
  * @author Marta Medio
  */
-public interface MFATimebasedOTPEventTypes {
+public interface MFATimeBasedOTPEventTypes {
 
 	public static final String MFA_TIMEBASED_OTP_NOT_VERIFIED =
 		"MFA_TIMEBASED_OTP_NOT_VERIFIED";

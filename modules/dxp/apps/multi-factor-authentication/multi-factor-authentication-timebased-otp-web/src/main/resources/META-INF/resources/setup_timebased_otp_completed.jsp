@@ -19,7 +19,7 @@
 <div class="sheet-section">
 	<liferay-ui:message key="mfa-timebased-otp-verification-already-configured" />
 
-	<aui:input name="removeTimebasedOtp" type="hidden" value="<%= true %>" />
+	<aui:input name="removeTimeBasedOtp" type="hidden" value="<%= true %>" />
 </div>
 
 <div class="sheet-footer">

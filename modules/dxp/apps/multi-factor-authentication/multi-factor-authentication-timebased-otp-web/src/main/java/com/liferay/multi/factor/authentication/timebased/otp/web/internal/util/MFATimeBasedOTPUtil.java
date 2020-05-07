@@ -27,17 +27,17 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * @author Arthur Chan
  */
-public class MFATimebasedOTPUtil {
+public class MFATimeBasedOTPUtil {
 
 	public static final String MFA_TIMEBASED_OTP_ALGORITHM = "HmacSHA1";
 
-	public static String generateTimebasedOTPBasedInHmac(
+	public static String generateTimeBasedOTPBasedInHmac(
 		byte[] key, long count, int digits) {
 
 		if ((digits < 1) || (digits > 9)) {
 			throw new IllegalArgumentException(
 				StringBundler.concat(
-					"Timebased OTP can only generate 1-9 digits but ", digits,
+					"TimeBased OTP can only generate 1-9 digits but ", digits,
 					" requested"));
 		}
 
@@ -78,7 +78,7 @@ public class MFATimebasedOTPUtil {
 		return String.format(StringBundler.concat("%0", digits, "d"), otp);
 	}
 
-	public static boolean verifyTimebasedOTP(
+	public static boolean verifyTimeBasedOTP(
 		byte[] key, String timebasedOTPValue, long clockSkewMs,
 		long timeWindowMs, int digits) {
 
@@ -86,7 +86,7 @@ public class MFATimebasedOTPUtil {
 		long max = (System.currentTimeMillis() + clockSkewMs) / timeWindowMs;
 
 		for (long i = min; i <= max; i++) {
-			String generatedTimebaseOtp = generateTimebasedOTPBasedInHmac(
+			String generatedTimebaseOtp = generateTimeBasedOTPBasedInHmac(
 				key, i, digits);
 
 			if (generatedTimebaseOtp.equals(timebasedOTPValue)) {

@@ -14,7 +14,7 @@
 
 package com.liferay.multi.factor.authentication.timebased.otp.web.internal.settings.definition;
 
-import com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimebasedOTPConfiguration;
+import com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimeBasedOTPConfiguration;
 import com.liferay.portal.kernel.settings.definition.ConfigurationBeanDeclaration;
 
 import org.osgi.service.component.annotations.Component;
@@ -23,12 +23,12 @@ import org.osgi.service.component.annotations.Component;
  * @author Marta Medio
  */
 @Component(service = ConfigurationBeanDeclaration.class)
-public class MFATimebasedOTPCompanyConfigurationBeanDeclaration
+public class MFATimeBasedOTPCompanyConfigurationBeanDeclaration
 	implements ConfigurationBeanDeclaration {
 
 	@Override
 	public Class<?> getConfigurationBeanClass() {
-		return MFATimebasedOTPConfiguration.class;
+		return MFATimeBasedOTPConfiguration.class;
 	}
 
 }

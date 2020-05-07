@@ -65,10 +65,10 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		boolean removeTimebasedOtp = ParamUtil.getBoolean(
-			actionRequest, "removeTimebasedOtp");
+		boolean removeTimeBasedOtp = ParamUtil.getBoolean(
+			actionRequest, "removeTimeBasedOtp");
 
-		if (removeTimebasedOtp) {
+		if (removeTimeBasedOtp) {
 			mfaSetupChecker.removeExistingSetup(themeDisplay.getUserId());
 		}
 
@@ -88,7 +88,7 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 			return;
 		}
 
-		if (!removeTimebasedOtp) {
+		if (!removeTimeBasedOtp) {
 			SessionErrors.add(actionRequest, "userAccountSetupFailed");
 		}
 	}

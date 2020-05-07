@@ -14,7 +14,7 @@
 
 package com.liferay.multi.factor.authentication.timebased.otp.web.internal.audit;
 
-import com.liferay.multi.factor.authentication.timebased.otp.web.internal.constants.MFATimebasedOTPEventTypes;
+import com.liferay.multi.factor.authentication.timebased.otp.web.internal.constants.MFATimeBasedOTPEventTypes;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
@@ -29,14 +29,14 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marta Medio
  */
-@Component(service = MFATimebasedOTPAuditMessageBuilder.class)
-public class MFATimebasedOTPAuditMessageBuilder {
+@Component(service = MFATimeBasedOTPAuditMessageBuilder.class)
+public class MFATimeBasedOTPAuditMessageBuilder {
 
 	public AuditMessage buildMissingSetupUserVerificationFailureAuditMessage(
 		long companyId, User user, String checkerClassName) {
 
 		return new AuditMessage(
-			MFATimebasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_FAILURE,
+			MFATimeBasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_FAILURE,
 			companyId, user.getUserId(), "NonConfigured", checkerClassName,
 			null, null,
 			JSONUtil.put("reason", "Missing Configuration for User"));
@@ -46,7 +46,7 @@ public class MFATimebasedOTPAuditMessageBuilder {
 		long companyId, long userId, String checkerClassName) {
 
 		return new AuditMessage(
-			MFATimebasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_FAILURE,
+			MFATimeBasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_FAILURE,
 			companyId, userId, "Nonexistent", checkerClassName,
 			String.valueOf(userId), null,
 			JSONUtil.put("reason", "Nonexistent User"));
@@ -56,7 +56,7 @@ public class MFATimebasedOTPAuditMessageBuilder {
 		User user, String checkerClassName, String reason) {
 
 		return new AuditMessage(
-			MFATimebasedOTPEventTypes.MFA_TIMEBASED_OTP_NOT_VERIFIED,
+			MFATimeBasedOTPEventTypes.MFA_TIMEBASED_OTP_NOT_VERIFIED,
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null,
 			JSONUtil.put("reason", reason));
@@ -66,7 +66,7 @@ public class MFATimebasedOTPAuditMessageBuilder {
 		User user, String checkerClassName, String reason) {
 
 		return new AuditMessage(
-			MFATimebasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_FAILURE,
+			MFATimeBasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_FAILURE,
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null,
 			JSONUtil.put("reason", reason));
@@ -76,7 +76,7 @@ public class MFATimebasedOTPAuditMessageBuilder {
 		User user, String checkerClassName) {
 
 		return new AuditMessage(
-			MFATimebasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_SUCCESS,
+			MFATimeBasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_SUCCESS,
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null, null);
 	}
@@ -85,7 +85,7 @@ public class MFATimebasedOTPAuditMessageBuilder {
 		User user, String checkerClassName) {
 
 		return new AuditMessage(
-			MFATimebasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFIED,
+			MFATimeBasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFIED,
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null, null);
 	}
@@ -107,7 +107,7 @@ public class MFATimebasedOTPAuditMessageBuilder {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MFATimebasedOTPAuditMessageBuilder.class);
+		MFATimeBasedOTPAuditMessageBuilder.class);
 
 	@Reference
 	private AuditRouter _auditRouter;

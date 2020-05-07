@@ -29,10 +29,10 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	immediate = true,
-	property = "configuration.pid=com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimebasedOTPConfiguration",
+	property = "configuration.pid=com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimeBasedOTPConfiguration",
 	service = ConfigurationVisibilityController.class
 )
-public class MFATimebasedOTPConfigurationVisibilityController
+public class MFATimeBasedOTPConfigurationVisibilityController
 	implements ConfigurationVisibilityController {
 
 	@Override

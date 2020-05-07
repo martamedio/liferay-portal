@@ -17,11 +17,11 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String algorithm = GetterUtil.getString(request.getAttribute("mfaTimebasedOTPAlgorithm"));
+String algorithm = GetterUtil.getString(request.getAttribute("mfaTimeBasedOTPAlgorithm"));
 String companyName = GetterUtil.getString(request.getAttribute("companyName"));
 String sharedSecret = (String)request.getAttribute("sharedSecret");
 
-int digits = GetterUtil.getInteger(request.getAttribute("mfaTimebasedOTPDigits"));
+int digits = GetterUtil.getInteger(request.getAttribute("mfaTimeBasedOTPDigits"));
 int timeWindow = GetterUtil.getInteger(request.getAttribute("mfaTimeBasedOTPTimeWindow"));
 
 User mfaUser = (User)request.getAttribute("mfaUser");

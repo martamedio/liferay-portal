@@ -14,11 +14,11 @@
 
 package com.liferay.multi.factor.authentication.timebased.otp.web.internal.checker;
 
-import com.liferay.multi.factor.authentication.timebased.otp.model.MFATimebasedOTPEntry;
-import com.liferay.multi.factor.authentication.timebased.otp.service.MFATimebasedOTPEntryLocalService;
-import com.liferay.multi.factor.authentication.timebased.otp.web.internal.audit.MFATimebasedOTPAuditMessageBuilder;
-import com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimebasedOTPConfiguration;
-import com.liferay.multi.factor.authentication.timebased.otp.web.internal.util.MFATimebasedOTPUtil;
+import com.liferay.multi.factor.authentication.timebased.otp.model.MFATimeBasedOTPEntry;
+import com.liferay.multi.factor.authentication.timebased.otp.service.MFATimeBasedOTPEntryLocalService;
+import com.liferay.multi.factor.authentication.timebased.otp.web.internal.audit.MFATimeBasedOTPAuditMessageBuilder;
+import com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimeBasedOTPConfiguration;
+import com.liferay.multi.factor.authentication.timebased.otp.web.internal.util.MFATimeBasedOTPUtil;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFABrowserChecker;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
 import com.liferay.petra.string.StringBundler;
@@ -80,16 +80,16 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
  * @author Marta Medio
  */
 @Component(
-	configurationPid = "com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimebasedOTPConfiguration.scoped",
+	configurationPid = "com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimeBasedOTPConfiguration.scoped",
 	configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true,
 	service = {}
 )
-public class MFATimebasedOTPChecker
+public class MFATimeBasedOTPChecker
 	implements MFABrowserChecker, MFASetupChecker {
 
 	@Override
 	public String getName() {
-		return MFATimebasedOTPConfiguration.class.getName();
+		return MFATimeBasedOTPConfiguration.class.getName();
 	}
 
 	@Override
@@ -124,12 +124,12 @@ public class MFATimebasedOTPChecker
 			HttpServletResponse httpServletResponse, long userId)
 		throws IOException {
 
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry =
-			_mfaTimebasedOTPEntryLocalService.fetchMFATimebasedOTPEntryByUserId(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
+			_mfaTimeBasedOTPEntryLocalService.fetchMFATimeBasedOTPEntryByUserId(
 				userId);
 
 		try {
-			if (mfaTimebasedOTPEntry != null) {
+			if (mfaTimeBasedOTPEntry != null) {
 				RequestDispatcher requestDispatcher =
 					_servletContext.getRequestDispatcher(
 						"/setup_timebased_otp_completed.jsp");
@@ -155,10 +155,10 @@ public class MFATimebasedOTPChecker
 					"companyName", company.getName());
 
 				httpServletRequest.setAttribute(
-					"mfaTimebasedOTPAlgorithm",
-					MFATimebasedOTPUtil.MFA_TIMEBASED_OTP_ALGORITHM);
+					"mfaTimeBasedOTPAlgorithm",
+					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_ALGORITHM);
 				httpServletRequest.setAttribute(
-					"mfaTimebasedOTPDigits", _digitsCount);
+					"mfaTimeBasedOTPDigits", _digitsCount);
 				httpServletRequest.setAttribute(
 					"mfaTimeBasedOTPTimeWindow", _timeWindow);
 
@@ -191,11 +191,11 @@ public class MFATimebasedOTPChecker
 
 	@Override
 	public boolean isAvailable(long userId) {
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry =
-			_mfaTimebasedOTPEntryLocalService.fetchMFATimebasedOTPEntryByUserId(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
+			_mfaTimeBasedOTPEntryLocalService.fetchMFATimeBasedOTPEntryByUserId(
 				userId);
 
-		if (mfaTimebasedOTPEntry != null) {
+		if (mfaTimeBasedOTPEntry != null) {
 			return true;
 		}
 
@@ -220,13 +220,13 @@ public class MFATimebasedOTPChecker
 
 	@Override
 	public void removeExistingSetup(long userId) {
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry =
-			_mfaTimebasedOTPEntryLocalService.fetchMFATimebasedOTPEntryByUserId(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
+			_mfaTimeBasedOTPEntryLocalService.fetchMFATimeBasedOTPEntryByUserId(
 				userId);
 
-		if (mfaTimebasedOTPEntry != null) {
-			_mfaTimebasedOTPEntryLocalService.deleteMFATimebasedOTPEntry(
-				mfaTimebasedOTPEntry);
+		if (mfaTimeBasedOTPEntry != null) {
+			_mfaTimeBasedOTPEntryLocalService.deleteMFATimeBasedOTPEntry(
+				mfaTimeBasedOTPEntry);
 		}
 	}
 
@@ -243,12 +243,12 @@ public class MFATimebasedOTPChecker
 			httpServletRequest, "timebasedOtp");
 
 		try {
-			if (MFATimebasedOTPUtil.verifyTimebasedOTP(
+			if (MFATimeBasedOTPUtil.verifyTimeBasedOTP(
 					Base32.decode(sharedSecret), timebasedOtpValue, _clockSkew,
 					_timeWindow, _digitsCount)) {
 
-				MFATimebasedOTPEntry timebasedOTPEntry =
-					_mfaTimebasedOTPEntryLocalService.addTimebasedOTPEntry(
+				MFATimeBasedOTPEntry timebasedOTPEntry =
+					_mfaTimeBasedOTPEntryLocalService.addTimeBasedOTPEntry(
 						sharedSecret, userId);
 
 				if (timebasedOTPEntry != null) {
@@ -283,7 +283,7 @@ public class MFATimebasedOTPChecker
 			}
 
 			_routeAuditMessage(
-				_mfaTimebasedOTPAuditMessageBuilder.
+				_mfaTimeBasedOTPAuditMessageBuilder.
 					buildNonexistentUserVerificationFailureAuditMessage(
 						CompanyThreadLocal.getCompanyId(), userId,
 						_getClassName()));
@@ -299,7 +299,7 @@ public class MFATimebasedOTPChecker
 			}
 
 			_routeAuditMessage(
-				_mfaTimebasedOTPAuditMessageBuilder.
+				_mfaTimeBasedOTPAuditMessageBuilder.
 					buildMissingSetupUserVerificationFailureAuditMessage(
 						CompanyThreadLocal.getCompanyId(), user,
 						_getClassName()));
@@ -314,7 +314,7 @@ public class MFATimebasedOTPChecker
 			return false;
 		}
 
-		boolean verified = verifyTimebasedOTP(timebasedOtp, user.getUserId());
+		boolean verified = verifyTimeBasedOTP(timebasedOtp, user.getUserId());
 
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
@@ -337,20 +337,20 @@ public class MFATimebasedOTPChecker
 			validatedMap.put("userId", userId);
 			validatedMap.put("validatedAt", validatedAt);
 
-			_mfaTimebasedOTPEntryLocalService.updateAttempts(
+			_mfaTimeBasedOTPEntryLocalService.updateAttempts(
 				userId, userIP, true);
 
 			_routeAuditMessage(
-				_mfaTimebasedOTPAuditMessageBuilder.
+				_mfaTimeBasedOTPAuditMessageBuilder.
 					buildVerificationSuccessAuditMessage(
 						user, _getClassName()));
 		}
 		else {
-			_mfaTimebasedOTPEntryLocalService.updateAttempts(
+			_mfaTimeBasedOTPEntryLocalService.updateAttempts(
 				user.getUserId(), userIP, false);
 
 			_routeAuditMessage(
-				_mfaTimebasedOTPAuditMessageBuilder.
+				_mfaTimeBasedOTPAuditMessageBuilder.
 					buildVerificationFailureAuditMessage(
 						user, _getClassName(),
 						"Incorrect timebased one-time password"));
@@ -363,20 +363,20 @@ public class MFATimebasedOTPChecker
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		MFATimebasedOTPConfiguration mfaTimebasedOTPConfiguration =
+		MFATimeBasedOTPConfiguration mfaTimeBasedOTPConfiguration =
 			ConfigurableUtil.createConfigurable(
-				MFATimebasedOTPConfiguration.class, properties);
+				MFATimeBasedOTPConfiguration.class, properties);
 
-		if (!mfaTimebasedOTPConfiguration.enabled()) {
+		if (!mfaTimeBasedOTPConfiguration.enabled()) {
 			return;
 		}
 
-		_algorithmKeySize = mfaTimebasedOTPConfiguration.algorithmKeySize();
-		_clockSkew = mfaTimebasedOTPConfiguration.clockSkew();
-		_digitsCount = mfaTimebasedOTPConfiguration.digitsCount();
-		_timeWindow = mfaTimebasedOTPConfiguration.timeWindow();
+		_algorithmKeySize = mfaTimeBasedOTPConfiguration.algorithmKeySize();
+		_clockSkew = mfaTimeBasedOTPConfiguration.clockSkew();
+		_digitsCount = mfaTimeBasedOTPConfiguration.digitsCount();
+		_timeWindow = mfaTimeBasedOTPConfiguration.timeWindow();
 		_validationExpirationTime =
-			mfaTimebasedOTPConfiguration.validationExpirationTime();
+			mfaTimeBasedOTPConfiguration.validationExpirationTime();
 
 		if (PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
 			List<String> sessionPhishingProtectedAttributesList =
@@ -433,7 +433,7 @@ public class MFATimebasedOTPChecker
 			}
 
 			_routeAuditMessage(
-				_mfaTimebasedOTPAuditMessageBuilder.
+				_mfaTimeBasedOTPAuditMessageBuilder.
 					buildNonexistentUserVerificationFailureAuditMessage(
 						CompanyThreadLocal.getCompanyId(), userId,
 						_getClassName()));
@@ -443,7 +443,7 @@ public class MFATimebasedOTPChecker
 
 		if (httpSession == null) {
 			_routeAuditMessage(
-				_mfaTimebasedOTPAuditMessageBuilder.
+				_mfaTimeBasedOTPAuditMessageBuilder.
 					buildNotVerifiedAuditMessage(
 						user, _getClassName(), "Empty session"));
 
@@ -455,7 +455,7 @@ public class MFATimebasedOTPChecker
 		if (validatedMap != null) {
 			if (userId != MapUtil.getLong(validatedMap, "userId")) {
 				_routeAuditMessage(
-					_mfaTimebasedOTPAuditMessageBuilder.
+					_mfaTimeBasedOTPAuditMessageBuilder.
 						buildNotVerifiedAuditMessage(
 							user, _getClassName(), "Not the same user"));
 
@@ -464,7 +464,7 @@ public class MFATimebasedOTPChecker
 
 			if (_validationExpirationTime < 0) {
 				_routeAuditMessage(
-					_mfaTimebasedOTPAuditMessageBuilder.
+					_mfaTimeBasedOTPAuditMessageBuilder.
 						buildVerifiedAuditMessage(user, _getClassName()));
 
 				return true;
@@ -476,7 +476,7 @@ public class MFATimebasedOTPChecker
 					System.currentTimeMillis()) {
 
 				_routeAuditMessage(
-					_mfaTimebasedOTPAuditMessageBuilder.
+					_mfaTimeBasedOTPAuditMessageBuilder.
 						buildVerifiedAuditMessage(user, _getClassName()));
 
 				return true;
@@ -484,29 +484,29 @@ public class MFATimebasedOTPChecker
 		}
 
 		_routeAuditMessage(
-			_mfaTimebasedOTPAuditMessageBuilder.buildNotVerifiedAuditMessage(
+			_mfaTimeBasedOTPAuditMessageBuilder.buildNotVerifiedAuditMessage(
 				user, _getClassName(), "Expired verification"));
 
 		return false;
 	}
 
-	protected boolean verifyTimebasedOTP(
+	protected boolean verifyTimeBasedOTP(
 		String timebasedOtpValue, long userId) {
 
-		MFATimebasedOTPEntry mfaTimebasedOTPEntry =
-			_mfaTimebasedOTPEntryLocalService.fetchMFATimebasedOTPEntryByUserId(
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
+			_mfaTimeBasedOTPEntryLocalService.fetchMFATimeBasedOTPEntryByUserId(
 				userId);
 
-		if (mfaTimebasedOTPEntry != null) {
+		if (mfaTimeBasedOTPEntry != null) {
 			try {
-				return MFATimebasedOTPUtil.verifyTimebasedOTP(
-					Base32.decode(mfaTimebasedOTPEntry.getSharedSecret()),
+				return MFATimeBasedOTPUtil.verifyTimeBasedOTP(
+					Base32.decode(mfaTimeBasedOTPEntry.getSharedSecret()),
 					timebasedOtpValue, _clockSkew, _timeWindow, _digitsCount);
 			}
 			catch (Exception exception) {
 				_log.error(
 					StringBundler.concat(
-						"Unable to generate Timebased One-Time password for",
+						"Unable to generate TimeBased One-Time password for",
 						"user ", userId, ": ", exception.getMessage()),
 					exception);
 
@@ -541,7 +541,7 @@ public class MFATimebasedOTPChecker
 
 	private String _getQRCodeLibraryUrl(HttpServletRequest httpServletRequest) {
 		Bundle bundle = FrameworkUtil.getBundle(
-			MFATimebasedOTPConfiguration.class);
+			MFATimeBasedOTPConfiguration.class);
 
 		AbsolutePortalURLBuilder absolutePortalURLBuilder =
 			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
@@ -560,16 +560,16 @@ public class MFATimebasedOTPChecker
 	}
 
 	private void _routeAuditMessage(AuditMessage auditMessage) {
-		if (_mfaTimebasedOTPAuditMessageBuilder != null) {
-			_mfaTimebasedOTPAuditMessageBuilder.routeAuditMessage(auditMessage);
+		if (_mfaTimeBasedOTPAuditMessageBuilder != null) {
+			_mfaTimeBasedOTPAuditMessageBuilder.routeAuditMessage(auditMessage);
 		}
 	}
 
 	private static final String _VALIDATED =
-		MFATimebasedOTPChecker.class.getName() + "#VALIDATED";
+		MFATimeBasedOTPChecker.class.getName() + "#VALIDATED";
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MFATimebasedOTPChecker.class);
+		MFATimeBasedOTPChecker.class);
 
 	@Reference
 	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
@@ -579,11 +579,11 @@ public class MFATimebasedOTPChecker
 	private int _digitsCount;
 
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
-	private MFATimebasedOTPAuditMessageBuilder
-		_mfaTimebasedOTPAuditMessageBuilder;
+	private MFATimeBasedOTPAuditMessageBuilder
+		_mfaTimeBasedOTPAuditMessageBuilder;
 
 	@Reference
-	private MFATimebasedOTPEntryLocalService _mfaTimebasedOTPEntryLocalService;
+	private MFATimeBasedOTPEntryLocalService _mfaTimeBasedOTPEntryLocalService;
 
 	@Reference
 	private Portal _portal;
