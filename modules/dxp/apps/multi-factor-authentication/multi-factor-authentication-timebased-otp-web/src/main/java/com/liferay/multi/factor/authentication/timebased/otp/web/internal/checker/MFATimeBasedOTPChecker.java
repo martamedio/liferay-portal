@@ -108,8 +108,11 @@ public class MFATimeBasedOTPChecker
 			HttpServletResponse httpServletResponse, long userId)
 		throws IOException {
 
+		RequestDispatcher requestDispatcher =
+			_servletContext.getRequestDispatcher("/verify_timebased_otp.jsp");
+
 		try {
-			_requestDispatcher.include(httpServletRequest, httpServletResponse);
+			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
 		catch (ServletException servletException) {
 			throw new IOException(
@@ -395,9 +398,6 @@ public class MFATimeBasedOTPChecker
 				sessionPhishingProtectedAttributesList.toArray(new String[0]);
 		}
 
-		_requestDispatcher = _servletContext.getRequestDispatcher(
-			"/verify_timebased_otp.jsp");
-
 		_serviceRegistration = bundleContext.registerService(
 			new String[] {
 				MFABrowserChecker.class.getName(),
@@ -593,7 +593,6 @@ public class MFATimeBasedOTPChecker
 	@Reference
 	private Portal _portal;
 
-	private RequestDispatcher _requestDispatcher;
 	private ServiceRegistration<?> _serviceRegistration;
 
 	@Reference(
