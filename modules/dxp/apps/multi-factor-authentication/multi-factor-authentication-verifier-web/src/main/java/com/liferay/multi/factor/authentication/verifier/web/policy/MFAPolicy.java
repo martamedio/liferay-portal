@@ -17,6 +17,7 @@ package com.liferay.multi.factor.authentication.verifier.web.policy;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFABrowserChecker;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFAHeadlessChecker;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -41,8 +42,7 @@ public class MFAPolicy {
 		long companyId, long userId) {
 
 		List<MFABrowserChecker> activeMfaBrowserCheckers =
-			_mfaBrowserCheckerServiceTrackerMap.getService(
-				String.valueOf(companyId));
+			_mfaBrowserCheckerServiceTrackerMap.getService(companyId);
 
 		Stream<MFABrowserChecker> stream = activeMfaBrowserCheckers.stream();
 
@@ -78,7 +78,7 @@ public class MFAPolicy {
 	public boolean isMFAEnabled(long companyId) {
 		return !ListUtil.isEmpty(
 			_mfaBrowserCheckerServiceTrackerMap.getService(
-				String.valueOf(companyId)));
+				companyId));
 	}
 
 	@Activate
@@ -86,23 +86,17 @@ public class MFAPolicy {
 		_mfaBrowserCheckerServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, MFABrowserChecker.class, "(companyId=*)",
-				(serviceReference, emitter) -> emitter.emit(
-					GetterUtil.getLong(
-						serviceReference.getProperty("companyId"))));
+				new PropertyServiceReferenceMapper<>("companyId"));
 
 		_mfaHeadlessCheckerServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, MFAHeadlessChecker.class, "(companyId=*)",
-				(serviceReference, emitter) -> emitter.emit(
-					GetterUtil.getLong(
-						serviceReference.getProperty("companyId"))));
+				new PropertyServiceReferenceMapper<>("companyId"));
 
 		_mfaSetupCheckerServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, MFASetupChecker.class, "(companyId=*)",
-				(serviceReference, emitter) -> emitter.emit(
-					GetterUtil.getLong(
-						serviceReference.getProperty("companyId"))));
+				new PropertyServiceReferenceMapper<>("companyId"));
 	}
 
 	@Deactivate
