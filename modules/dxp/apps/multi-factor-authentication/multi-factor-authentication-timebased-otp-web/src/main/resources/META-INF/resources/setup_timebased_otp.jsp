@@ -17,20 +17,20 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String algorithm = GetterUtil.getString(request.getAttribute("mfaTimeBasedOTPAlgorithm"));
-String companyName = GetterUtil.getString(request.getAttribute("companyName"));
-String sharedSecret = (String)request.getAttribute("sharedSecret");
+String algorithm = GetterUtil.getString(request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_ALGORITHM));
+String companyName = GetterUtil.getString(request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_COMPANY_NAME));
+String sharedSecret = (String)request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET);
 
-int digits = GetterUtil.getInteger(request.getAttribute("mfaTimeBasedOTPDigits"));
-int timeWindow = GetterUtil.getInteger(request.getAttribute("mfaTimeBasedOTPTimeWindow"));
+int digits = GetterUtil.getInteger(request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS));
+int timeWindow = GetterUtil.getInteger(request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_TIME_WINDOW));
 
-User mfaUser = (User)request.getAttribute("mfaUser");
+User mfaUser = (User)request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_USER);
 
-String qrCodeLibraryUrl = (String)request.getAttribute("qrCodeLibraryUrl");
+String qrCodeLibraryUrl = (String)request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_QRCODE_LIBRARY);
 %>
 
 <div class="sheet-section">
-	<aui:input name="sharedSecret" type="hidden" value="<%= sharedSecret %>" />
+	<aui:input name="MFA_TIME_BASED_OTP_SHARED_SECRET" type="hidden" value="<%= sharedSecret %>" />
 
 	<aui:input name="userId" type="hidden" value="<%= mfaUser.getUserId() %>" />
 
@@ -38,7 +38,7 @@ String qrCodeLibraryUrl = (String)request.getAttribute("qrCodeLibraryUrl");
 		<liferay-ui:message key="user-account-setup-description" />
 	</div>
 
-	<aui:input label="mfa-timebased-otp" name="timebasedOtp" showRequiredLabel="yes" />
+	<aui:input label="mfa-timebased-otp" name="MFA_TIME_BASED_OTP_VALUE" showRequiredLabel="yes" />
 
 	<div id="<portlet:namespace/>qrcode"></div>
 </div>

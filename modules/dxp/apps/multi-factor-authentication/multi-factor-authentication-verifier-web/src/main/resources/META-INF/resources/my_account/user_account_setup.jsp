@@ -17,12 +17,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String screenNavigationCategoryKey = ParamUtil.getString(request, "screenNavigationCategoryKey");
-String screenNavigationEntryKey = ParamUtil.getString(request, "screenNavigationEntryKey");
-
-long userId = user.getUserId();
-
+String label = (String)request.getAttribute(MFAWebKeys.MFA_USER_ACCOUNT_LABEL);
 MFASetupChecker mfaSetupChecker = (MFASetupChecker)request.getAttribute(MFASetupChecker.class.getName());
+long userId = user.getUserId();
 %>
 
 <portlet:actionURL name="/my_account/setup_mfa" var="actionURL">
@@ -31,12 +28,10 @@ MFASetupChecker mfaSetupChecker = (MFASetupChecker)request.getAttribute(MFASetup
 
 <aui:form action="<%= actionURL %>" cssClass="portlet-users-admin-edit-user" data-senna-off="true" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
-	<aui:input name="screenNavigationCategoryKey" type="hidden" value="<%= screenNavigationCategoryKey %>" />
-	<aui:input name="screenNavigationEntryKey" type="hidden" value="<%= screenNavigationEntryKey %>" />
 
 	<div class="sheet sheet-lg">
 		<div class="sheet-header">
-			<h1 class="sheet-title"><liferay-ui:message key="<%= HtmlUtil.escape(mfaSetupChecker.getSetupLabelConfigurationKey(locale)) %>" /></h1>
+			<h1 class="sheet-title"><%= label %></h1>
 		</div>
 
 		<liferay-ui:error key="userAccountSetupFailed" message="user-account-setup-failed" />

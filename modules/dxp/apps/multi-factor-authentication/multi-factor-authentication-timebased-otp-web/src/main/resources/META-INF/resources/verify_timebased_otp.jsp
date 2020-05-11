@@ -20,4 +20,4 @@
 	<liferay-ui:message key="please-enter-your-verification-code" />:
 </h3>
 
-<aui:input label="mfa-timebased-otp" name="timebasedOtp" showRequiredLabel="yes" />
+<aui:input label="mfa-timebased-otp" name="timeBasedOtp" showRequiredLabel="yes" />

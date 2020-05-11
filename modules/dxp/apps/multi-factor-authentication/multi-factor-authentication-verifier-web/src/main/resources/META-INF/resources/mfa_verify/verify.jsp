@@ -17,14 +17,12 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String redirect = ParamUtil.getString(request, "redirect");
-
 List<MFABrowserChecker> availableBrowserCheckers = (List<MFABrowserChecker>)request.getAttribute(MFAWebKeys.MFA_AVAILABLE_CHECKERS);
 MFABrowserChecker mfaBrowserChecker = (MFABrowserChecker)request.getAttribute(MFAWebKeys.MFA_CHECKER);
-
 int mfaCheckerIndex = ParamUtil.getInteger(request, "mfaCheckerIndex");
-
 long mfaUserId = (Long)request.getAttribute(MFAWebKeys.MFA_USER_ID);
+
+String redirect = ParamUtil.getString(request, "redirect");
 %>
 
 <portlet:actionURL name="/mfa_verify/verify" var="verifyURL">

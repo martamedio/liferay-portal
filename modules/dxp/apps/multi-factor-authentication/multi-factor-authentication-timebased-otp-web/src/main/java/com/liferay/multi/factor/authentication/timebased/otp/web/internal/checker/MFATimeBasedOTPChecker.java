@@ -147,21 +147,25 @@ public class MFATimeBasedOTPChecker
 				Company company = _portal.getCompany(httpServletRequest);
 
 				httpServletRequest.setAttribute(
-					"companyName", company.getName());
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_COMPANY_NAME,
+					company.getName());
 
 				httpServletRequest.setAttribute(
-					"mfaTimeBasedOTPAlgorithm",
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_ALGORITHM,
 					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_ALGORITHM);
 				httpServletRequest.setAttribute(
-					"mfaTimeBasedOTPDigits", _digitsCount);
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS,
+					_digitsCount);
 				httpServletRequest.setAttribute(
-					"mfaTimeBasedOTPTimeWindow", _timeWindow);
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_TIME_WINDOW,
+					_timeWindow);
 
 				httpServletRequest.setAttribute(
-					"mfaUser", _userLocalService.fetchUserById(userId));
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_USER,
+					_userLocalService.fetchUserById(userId));
 
 				httpServletRequest.setAttribute(
-					"qrCodeLibraryUrl",
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_QRCODE_LIBRARY,
 					_getQRCodeLibraryUrl(httpServletRequest));
 
 				RequestDispatcher requestDispatcher =
@@ -232,10 +236,12 @@ public class MFATimeBasedOTPChecker
 
 		HttpSession session = originalHttpServletRequest.getSession();
 
-		String sharedSecret = (String)session.getAttribute("sharedSecret");
+		String sharedSecret = (String)session.getAttribute(
+			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET);
 
 		String timeBasedOtpValue = ParamUtil.getString(
-			httpServletRequest, "timeBasedOtp");
+			httpServletRequest,
+			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALUE);
 
 		try {
 			if (MFATimeBasedOTPUtil.verifyTimeBasedOTP(
