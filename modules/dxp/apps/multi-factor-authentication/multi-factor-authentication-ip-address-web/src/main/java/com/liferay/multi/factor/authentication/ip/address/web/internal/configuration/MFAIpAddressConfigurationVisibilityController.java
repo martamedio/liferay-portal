@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.otp.web.internal.configuration;
+package com.liferay.multi.factor.authentication.ip.address.web.internal.configuration;
 
 import com.liferay.configuration.admin.display.ConfigurationVisibilityController;
 import com.liferay.multi.factor.authentication.verifier.web.policy.MFAPolicy;
@@ -29,10 +29,10 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	immediate = true,
-	property = "configuration.pid=com.liferay.multi.factor.authentication.ip.otp.web.internal.configuration.MFAIpOTPConfiguration",
+	property = "configuration.pid=com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfigurationcom.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration",
 	service = ConfigurationVisibilityController.class
 )
-public class MFAIpOTPConfigurationVisibilityController
+public class MFAIpAddressConfigurationVisibilityController
 	implements ConfigurationVisibilityController {
 
 	@Override

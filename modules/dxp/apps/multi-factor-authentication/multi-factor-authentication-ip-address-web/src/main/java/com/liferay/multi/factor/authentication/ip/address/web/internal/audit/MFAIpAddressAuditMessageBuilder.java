@@ -12,9 +12,9 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.otp.web.internal.audit;
+package com.liferay.multi.factor.authentication.ip.address.web.internal.audit;
 
-import com.liferay.multi.factor.authentication.ip.otp.web.internal.constants.MFAIpOTPEventTypes;
+import com.liferay.multi.factor.authentication.ip.address.web.internal.constants.MFAIpAddressEventTypes;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
@@ -29,14 +29,14 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marta Medio
  */
-@Component(service = MFAIpOTPAuditMessageBuilder.class)
-public class MFAIpOTPAuditMessageBuilder {
+@Component(service = MFAIpAddressAuditMessageBuilder.class)
+public class MFAIpAddressAuditMessageBuilder {
 
 	public AuditMessage buildNonexistentUserVerificationFailureAuditMessage(
 		long companyId, long userId, String checkerClassName) {
 
 		return new AuditMessage(
-			MFAIpOTPEventTypes.MFA_IP_OTP_VERIFICATION_FAILURE, companyId,
+			MFAIpAddressEventTypes.MFA_IP_OTP_VERIFICATION_FAILURE, companyId,
 			userId, "Nonexistent", checkerClassName, String.valueOf(userId),
 			null, JSONUtil.put("reason", "Nonexistent User"));
 	}
@@ -45,7 +45,7 @@ public class MFAIpOTPAuditMessageBuilder {
 		User user, String checkerClassName, String reason) {
 
 		return new AuditMessage(
-			MFAIpOTPEventTypes.MFA_IP_OTP_VERIFICATION_FAILURE,
+			MFAIpAddressEventTypes.MFA_IP_OTP_VERIFICATION_FAILURE,
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null,
 			JSONUtil.put("reason", reason));
@@ -55,7 +55,7 @@ public class MFAIpOTPAuditMessageBuilder {
 		User user, String checkerClassName) {
 
 		return new AuditMessage(
-			MFAIpOTPEventTypes.MFA_IP_OTP_VERIFICATION_SUCCESS,
+			MFAIpAddressEventTypes.MFA_IP_OTP_VERIFICATION_SUCCESS,
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null, null);
 	}
@@ -77,7 +77,7 @@ public class MFAIpOTPAuditMessageBuilder {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MFAIpOTPAuditMessageBuilder.class);
+		MFAIpAddressAuditMessageBuilder.class);
 
 	@Reference
 	private AuditRouter _auditRouter;

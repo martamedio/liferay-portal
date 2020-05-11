@@ -12,10 +12,10 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.otp.web.internal.checker;
+package com.liferay.multi.factor.authentication.ip.address.web.internal.checker;
 
-import com.liferay.multi.factor.authentication.ip.otp.web.internal.audit.MFAIpOTPAuditMessageBuilder;
-import com.liferay.multi.factor.authentication.ip.otp.web.internal.configuration.MFAIpOTPConfiguration;
+import com.liferay.multi.factor.authentication.ip.address.web.internal.audit.MFAIpAddressAuditMessageBuilder;
+import com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFAHeadlessChecker;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
@@ -47,10 +47,10 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
  * @author Marta Medio
  */
 @Component(
-	configurationPid = "com.liferay.multi.factor.authentication.ip.otp.web.internal.configuration.MFAIpOTPConfiguration.scoped",
+	configurationPid = "com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration.scoped",
 	configurationPolicy = ConfigurationPolicy.OPTIONAL, service = {}
 )
-public class MFAIpOTPChecker implements MFAHeadlessChecker {
+public class MFAIpAddressChecker implements MFAHeadlessChecker {
 
 	@Override
 	public boolean verifyHeadlessRequest(
@@ -65,7 +65,7 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 			}
 
 			_routeAuditMessage(
-				_mfaIpOTPAuditMessageBuilder.
+				_mfaIpAddressAuditMessageBuilder.
 					buildNonexistentUserVerificationFailureAuditMessage(
 						CompanyThreadLocal.getCompanyId(), userId,
 						_getClassName()));
@@ -77,7 +77,7 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 				httpServletRequest, _allowedIPsWithMasks)) {
 
 			_routeAuditMessage(
-				_mfaIpOTPAuditMessageBuilder.
+				_mfaIpAddressAuditMessageBuilder.
 					buildVerificationSuccessAuditMessage(
 						user, _getClassName()));
 
@@ -85,8 +85,9 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 		}
 
 		_routeAuditMessage(
-			_mfaIpOTPAuditMessageBuilder.buildVerificationFailureAuditMessage(
-				user, _getClassName(), "Ip not allowed"));
+			_mfaIpAddressAuditMessageBuilder.
+				buildVerificationFailureAuditMessage(
+					user, _getClassName(), "Ip not allowed"));
 
 		return false;
 	}
@@ -95,16 +96,16 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		MFAIpOTPConfiguration mfaIpOTPConfiguration =
+		MFAIpAddressConfiguration mfaIpAddressConfiguration =
 			ConfigurableUtil.createConfigurable(
-				MFAIpOTPConfiguration.class, properties);
+				MFAIpAddressConfiguration.class, properties);
 
-		if (!mfaIpOTPConfiguration.enabled()) {
+		if (!mfaIpAddressConfiguration.enabled()) {
 			return;
 		}
 
 		_allowedIPsWithMasks = new HashSet<>(
-			Arrays.asList(mfaIpOTPConfiguration.allowedIPsWithMasks()));
+			Arrays.asList(mfaIpAddressConfiguration.allowedIPsWithMasks()));
 
 		_serviceRegistration = bundleContext.registerService(
 			MFAHeadlessChecker.class, this,
@@ -127,18 +128,18 @@ public class MFAIpOTPChecker implements MFAHeadlessChecker {
 	}
 
 	private void _routeAuditMessage(AuditMessage auditMessage) {
-		if (_mfaIpOTPAuditMessageBuilder != null) {
-			_mfaIpOTPAuditMessageBuilder.routeAuditMessage(auditMessage);
+		if (_mfaIpAddressAuditMessageBuilder != null) {
+			_mfaIpAddressAuditMessageBuilder.routeAuditMessage(auditMessage);
 		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MFAIpOTPChecker.class);
+		MFAIpAddressChecker.class);
 
 	private Set<String> _allowedIPsWithMasks;
 
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
-	private MFAIpOTPAuditMessageBuilder _mfaIpOTPAuditMessageBuilder;
+	private MFAIpAddressAuditMessageBuilder _mfaIpAddressAuditMessageBuilder;
 
 	private ServiceRegistration<MFAHeadlessChecker> _serviceRegistration;
 

@@ -12,9 +12,9 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.otp.web.internal.settings.definition;
+package com.liferay.multi.factor.authentication.ip.address.web.internal.settings.definition;
 
-import com.liferay.multi.factor.authentication.ip.otp.web.internal.configuration.MFAIpOTPConfiguration;
+import com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration;
 import com.liferay.portal.kernel.settings.definition.ConfigurationBeanDeclaration;
 
 import org.osgi.service.component.annotations.Component;
@@ -23,12 +23,12 @@ import org.osgi.service.component.annotations.Component;
  * @author Marta Medio
  */
 @Component(service = ConfigurationBeanDeclaration.class)
-public class MFAIpOTPCompanyConfigurationBeanDeclaration
+public class MFAIpAddressCompanyConfigurationBeanDeclaration
 	implements ConfigurationBeanDeclaration {
 
 	@Override
 	public Class<?> getConfigurationBeanClass() {
-		return MFAIpOTPConfiguration.class;
+		return MFAIpAddressConfiguration.class;
 	}
 
 }

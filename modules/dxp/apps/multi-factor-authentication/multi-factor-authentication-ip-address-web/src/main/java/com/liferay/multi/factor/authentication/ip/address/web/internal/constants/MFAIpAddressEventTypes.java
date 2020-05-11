@@ -12,12 +12,12 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.otp.web.internal.constants;
+package com.liferay.multi.factor.authentication.ip.address.web.internal.constants;
 
 /**
  * @author Marta Medio
  */
-public interface MFAIpOTPEventTypes {
+public interface MFAIpAddressEventTypes {
 
 	public static final String MFA_IP_OTP_VERIFICATION_FAILURE =
 		"MFA_IP_OTP_VERIFICATION_FAILURE";
