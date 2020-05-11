@@ -77,8 +77,7 @@ public class MFAPolicy {
 
 	public boolean isMFAEnabled(long companyId) {
 		return !ListUtil.isEmpty(
-			_mfaBrowserCheckerServiceTrackerMap.getService(
-				companyId));
+			_mfaBrowserCheckerServiceTrackerMap.getService(companyId));
 	}
 
 	@Activate
