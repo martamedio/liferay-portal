@@ -16,6 +16,8 @@ package com.liferay.multi.factor.authentication.verifier.web.internal.portlet.ac
 
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
 import com.liferay.multi.factor.authentication.verifier.web.policy.MFAPolicy;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -55,10 +57,12 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 			_mfaPolicy.getMFASetupChecker(_portal.getCompanyId(actionRequest));
 
 		if (!optionalMfaSetupChecker.isPresent()) {
-			//TODO: log
+			_log.error(
+				"Unable to generate user account setup for Multi-Factor " +
+					"Authentication: Setup verifier not present");
 
 			return;
-		};
+		}
 
 		MFASetupChecker mfaSetupChecker = optionalMfaSetupChecker.get();
 
@@ -92,6 +96,9 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 			SessionErrors.add(actionRequest, "userAccountSetupFailed");
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		MFAUserAccountSetupMVCActionCommand.class);
 
 	@Reference
 	private MFAPolicy _mfaPolicy;
