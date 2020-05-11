@@ -18,11 +18,14 @@ import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
 import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.ResourceBundleLoaderUtil;
 
 import java.util.Dictionary;
 
 import javax.servlet.ServletContext;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -80,10 +83,17 @@ public class UserAccountSetupMFACheckerTracker {
 
 			dictionary.put("screen.navigation.entry.order", name.hashCode());
 
+			Bundle bundle = reference.getBundle();
+
+			ResourceBundleLoader resourceBundleLoader =
+				ResourceBundleLoaderUtil.
+					getResourceBundleLoaderByBundleSymbolicName(
+						bundle.getSymbolicName());
+
 			UserAccountSetupMFAScreenNavigationEntry
 				userAccountSetupMFAScreenNavigationEntry =
 					new UserAccountSetupMFAScreenNavigationEntry(
-						mfaSetupChecker);
+						mfaSetupChecker, resourceBundleLoader);
 
 			userAccountSetupMFAScreenNavigationEntry.setServletContext(
 				_servletContext);

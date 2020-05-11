@@ -16,8 +16,6 @@ package com.liferay.multi.factor.authentication.verifier.spi.checker;
 
 import java.io.IOException;
 
-import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,10 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 public interface MFASetupChecker extends MFAChecker {
 
 	public String getName();
-
-	/* Let's try to generalize this like we do in OAuth2 scope descriptors or
-	application descriptors*/
-	public String getSetupLabelConfigurationKey(Locale locale);
 
 	public void includeSetup(
 			HttpServletRequest httpServletRequest,

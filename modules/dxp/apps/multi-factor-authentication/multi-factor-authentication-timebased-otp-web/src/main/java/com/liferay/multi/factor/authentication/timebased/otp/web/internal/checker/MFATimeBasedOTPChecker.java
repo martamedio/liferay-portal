@@ -90,16 +90,7 @@ public class MFATimeBasedOTPChecker
 
 	@Override
 	public String getName() {
-		return MFATimeBasedOTPConfiguration.class.getName();
-	}
-
-	@Override
-	public String getSetupLabelConfigurationKey(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", locale, getClass());
-
-		return LanguageUtil.get(
-			resourceBundle, "mfa-timebased-otp-configuration-name");
+		return MFATimeBasedOTPConfiguration.class.getSimpleName();
 	}
 
 	@Override

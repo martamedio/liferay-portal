@@ -17,7 +17,11 @@ package com.liferay.multi.factor.authentication.verifier.web.internal.settings;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
 import com.liferay.multi.factor.authentication.verifier.web.internal.constants.MFAPortletKeys;
+import com.liferay.multi.factor.authentication.verifier.web.internal.constants.MFAWebKeys;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.users.admin.constants.UserScreenNavigationEntryConstants;
 
 import java.io.IOException;
@@ -37,9 +41,11 @@ public class UserAccountSetupMFAScreenNavigationEntry
 	implements ScreenNavigationEntry<User> {
 
 	public UserAccountSetupMFAScreenNavigationEntry(
-		MFASetupChecker mfaSetupChecker) {
+		MFASetupChecker mfaSetupChecker,
+		ResourceBundleLoader resourceBundleLoader) {
 
 		_mfaSetupChecker = mfaSetupChecker;
+		_resourceBundleLoader = resourceBundleLoader;
 	}
 
 	@Override
@@ -54,7 +60,14 @@ public class UserAccountSetupMFAScreenNavigationEntry
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _mfaSetupChecker.getSetupLabelConfigurationKey(locale);
+		String key =
+			_USER_SETUP_MFA_SCREEN_NAVIGATION_KEY_NAME +
+				_mfaSetupChecker.getName();
+
+		return GetterUtil.getString(
+			ResourceBundleUtil.getString(
+				_resourceBundleLoader.loadResourceBundle(locale), key),
+			key);
 	}
 
 	@Override
@@ -81,11 +94,8 @@ public class UserAccountSetupMFAScreenNavigationEntry
 			MFASetupChecker.class.getName(), _mfaSetupChecker);
 
 		httpServletRequest.setAttribute(
-			"label", getLabel(httpServletRequest.getLocale()));
-		httpServletRequest.setAttribute(
-			"screenNavigationCategoryKey", getCategoryKey());
-		httpServletRequest.setAttribute(
-			"screenNavigationEntryKey", getEntryKey());
+			MFAWebKeys.MFA_USER_ACCOUNT_LABEL,
+			getLabel(httpServletRequest.getLocale()));
 
 		RequestDispatcher requestDispatcher =
 			_servletContext.getRequestDispatcher(
@@ -105,7 +115,11 @@ public class UserAccountSetupMFAScreenNavigationEntry
 		_servletContext = servletContext;
 	}
 
+	private static final String _USER_SETUP_MFA_SCREEN_NAVIGATION_KEY_NAME =
+		"user-account-setup-mfa-screen-navigation_";
+
 	private final MFASetupChecker _mfaSetupChecker;
+	private final ResourceBundleLoader _resourceBundleLoader;
 	private ServletContext _servletContext;
 
 }
