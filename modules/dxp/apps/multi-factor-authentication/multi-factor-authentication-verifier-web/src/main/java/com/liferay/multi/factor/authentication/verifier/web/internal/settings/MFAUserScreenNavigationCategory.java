@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Component;
 	property = "screen.navigation.category.order:Integer=40",
 	service = {ScreenNavigationCategory.class, ScreenNavigationEntry.class}
 )
-public class MFAScreenNavigationCategory
+public class MFAUserScreenNavigationCategory
 	implements ScreenNavigationCategory, ScreenNavigationEntry<User> {
 
 	@Override
