@@ -69,14 +69,10 @@ public class UserAccountSetupMFACheckerTracker {
 
 		@Override
 		public ServiceRegistration<ScreenNavigationEntry> addingService(
-			ServiceReference<MFASetupChecker> reference) {
+			ServiceReference<MFASetupChecker> serviceReference) {
 
 			MFASetupChecker mfaSetupChecker = _bundleContext.getService(
-				reference);
-
-			Dictionary<String, Object> dictionary = new HashMapDictionary<>();
-
-			dictionary.put("screen.navigation.entry.order", Integer.MAX_VALUE);
+				serviceReference);
 
 			UserAccountSetupMFAScreenNavigationEntry
 				userAccountSetupMFAScreenNavigationEntry =
@@ -88,27 +84,47 @@ public class UserAccountSetupMFACheckerTracker {
 
 			return _bundleContext.registerService(
 				ScreenNavigationEntry.class,
-				userAccountSetupMFAScreenNavigationEntry, dictionary);
+				userAccountSetupMFAScreenNavigationEntry,
+				_buildProperties(mfaSetupChecker));
 		}
 
 		@Override
 		public void modifiedService(
-			ServiceReference<MFASetupChecker> reference,
-			ServiceRegistration<ScreenNavigationEntry> service) {
+			ServiceReference<MFASetupChecker> serviceReference,
+			ServiceRegistration<ScreenNavigationEntry> serviceRegistration) {
 
-			removedService(reference, service);
+			MFASetupChecker mfaSetupChecker = _bundleContext.getService(
+				serviceReference);
 
-			addingService(reference);
+			try {
+				serviceRegistration.setProperties(
+					_buildProperties(mfaSetupChecker));
+			}
+			finally {
+				_bundleContext.ungetService(serviceReference);
+			}
 		}
 
 		@Override
 		public void removedService(
-			ServiceReference<MFASetupChecker> reference,
-			ServiceRegistration<ScreenNavigationEntry> service) {
+			ServiceReference<MFASetupChecker> serviceReference,
+			ServiceRegistration<ScreenNavigationEntry> serviceRegistration) {
 
-			service.unregister();
+			serviceRegistration.unregister();
 
-			_bundleContext.ungetService(reference);
+			_bundleContext.ungetService(serviceReference);
+		}
+
+		private Dictionary<String, Object> _buildProperties(
+			MFASetupChecker mfaSetupChecker) {
+
+			Dictionary<String, Object> dictionary = new HashMapDictionary<>();
+
+			String name = mfaSetupChecker.getName();
+
+			dictionary.put("screen.navigation.entry.order", name.hashCode());
+
+			return dictionary;
 		}
 
 	}
