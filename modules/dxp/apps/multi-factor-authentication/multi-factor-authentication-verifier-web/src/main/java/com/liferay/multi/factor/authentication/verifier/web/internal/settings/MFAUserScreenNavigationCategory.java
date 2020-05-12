@@ -54,10 +54,9 @@ public class MFAUserScreenNavigationCategory
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", locale, getClass());
-
-		return LanguageUtil.get(resourceBundle, getCategoryKey());
+		return LanguageUtil.get(
+			ResourceBundleUtil.getBundle(
+				"content.Language", locale, getClass()), getCategoryKey());
 	}
 
 	@Override
