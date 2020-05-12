@@ -124,11 +124,31 @@ public class MFATimeBasedOTPChecker
 					httpServletRequest, httpServletResponse);
 			}
 			else {
+				Company company = _portal.getCompany(httpServletRequest);
+
 				String sharedSecret = _generateSharedSecret();
 
 				httpServletRequest.setAttribute(
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_ALGORITHM,
+					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_ALGORITHM);
+				httpServletRequest.setAttribute(
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_COMPANY_NAME,
+					company.getName());
+				httpServletRequest.setAttribute(
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS,
+					_digitsCount);
+				httpServletRequest.setAttribute(
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_QRCODE_LIBRARY,
+					_getQRCodeLibraryUrl(httpServletRequest));
+				httpServletRequest.setAttribute(
 					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
 					sharedSecret);
+				httpServletRequest.setAttribute(
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_TIME_WINDOW,
+					_timeWindow);
+				httpServletRequest.setAttribute(
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_USER,
+					_userLocalService.fetchUserById(userId));
 
 				HttpServletRequest originalHttpServletRequest =
 					_portal.getOriginalServletRequest(httpServletRequest);
@@ -138,30 +158,6 @@ public class MFATimeBasedOTPChecker
 				session.setAttribute(
 					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
 					sharedSecret);
-
-				Company company = _portal.getCompany(httpServletRequest);
-
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_COMPANY_NAME,
-					company.getName());
-
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_ALGORITHM,
-					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_ALGORITHM);
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS,
-					_digitsCount);
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_TIME_WINDOW,
-					_timeWindow);
-
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_USER,
-					_userLocalService.fetchUserById(userId));
-
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_QRCODE_LIBRARY,
-					_getQRCodeLibraryUrl(httpServletRequest));
 
 				RequestDispatcher requestDispatcher =
 					_servletContext.getRequestDispatcher(
