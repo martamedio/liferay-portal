@@ -60,9 +60,8 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 
 		User user = userLocalService.getUserById(userId);
 
-		long entryId = counterLocalService.increment();
-
-		mfaTimeBasedOTPEntry = mfaTimeBasedOTPEntryPersistence.create(entryId);
+		mfaTimeBasedOTPEntry = mfaTimeBasedOTPEntryPersistence.create(
+			counterLocalService.increment());
 
 		mfaTimeBasedOTPEntry.setCompanyId(user.getCompanyId());
 		mfaTimeBasedOTPEntry.setUserId(userId);
