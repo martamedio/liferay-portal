@@ -30,7 +30,7 @@ String qrCodeLibraryUrl = (String)request.getAttribute(MFATimeBasedOTPWebKeys.MF
 %>
 
 <div class="sheet-section">
-	<aui:input name="MFA_TIME_BASED_OTP_SHARED_SECRET" type="hidden" value="<%= sharedSecret %>" />
+	<aui:input name="sharedSecret" type="hidden" value="<%= sharedSecret %>" />
 
 	<aui:input name="userId" type="hidden" value="<%= mfaUser.getUserId() %>" />
 
@@ -38,7 +38,7 @@ String qrCodeLibraryUrl = (String)request.getAttribute(MFATimeBasedOTPWebKeys.MF
 		<liferay-ui:message key="user-account-setup-description" />
 	</div>
 
-	<aui:input label="mfa-timebased-otp" name="MFA_TIME_BASED_OTP_VALUE" showRequiredLabel="yes" />
+	<aui:input label="mfa-timebased-otp" name="timebasedOtp" showRequiredLabel="yes" />
 
 	<div id="<portlet:namespace/>qrcode"></div>
 </div>
