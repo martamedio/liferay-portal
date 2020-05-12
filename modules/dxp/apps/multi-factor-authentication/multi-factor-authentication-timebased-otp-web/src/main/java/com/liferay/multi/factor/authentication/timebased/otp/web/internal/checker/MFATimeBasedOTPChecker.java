@@ -199,9 +199,7 @@ public class MFATimeBasedOTPChecker
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
-		HttpSession session = originalHttpServletRequest.getSession(false);
-
-		if (isVerified(session, userId)) {
+		if (isVerified(originalHttpServletRequest.getSession(false), userId)) {
 			return true;
 		}
 
@@ -230,14 +228,13 @@ public class MFATimeBasedOTPChecker
 		String sharedSecret = (String)session.getAttribute(
 			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET);
 
-		String timeBasedOtpValue = ParamUtil.getString(
-			httpServletRequest,
-			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALUE);
-
 		try {
 			if (MFATimeBasedOTPUtil.verifyTimeBasedOTP(
-					Base32.decode(sharedSecret), timeBasedOtpValue, _clockSkew,
-					_timeWindow, _digitsCount)) {
+					Base32.decode(sharedSecret),
+				ParamUtil.getString(
+					httpServletRequest,
+					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALUE),
+				_clockSkew, _timeWindow, _digitsCount)) {
 
 				MFATimeBasedOTPEntry timeBasedOTPEntry =
 					_mfaTimeBasedOTPEntryLocalService.addTimeBasedOTPEntry(
