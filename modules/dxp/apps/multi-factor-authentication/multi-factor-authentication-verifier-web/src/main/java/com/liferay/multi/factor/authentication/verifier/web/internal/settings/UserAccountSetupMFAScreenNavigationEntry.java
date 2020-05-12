@@ -45,9 +45,10 @@ public class UserAccountSetupMFAScreenNavigationEntry
 	implements ScreenNavigationEntry<User> {
 
 	public UserAccountSetupMFAScreenNavigationEntry(
-		MFASetupChecker mfaSetupChecker) {
+		MFASetupChecker mfaSetupChecker, ServletContext servletContext) {
 
 		_mfaSetupChecker = mfaSetupChecker;
+		_servletContext = servletContext;
 	}
 
 	@Override
@@ -120,10 +121,6 @@ public class UserAccountSetupMFAScreenNavigationEntry
 				"Unable to render /my_account/user_account_setup.jsp",
 				servletException);
 		}
-	}
-
-	public void setServletContext(ServletContext servletContext) {
-		_servletContext = servletContext;
 	}
 
 	private final MFASetupChecker _mfaSetupChecker;
