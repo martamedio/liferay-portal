@@ -17,6 +17,7 @@ package com.liferay.multi.factor.authentication.verifier.web.internal.settings;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.multi.factor.authentication.verifier.spi.checker.MFASetupChecker;
 import com.liferay.osgi.util.ServiceTrackerFactory;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.util.Dictionary;
@@ -85,7 +86,7 @@ public class UserAccountSetupMFACheckerTracker {
 			return _bundleContext.registerService(
 				ScreenNavigationEntry.class,
 				userAccountSetupMFAScreenNavigationEntry,
-				_buildProperties(mfaSetupChecker));
+				_buildProperties(serviceReference));
 		}
 
 		@Override
@@ -93,16 +94,8 @@ public class UserAccountSetupMFACheckerTracker {
 			ServiceReference<MFASetupChecker> serviceReference,
 			ServiceRegistration<ScreenNavigationEntry> serviceRegistration) {
 
-			MFASetupChecker mfaSetupChecker = _bundleContext.getService(
-				serviceReference);
-
-			try {
-				serviceRegistration.setProperties(
-					_buildProperties(mfaSetupChecker));
-			}
-			finally {
-				_bundleContext.ungetService(serviceReference);
-			}
+			serviceRegistration.setProperties(
+				_buildProperties(serviceReference));
 		}
 
 		@Override
@@ -116,13 +109,16 @@ public class UserAccountSetupMFACheckerTracker {
 		}
 
 		private Dictionary<String, Object> _buildProperties(
-			MFASetupChecker mfaSetupChecker) {
+			ServiceReference<MFASetupChecker> serviceReference) {
 
 			Dictionary<String, Object> dictionary = new HashMapDictionary<>();
 
-			String name = mfaSetupChecker.getName();
-
-			dictionary.put("screen.navigation.entry.order", name.hashCode());
+			dictionary.put(
+				"screen.navigation.entry.order",
+				GetterUtil.getInteger(
+					serviceReference.getProperty(
+						"user.account.screen.navigation.entry.order"),
+					Integer.MAX_VALUE));
 
 			return dictionary;
 		}
