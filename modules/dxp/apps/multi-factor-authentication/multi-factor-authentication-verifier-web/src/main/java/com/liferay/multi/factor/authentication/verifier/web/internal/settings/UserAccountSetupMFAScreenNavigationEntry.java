@@ -21,6 +21,7 @@ import com.liferay.multi.factor.authentication.verifier.web.internal.constants.M
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.users.admin.constants.UserScreenNavigationEntryConstants;
 
@@ -34,6 +35,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+
 /**
  * @author Marta Medio
  */
@@ -41,11 +45,9 @@ public class UserAccountSetupMFAScreenNavigationEntry
 	implements ScreenNavigationEntry<User> {
 
 	public UserAccountSetupMFAScreenNavigationEntry(
-		MFASetupChecker mfaSetupChecker,
-		ResourceBundleLoader resourceBundleLoader) {
+		MFASetupChecker mfaSetupChecker) {
 
 		_mfaSetupChecker = mfaSetupChecker;
-		_resourceBundleLoader = resourceBundleLoader;
 	}
 
 	@Override
@@ -55,19 +57,28 @@ public class UserAccountSetupMFAScreenNavigationEntry
 
 	@Override
 	public String getEntryKey() {
-		return _mfaSetupChecker.getName();
+		Class<? extends MFASetupChecker> clazz = _mfaSetupChecker.getClass();
+
+		return clazz.getName();
 	}
 
 	@Override
 	public String getLabel(Locale locale) {
-		String key =
-			_USER_SETUP_MFA_SCREEN_NAVIGATION_KEY_NAME +
-				_mfaSetupChecker.getName();
+		Class<? extends MFASetupChecker> clazz = _mfaSetupChecker.getClass();
+
+		Bundle bundle = FrameworkUtil.getBundle(clazz);
+
+		ResourceBundleLoader resourceBundleLoader =
+			ResourceBundleLoaderUtil.
+				getResourceBundleLoaderByBundleSymbolicName(
+					bundle.getSymbolicName());
+
+		String name = clazz.getName();
 
 		return GetterUtil.getString(
 			ResourceBundleUtil.getString(
-				_resourceBundleLoader.loadResourceBundle(locale), key),
-			key);
+				resourceBundleLoader.loadResourceBundle(locale), name),
+			name);
 	}
 
 	@Override
@@ -115,11 +126,7 @@ public class UserAccountSetupMFAScreenNavigationEntry
 		_servletContext = servletContext;
 	}
 
-	private static final String _USER_SETUP_MFA_SCREEN_NAVIGATION_KEY_NAME =
-		"user-account-setup-mfa-screen-navigation_";
-
 	private final MFASetupChecker _mfaSetupChecker;
-	private final ResourceBundleLoader _resourceBundleLoader;
 	private ServletContext _servletContext;
 
 }

@@ -25,8 +25,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface MFASetupChecker extends MFAChecker {
 
-	public String getName();
-
 	public void includeSetup(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)

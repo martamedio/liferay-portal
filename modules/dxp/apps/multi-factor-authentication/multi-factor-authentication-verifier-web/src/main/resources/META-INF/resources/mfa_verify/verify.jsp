@@ -21,6 +21,7 @@ List<MFABrowserChecker> availableBrowserCheckers = (List<MFABrowserChecker>)requ
 MFABrowserChecker mfaBrowserChecker = (MFABrowserChecker)request.getAttribute(MFAWebKeys.MFA_CHECKER);
 int mfaCheckerIndex = ParamUtil.getInteger(request, "mfaCheckerIndex");
 long mfaUserId = (Long)request.getAttribute(MFAWebKeys.MFA_USER_ID);
+String mfaCheckerName = (String)request.getAttribute(MFAWebKeys.MFA_CHECKER_NAME);
 
 String redirect = ParamUtil.getString(request, "redirect");
 %>
@@ -48,7 +49,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 			<portlet:param name="saveLastPath" value="<%= Boolean.FALSE.toString() %>" />
 		</portlet:renderURL>
 
-		<b><a href="<%= HtmlUtil.escapeAttribute(useAnotherMFABrowserChecker) %>"><liferay-ui:message key="use-another-mfa-verifier" />: <%= mfaBrowserChecker.labelName(themeDisplay.getLocale()) %></a></b>
+		<b><a href="<%= HtmlUtil.escapeAttribute(useAnotherMFABrowserChecker) %>"><liferay-ui:message key="use-another-mfa-verifier" />: <%= mfaCheckerName %></a></b>
 	</c:if>
 
 	<aui:button-row>

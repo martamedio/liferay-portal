@@ -24,7 +24,7 @@ public class MFAWebKeys {
 
 	public static final String MFA_CHECKER = "MFA_CHECKER";
 
-	public static final String MFA_CHECKER_INDEX = "MFA_CHECKER_INDEX";
+	public static final String MFA_CHECKER_NAME = "MFA_CHECKER_NAME";
 
 	public static final String MFA_USER_ACCOUNT_LABEL =
 		"MFA_USER_ACCOUNT_LABEL";

@@ -24,9 +24,13 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.ResourceBundleLoaderUtil;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
@@ -35,6 +39,8 @@ import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -81,12 +87,37 @@ public class MFAVerifyMVCRenderCommand implements MVCRenderCommand {
 			mfaBrowserChecker = availableBrowserCheckers.get(0);
 		}
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		renderRequest.setAttribute(
 			MFAWebKeys.MFA_AVAILABLE_CHECKERS, availableBrowserCheckers);
 		renderRequest.setAttribute(MFAWebKeys.MFA_CHECKER, mfaBrowserChecker);
+		renderRequest.setAttribute(
+			MFAWebKeys.MFA_CHECKER_NAME,
+			_getMFACheckerName(themeDisplay.getLocale(), mfaBrowserChecker));
 		renderRequest.setAttribute(MFAWebKeys.MFA_USER_ID, mfaUserId);
 
 		return "/mfa_verify/verify.jsp";
+	}
+
+	private String _getMFACheckerName(
+		Locale locale, MFABrowserChecker mfaBrowserChecker) {
+
+		Class<? extends MFABrowserChecker> clazz = mfaBrowserChecker.getClass();
+
+		Bundle bundle = FrameworkUtil.getBundle(clazz);
+
+		ResourceBundleLoader resourceBundleLoader =
+			ResourceBundleLoaderUtil.
+				getResourceBundleLoaderByBundleSymbolicName(
+					bundle.getSymbolicName());
+
+		return GetterUtil.getString(
+			ResourceBundleUtil.getString(
+				resourceBundleLoader.loadResourceBundle(locale),
+				clazz.getName()),
+			clazz.getName());
 	}
 
 	private long _getMFAUserId(PortletRequest portletRequest) {

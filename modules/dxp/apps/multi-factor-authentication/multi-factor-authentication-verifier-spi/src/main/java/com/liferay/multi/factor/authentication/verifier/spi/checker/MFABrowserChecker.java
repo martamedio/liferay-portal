@@ -14,8 +14,6 @@
 
 package com.liferay.multi.factor.authentication.verifier.spi.checker;
 
-import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,8 +31,6 @@ public interface MFABrowserChecker
 
 	public boolean isBrowserVerified(
 		HttpServletRequest httpServletRequest, long userId);
-
-	public String labelName(Locale locale);
 
 	public boolean verifyBrowserRequest(
 			HttpServletRequest httpServletRequest,
