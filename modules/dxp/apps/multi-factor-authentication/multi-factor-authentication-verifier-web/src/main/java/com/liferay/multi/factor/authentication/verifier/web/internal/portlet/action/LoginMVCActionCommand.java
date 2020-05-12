@@ -224,10 +224,9 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 	private MFABrowserChecker _getVerifiedBrowserChecker(
 		long companyId, long userId, HttpServletRequest httpServletRequest) {
 
-		List<MFABrowserChecker> availableBrowserCheckers =
-			_mfaPolicy.getAvailableBrowserCheckers(companyId, userId);
+		for (MFABrowserChecker mfaBrowserChecker :
+			_mfaPolicy.getAvailableBrowserCheckers(companyId, userId)) {
 
-		for (MFABrowserChecker mfaBrowserChecker : availableBrowserCheckers) {
 			if (mfaBrowserChecker.isBrowserVerified(
 					httpServletRequest, userId)) {
 
