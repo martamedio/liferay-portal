@@ -75,14 +75,10 @@ public class UserAccountSetupMFACheckerTracker {
 			MFASetupChecker mfaSetupChecker = _bundleContext.getService(
 				serviceReference);
 
-			UserAccountSetupMFAScreenNavigationEntry
-				userAccountSetupMFAScreenNavigationEntry =
-					new UserAccountSetupMFAScreenNavigationEntry(
-						mfaSetupChecker, _servletContext);
-
 			return _bundleContext.registerService(
 				ScreenNavigationEntry.class,
-				userAccountSetupMFAScreenNavigationEntry,
+				new UserAccountSetupMFAScreenNavigationEntry(
+					mfaSetupChecker, _servletContext),
 				_buildProperties(serviceReference));
 		}
 
