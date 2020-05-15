@@ -17,7 +17,6 @@ package com.liferay.portal.security.sso.openid.connect.internal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectProvider;
@@ -60,8 +59,7 @@ public class OpenIdConnectProviderRegistryImpl
 
 	@Override
 	public void deleted(String factoryPid) {
-		removeOpenConnectIdProvider(
-			CompanyThreadLocal.getCompanyId(), factoryPid);
+		removeOpenConnectIdProvider(factoryPid);
 	}
 
 	@Override
@@ -125,7 +123,7 @@ public class OpenIdConnectProviderRegistryImpl
 			OpenIdConnectProvider openIdConnectProvider =
 				createOpenIdConnectProvider(openIdConnectProviderConfiguration);
 
-			removeOpenConnectIdProvider(companyId, factoryPid);
+			removeOpenConnectIdProvider(factoryPid);
 
 			addOpenConnectIdConnectProvider(
 				companyId, factoryPid, openIdConnectProvider);
@@ -137,11 +135,11 @@ public class OpenIdConnectProviderRegistryImpl
 		OpenIdConnectProvider openIdConnectProvider) {
 
 		synchronized (_openIdConnectProvidersPerFactory) {
-			_openIdConnectProvidersPerFactory.put(
-				factoryPid, openIdConnectProvider);
-
 			String openIdConnectCompanyName = _getOpenIdConnectCompanyName(
 				companyId, openIdConnectProvider.getName());
+
+			_openIdConnectProvidersPerFactory.put(
+				factoryPid, openIdConnectCompanyName);
 
 			_openIdConnectProvidersPerCompanyName.put(
 				openIdConnectCompanyName, openIdConnectProvider);
@@ -202,17 +200,12 @@ public class OpenIdConnectProviderRegistryImpl
 			openIdConnectMetadataFactory);
 	}
 
-	protected void removeOpenConnectIdProvider(
-		long companyId, String factoryPid) {
-
+	protected void removeOpenConnectIdProvider(String factoryPid) {
 		synchronized (_openIdConnectProvidersPerFactory) {
-			OpenIdConnectProvider openIdConnectProvider =
+			String openIdConnectCompanyName =
 				_openIdConnectProvidersPerFactory.remove(factoryPid);
 
-			if (openIdConnectProvider != null) {
-				String openIdConnectCompanyName = _getOpenIdConnectCompanyName(
-					companyId, openIdConnectProvider.getName());
-
+			if (openIdConnectCompanyName != null) {
 				_openIdConnectProvidersPerCompanyName.remove(
 					openIdConnectCompanyName);
 			}
@@ -246,9 +239,7 @@ public class OpenIdConnectProviderRegistryImpl
 		<String,
 		 OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>>
 			_openIdConnectProvidersPerCompanyName = new ConcurrentHashMap<>();
-	private final Map
-		<String,
-		 OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>>
-			_openIdConnectProvidersPerFactory = new ConcurrentHashMap<>();
+	private final Map<String, String> _openIdConnectProvidersPerFactory =
+		new ConcurrentHashMap<>();
 
 }
