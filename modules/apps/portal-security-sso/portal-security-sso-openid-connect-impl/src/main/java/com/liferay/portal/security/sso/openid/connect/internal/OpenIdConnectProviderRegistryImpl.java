@@ -87,11 +87,8 @@ public class OpenIdConnectProviderRegistryImpl
 	public OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>
 		getOpenIdConnectProvider(long companyId, String name) {
 
-		String openIdConnectCompanyIdentifier = _getOpenIdConnectCompanyName(
-			companyId, name);
-
 		return _openIdConnectProvidersPerCompanyName.get(
-			openIdConnectCompanyIdentifier);
+			_getOpenIdConnectCompanyName(companyId, name));
 	}
 
 	@Override
@@ -117,16 +114,13 @@ public class OpenIdConnectProviderRegistryImpl
 			ConfigurableUtil.createConfigurable(
 				OpenIdConnectProviderConfiguration.class, properties);
 
-		long companyId = GetterUtil.getLong(properties.get("companyId"));
-
 		synchronized (_openIdConnectProvidersPerFactory) {
-			OpenIdConnectProvider openIdConnectProvider =
-				createOpenIdConnectProvider(openIdConnectProviderConfiguration);
-
 			removeOpenConnectIdProvider(factoryPid);
 
 			addOpenConnectIdConnectProvider(
-				companyId, factoryPid, openIdConnectProvider);
+				GetterUtil.getLong(properties.get("companyId")), factoryPid,
+				createOpenIdConnectProvider(
+					openIdConnectProviderConfiguration));
 		}
 	}
 
