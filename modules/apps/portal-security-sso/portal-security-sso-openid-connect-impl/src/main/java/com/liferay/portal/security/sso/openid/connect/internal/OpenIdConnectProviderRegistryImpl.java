@@ -72,7 +72,7 @@ public class OpenIdConnectProviderRegistryImpl
 
 		if (openIdConnectProvider == null) {
 			throw new OpenIdConnectServiceException.ProviderException(
-				"Unable to get OpenId Connect provider with name " + name);
+				"Unable to find an OpenId Connect provider with name " + name);
 		}
 
 		return openIdConnectProvider;
