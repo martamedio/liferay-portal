@@ -87,13 +87,13 @@ public class OpenIdConnectProviderRegistryImpl
 	public OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>
 		getOpenIdConnectProvider(long companyId, String name) {
 
-		return _openIdConnectProvidersPerCompanyName.get(
+		return _openIdConnectProviders.get(
 			_getOpenIdConnectCompanyName(companyId, name));
 	}
 
 	@Override
 	public Collection<String> getOpenIdConnectProviderNames(long companyId) {
-		if (_openIdConnectProvidersPerCompanyName.isEmpty()) {
+		if (_openIdConnectProviders.isEmpty()) {
 			return Collections.emptySet();
 		}
 
@@ -114,7 +114,7 @@ public class OpenIdConnectProviderRegistryImpl
 			ConfigurableUtil.createConfigurable(
 				OpenIdConnectProviderConfiguration.class, properties);
 
-		synchronized (_openIdConnectProvidersPerFactory) {
+		synchronized (_pidCompanyIdNameMapping) {
 			removeOpenConnectIdProvider(factoryPid);
 
 			addOpenConnectIdConnectProvider(
@@ -128,14 +128,13 @@ public class OpenIdConnectProviderRegistryImpl
 		long companyId, String factoryPid,
 		OpenIdConnectProvider openIdConnectProvider) {
 
-		synchronized (_openIdConnectProvidersPerFactory) {
+		synchronized (_pidCompanyIdNameMapping) {
 			String openIdConnectCompanyName = _getOpenIdConnectCompanyName(
 				companyId, openIdConnectProvider.getName());
 
-			_openIdConnectProvidersPerFactory.put(
-				factoryPid, openIdConnectCompanyName);
+			_pidCompanyIdNameMapping.put(factoryPid, openIdConnectCompanyName);
 
-			_openIdConnectProvidersPerCompanyName.put(
+			_openIdConnectProviders.put(
 				openIdConnectCompanyName, openIdConnectProvider);
 		}
 	}
@@ -195,13 +194,12 @@ public class OpenIdConnectProviderRegistryImpl
 	}
 
 	protected void removeOpenConnectIdProvider(String factoryPid) {
-		synchronized (_openIdConnectProvidersPerFactory) {
-			String openIdConnectCompanyName =
-				_openIdConnectProvidersPerFactory.remove(factoryPid);
+		synchronized (_pidCompanyIdNameMapping) {
+			String openIdConnectCompanyName = _pidCompanyIdNameMapping.remove(
+				factoryPid);
 
 			if (openIdConnectCompanyName != null) {
-				_openIdConnectProvidersPerCompanyName.remove(
-					openIdConnectCompanyName);
+				_openIdConnectProviders.remove(openIdConnectCompanyName);
 			}
 		}
 	}
@@ -213,8 +211,7 @@ public class OpenIdConnectProviderRegistryImpl
 	private Collection<String> _getOpenIdConnectProviderNamesByCompany(
 		long companyId) {
 
-		Set<String> openIdConnectNames =
-			_openIdConnectProvidersPerCompanyName.keySet();
+		Set<String> openIdConnectNames = _openIdConnectProviders.keySet();
 
 		Stream<String> stream = openIdConnectNames.stream();
 
@@ -232,8 +229,8 @@ public class OpenIdConnectProviderRegistryImpl
 	private final Map
 		<String,
 		 OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>>
-			_openIdConnectProvidersPerCompanyName = new ConcurrentHashMap<>();
-	private final Map<String, String> _openIdConnectProvidersPerFactory =
+			_openIdConnectProviders = new ConcurrentHashMap<>();
+	private final Map<String, String> _pidCompanyIdNameMapping =
 		new ConcurrentHashMap<>();
 
 }
