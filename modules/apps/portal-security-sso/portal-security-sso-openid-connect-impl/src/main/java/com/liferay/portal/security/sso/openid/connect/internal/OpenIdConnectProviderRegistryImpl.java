@@ -88,7 +88,7 @@ public class OpenIdConnectProviderRegistryImpl
 		getOpenIdConnectProvider(long companyId, String name) {
 
 		return _openIdConnectProviders.get(
-			_getOpenIdConnectCompanyName(companyId, name));
+			_getOpenIdConnectProviderKey(companyId, name));
 	}
 
 	@Override
@@ -129,13 +129,13 @@ public class OpenIdConnectProviderRegistryImpl
 		OpenIdConnectProvider openIdConnectProvider) {
 
 		synchronized (_pidCompanyIdNameMapping) {
-			String openIdConnectCompanyName = _getOpenIdConnectCompanyName(
+			String openIdConnectProviderKey = _getOpenIdConnectProviderKey(
 				companyId, openIdConnectProvider.getName());
 
-			_pidCompanyIdNameMapping.put(factoryPid, openIdConnectCompanyName);
+			_pidCompanyIdNameMapping.put(factoryPid, openIdConnectProviderKey);
 
 			_openIdConnectProviders.put(
-				openIdConnectCompanyName, openIdConnectProvider);
+				openIdConnectProviderKey, openIdConnectProvider);
 		}
 	}
 
@@ -204,7 +204,7 @@ public class OpenIdConnectProviderRegistryImpl
 		}
 	}
 
-	private String _getOpenIdConnectCompanyName(long companyId, String name) {
+	private String _getOpenIdConnectProviderKey(long companyId, String name) {
 		return companyId + StringPool.DASH + name;
 	}
 
