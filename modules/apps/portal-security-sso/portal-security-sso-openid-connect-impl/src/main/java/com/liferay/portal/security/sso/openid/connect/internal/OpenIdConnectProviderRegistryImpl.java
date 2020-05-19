@@ -17,6 +17,7 @@ package com.liferay.portal.security.sso.openid.connect.internal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectProvider;
@@ -98,7 +99,7 @@ public class OpenIdConnectProviderRegistryImpl
 		}
 
 		Collection<String> openIdConnectProviderNames =
-			_getOpenIdConnectProviderNamesByCompany(_DEFAULT_COMPANY_ID);
+			_getOpenIdConnectProviderNamesByCompany(CompanyConstants.SYSTEM);
 
 		openIdConnectProviderNames.addAll(
 			_getOpenIdConnectProviderNamesByCompany(companyId));
@@ -223,8 +224,6 @@ public class OpenIdConnectProviderRegistryImpl
 			Collectors.toList()
 		);
 	}
-
-	private static final long _DEFAULT_COMPANY_ID = 0;
 
 	private final Map
 		<String,
