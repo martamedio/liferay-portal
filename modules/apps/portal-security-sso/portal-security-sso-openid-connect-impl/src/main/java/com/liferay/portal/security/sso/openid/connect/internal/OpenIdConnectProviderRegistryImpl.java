@@ -58,8 +58,8 @@ public class OpenIdConnectProviderRegistryImpl
 				   <OIDCClientMetadata, OIDCProviderMetadata> {
 
 	@Override
-	public void deleted(String factoryPid) {
-		removeOpenConnectIdProvider(factoryPid);
+	public void deleted(String pid) {
+		removeOpenConnectIdProvider(pid);
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class OpenIdConnectProviderRegistryImpl
 	}
 
 	@Override
-	public void updated(String factoryPid, Dictionary<String, ?> properties)
+	public void updated(String pid, Dictionary<String, ?> properties)
 		throws ConfigurationException {
 
 		OpenIdConnectProviderConfiguration openIdConnectProviderConfiguration =
@@ -115,24 +115,24 @@ public class OpenIdConnectProviderRegistryImpl
 				OpenIdConnectProviderConfiguration.class, properties);
 
 		synchronized (_pidCompanyIdNameMapping) {
-			removeOpenConnectIdProvider(factoryPid);
+			removeOpenConnectIdProvider(pid);
 
 			addOpenConnectIdConnectProvider(
-				GetterUtil.getLong(properties.get("companyId")), factoryPid,
+				GetterUtil.getLong(properties.get("companyId")), pid,
 				createOpenIdConnectProvider(
 					openIdConnectProviderConfiguration));
 		}
 	}
 
 	protected void addOpenConnectIdConnectProvider(
-		long companyId, String factoryPid,
+		long companyId, String pid,
 		OpenIdConnectProvider openIdConnectProvider) {
 
 		synchronized (_pidCompanyIdNameMapping) {
 			String openIdConnectProviderKey = _getOpenIdConnectProviderKey(
 				companyId, openIdConnectProvider.getName());
 
-			_pidCompanyIdNameMapping.put(factoryPid, openIdConnectProviderKey);
+			_pidCompanyIdNameMapping.put(pid, openIdConnectProviderKey);
 
 			_openIdConnectProviders.put(
 				openIdConnectProviderKey, openIdConnectProvider);
@@ -193,10 +193,10 @@ public class OpenIdConnectProviderRegistryImpl
 			openIdConnectMetadataFactory);
 	}
 
-	protected void removeOpenConnectIdProvider(String factoryPid) {
+	protected void removeOpenConnectIdProvider(String pid) {
 		synchronized (_pidCompanyIdNameMapping) {
 			String openIdConnectCompanyName = _pidCompanyIdNameMapping.remove(
-				factoryPid);
+				pid);
 
 			if (openIdConnectCompanyName != null) {
 				_openIdConnectProviders.remove(openIdConnectCompanyName);
