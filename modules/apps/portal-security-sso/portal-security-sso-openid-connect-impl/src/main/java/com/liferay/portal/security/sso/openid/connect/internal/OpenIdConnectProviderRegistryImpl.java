@@ -30,8 +30,11 @@ import com.nimbusds.openid.connect.sdk.rp.OIDCClientMetadata;
 import java.net.URL;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -98,33 +101,19 @@ public class OpenIdConnectProviderRegistryImpl
 
 	@Override
 	public Collection<String> getOpenIdConnectProviderNames(long companyId) {
-		return _getOpenIdConnectProvidersStream(
-			companyId
-		).map(
-			OpenIdConnectProvider::getName
-		).distinct(
-		).sorted(
-		).collect(
-			Collectors.toSet()
-		);
+		return _openIdConnectProviderNames.computeIfAbsent(
+			companyId, this::_getOpenIdConnectProviderNames);
 	}
 
 	@Override
 	public void updated(String pid, Dictionary<String, ?> properties)
 		throws ConfigurationException {
 
-		OpenIdConnectProviderConfiguration openIdConnectProviderConfiguration =
-			ConfigurableUtil.createConfigurable(
-				OpenIdConnectProviderConfiguration.class, properties);
-
-		synchronized (_companyIdPidMapping) {
-			removeOpenConnectIdProvider(pid);
-
-			addOpenConnectIdConnectProvider(
-				GetterUtil.getLong(properties.get("companyId")), pid,
-				createOpenIdConnectProvider(
-					openIdConnectProviderConfiguration));
-		}
+		addOpenConnectIdConnectProvider(
+			GetterUtil.getLong(properties.get("companyId")), pid,
+			createOpenIdConnectProvider(
+				ConfigurableUtil.createConfigurable(
+					OpenIdConnectProviderConfiguration.class, properties)));
 	}
 
 	protected void addOpenConnectIdConnectProvider(
@@ -132,12 +121,22 @@ public class OpenIdConnectProviderRegistryImpl
 		OpenIdConnectProvider openIdConnectProvider) {
 
 		synchronized (_companyIdPidMapping) {
-			_openIdConnectProviders.put(pid, openIdConnectProvider);
-			Set<String> pids =
-				_companyIdPidMapping.computeIfAbsent(
-					companyId, cid -> new HashSet<String>());
+			if (_openIdConnectProviders.put(pid, openIdConnectProvider) !=
+					null) {
+
+				for (Set<String> pids : _companyIdPidMapping.values()) {
+					if (pids.remove(pid)) {
+						break;
+					}
+				}
+			}
+
+			Set<String> pids = _companyIdPidMapping.computeIfAbsent(
+				companyId, cid -> new HashSet<String>());
 
 			pids.add(pid);
+
+			_openIdConnectProviderNames.clear();
 		}
 	}
 
@@ -198,15 +197,28 @@ public class OpenIdConnectProviderRegistryImpl
 	protected void removeOpenConnectIdProvider(String pid) {
 		synchronized (_companyIdPidMapping) {
 			if (_openIdConnectProviders.remove(pid) != null) {
-				for (Set<String> pids :
-						_companyIdPidMapping.values()) {
-
+				for (Set<String> pids : _companyIdPidMapping.values()) {
 					if (pids.remove(pid)) {
-						return;
+						break;
 					}
 				}
+
+				_openIdConnectProviderNames.clear();
 			}
 		}
+	}
+
+	private List<String> _getOpenIdConnectProviderNames(long companyId) {
+		return Collections.unmodifiableList(
+			_getOpenIdConnectProvidersStream(
+				companyId
+			).map(
+				OpenIdConnectProvider::getName
+			).distinct(
+			).sorted(
+			).collect(
+				Collectors.toList()
+			));
 	}
 
 	private Stream
@@ -238,6 +250,8 @@ public class OpenIdConnectProviderRegistryImpl
 
 	private final Map<Long, Set<String>> _companyIdPidMapping =
 		new ConcurrentHashMap<>();
+	private final Map<Long, List<String>> _openIdConnectProviderNames =
+		new HashMap<>();
 	private final Map
 		<String,
 		 OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>>
