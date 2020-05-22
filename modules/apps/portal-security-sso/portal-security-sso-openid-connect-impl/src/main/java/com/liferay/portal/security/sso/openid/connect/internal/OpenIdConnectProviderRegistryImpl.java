@@ -33,11 +33,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -132,7 +132,7 @@ public class OpenIdConnectProviderRegistryImpl
 			}
 
 			Set<String> pids = _companyIdPidMapping.computeIfAbsent(
-				companyId, cid -> new HashSet<String>());
+				companyId, cid -> new CopyOnWriteArraySet<String>());
 
 			pids.add(pid);
 
@@ -248,13 +248,13 @@ public class OpenIdConnectProviderRegistryImpl
 		}
 	}
 
-	private final Map<Long, Set<String>> _companyIdPidMapping =
+	private final Map<Long, CopyOnWriteArraySet<String>> _companyIdPidMapping =
 		new ConcurrentHashMap<>();
 	private final Map<Long, List<String>> _openIdConnectProviderNames =
 		new HashMap<>();
 	private final Map
 		<String,
 		 OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>>
-			_openIdConnectProviders = new ConcurrentHashMap<>();
+			_openIdConnectProviders = new HashMap<>();
 
 }
