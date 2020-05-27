@@ -70,8 +70,8 @@ public class OpenIdConnectProviderRegistryImpl
 			findOpenIdConnectProvider(long companyId, String name)
 		throws OpenIdConnectServiceException.ProviderException {
 
-		OpenIdConnectProvider openIdConnectProvider = getOpenIdConnectProvider(
-			companyId, name);
+		OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>
+			openIdConnectProvider = getOpenIdConnectProvider(companyId, name);
 
 		if (openIdConnectProvider == null) {
 			throw new OpenIdConnectServiceException.ProviderException(
@@ -118,7 +118,8 @@ public class OpenIdConnectProviderRegistryImpl
 
 	protected void addOpenConnectIdConnectProvider(
 		long companyId, String pid,
-		OpenIdConnectProvider openIdConnectProvider) {
+		OpenIdConnectProvider<OIDCClientMetadata, OIDCProviderMetadata>
+			openIdConnectProvider) {
 
 		synchronized (_companyIdPidMapping) {
 			if (_openIdConnectProviders.put(pid, openIdConnectProvider) !=
@@ -132,7 +133,7 @@ public class OpenIdConnectProviderRegistryImpl
 			}
 
 			Set<String> pids = _companyIdPidMapping.computeIfAbsent(
-				companyId, cid -> new CopyOnWriteArraySet<String>());
+				companyId, cid -> new CopyOnWriteArraySet<>());
 
 			pids.add(pid);
 
