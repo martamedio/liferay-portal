@@ -96,7 +96,9 @@ public class OpenIdConnectProviderRegistryImpl
 			openIdConnectProvider -> name.equals(
 				openIdConnectProvider.getName())
 		).findFirst(
-		).get();
+		).orElse(
+			null
+		);
 	}
 
 	@Override
