@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.web.internal.policy;
+package com.liferay.multi.factor.authentication.web.policy;
 
 import com.liferay.multi.factor.authentication.spi.checker.browser.MFABrowserChecker;
 import com.liferay.multi.factor.authentication.web.internal.system.configuration.MFASystemConfiguration;

@@ -17,7 +17,7 @@ package com.liferay.multi.factor.authentication.web.internal.portlet.action;
 import com.liferay.multi.factor.authentication.spi.checker.browser.MFABrowserChecker;
 import com.liferay.multi.factor.authentication.web.internal.constants.MFAPortletKeys;
 import com.liferay.multi.factor.authentication.web.internal.constants.MFAWebKeys;
-import com.liferay.multi.factor.authentication.web.internal.policy.MFAPolicy;
+import com.liferay.multi.factor.authentication.web.policy.MFAPolicy;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;

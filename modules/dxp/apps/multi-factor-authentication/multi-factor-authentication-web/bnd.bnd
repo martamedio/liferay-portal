@@ -1,4 +1,5 @@
 Bundle-Name: Liferay Multi-Factor Authentication Web
 Bundle-SymbolicName: com.liferay.multi.factor.authentication.web
 Bundle-Version: 1.0.0
+Export-Package: com.liferay.multi.factor.authentication.web.policy
 Web-ContextPath: /multi-factor-authentication-web

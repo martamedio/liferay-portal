@@ -18,7 +18,7 @@ import com.liferay.login.web.constants.LoginPortletKeys;
 import com.liferay.multi.factor.authentication.spi.checker.browser.MFABrowserChecker;
 import com.liferay.multi.factor.authentication.web.internal.constants.MFAPortletKeys;
 import com.liferay.multi.factor.authentication.web.internal.constants.MFAWebKeys;
-import com.liferay.multi.factor.authentication.web.internal.policy.MFAPolicy;
+import com.liferay.multi.factor.authentication.web.policy.MFAPolicy;
 import com.liferay.petra.encryptor.Encryptor;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
