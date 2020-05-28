@@ -48,7 +48,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
  */
 @Component(
 	configurationPid = "com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration.scoped",
-	configurationPolicy = ConfigurationPolicy.OPTIONAL, service = {}
+	configurationPolicy = ConfigurationPolicy.OPTIONAL,
+	property = "mfa.visibility.configuration.pid=com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration",
+	service = {}
 )
 public class MFAIpAddressMFAHeadlessChecker implements MFAHeadlessChecker {
 
