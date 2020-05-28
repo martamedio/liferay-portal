@@ -12,9 +12,9 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.address.web.internal.settings.definition;
+package com.liferay.multi.factor.authentication.ip.address.internal.settings.definition;
 
-import com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration;
+import com.liferay.multi.factor.authentication.ip.address.internal.configuration.MFAIpAddressConfiguration;
 import com.liferay.portal.kernel.settings.definition.ConfigurationBeanDeclaration;
 
 import org.osgi.service.component.annotations.Component;

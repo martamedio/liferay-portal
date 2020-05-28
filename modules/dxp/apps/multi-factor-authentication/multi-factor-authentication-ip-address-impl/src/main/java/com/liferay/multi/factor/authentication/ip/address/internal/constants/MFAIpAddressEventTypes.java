@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.address.web.internal.constants;
+package com.liferay.multi.factor.authentication.ip.address.internal.constants;
 
 /**
  * @author Marta Medio

@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.address.web.internal.configuration;
+package com.liferay.multi.factor.authentication.ip.address.internal.configuration;
 
 import aQute.bnd.annotation.metatype.Meta;
 
@@ -26,7 +26,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	scope = ExtendedObjectClassDefinition.Scope.COMPANY
 )
 @Meta.OCD(
-	id = "com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration",
+	id = "com.liferay.multi.factor.authentication.ip.address.internal.configuration.MFAIpAddressConfiguration",
 	localization = "content/Language",
 	name = "mfa-ip-address-configuration-name"
 )

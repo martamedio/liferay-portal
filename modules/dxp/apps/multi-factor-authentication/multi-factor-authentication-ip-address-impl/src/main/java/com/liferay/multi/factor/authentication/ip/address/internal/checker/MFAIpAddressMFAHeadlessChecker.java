@@ -12,10 +12,10 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.address.web.internal.checker;
+package com.liferay.multi.factor.authentication.ip.address.internal.checker;
 
-import com.liferay.multi.factor.authentication.ip.address.web.internal.audit.MFAIpAddressAuditMessageBuilder;
-import com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration;
+import com.liferay.multi.factor.authentication.ip.address.internal.audit.MFAIpAddressAuditMessageBuilder;
+import com.liferay.multi.factor.authentication.ip.address.internal.configuration.MFAIpAddressConfiguration;
 import com.liferay.multi.factor.authentication.spi.checker.headless.MFAHeadlessChecker;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
@@ -47,9 +47,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
  * @author Marta Medio
  */
 @Component(
-	configurationPid = "com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration.scoped",
+	configurationPid = "com.liferay.multi.factor.authentication.ip.address.internal.configuration.MFAIpAddressConfiguration.scoped",
 	configurationPolicy = ConfigurationPolicy.OPTIONAL,
-	property = "mfa.visibility.configuration.pid=com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration",
+	property = "mfa.visibility.configuration.pid=com.liferay.multi.factor.authentication.ip.address.internal.configuration.MFAIpAddressConfiguration",
 	service = {}
 )
 public class MFAIpAddressMFAHeadlessChecker implements MFAHeadlessChecker {

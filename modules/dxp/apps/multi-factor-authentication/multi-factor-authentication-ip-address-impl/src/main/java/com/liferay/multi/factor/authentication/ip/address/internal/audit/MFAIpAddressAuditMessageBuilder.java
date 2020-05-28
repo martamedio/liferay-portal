@@ -12,9 +12,9 @@
  *
  */
 
-package com.liferay.multi.factor.authentication.ip.address.web.internal.audit;
+package com.liferay.multi.factor.authentication.ip.address.internal.audit;
 
-import com.liferay.multi.factor.authentication.ip.address.web.internal.constants.MFAIpAddressEventTypes;
+import com.liferay.multi.factor.authentication.ip.address.internal.constants.MFAIpAddressEventTypes;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
