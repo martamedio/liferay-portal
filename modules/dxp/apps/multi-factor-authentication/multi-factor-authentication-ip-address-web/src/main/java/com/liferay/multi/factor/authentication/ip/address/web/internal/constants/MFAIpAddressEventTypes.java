@@ -19,10 +19,10 @@ package com.liferay.multi.factor.authentication.ip.address.web.internal.constant
  */
 public interface MFAIpAddressEventTypes {
 
-	public static final String MFA_IP_OTP_VERIFICATION_FAILURE =
+	public static final String MFA_IP_ADDRESS_VERIFICATION_FAILURE =
 		"MFA_IP_OTP_VERIFICATION_FAILURE";
 
-	public static final String MFA_IP_OTP_VERIFICATION_SUCCESS =
+	public static final String MFA_IP_ADDRESS_VERIFICATION_SUCCESS =
 		"MFA_IP_OTP_VERIFICATION_SUCCESS";
 
 }

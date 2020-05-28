@@ -36,16 +36,17 @@ public class MFAIpAddressAuditMessageBuilder {
 		long companyId, long userId, String checkerClassName) {
 
 		return new AuditMessage(
-			MFAIpAddressEventTypes.MFA_IP_OTP_VERIFICATION_FAILURE, companyId,
-			userId, "Nonexistent", checkerClassName, String.valueOf(userId),
-			null, JSONUtil.put("reason", "Nonexistent User"));
+			MFAIpAddressEventTypes.MFA_IP_ADDRESS_VERIFICATION_FAILURE,
+			companyId, userId, "Nonexistent", checkerClassName,
+			String.valueOf(userId), null,
+			JSONUtil.put("reason", "Nonexistent User"));
 	}
 
 	public AuditMessage buildVerificationFailureAuditMessage(
 		User user, String checkerClassName, String reason) {
 
 		return new AuditMessage(
-			MFAIpAddressEventTypes.MFA_IP_OTP_VERIFICATION_FAILURE,
+			MFAIpAddressEventTypes.MFA_IP_ADDRESS_VERIFICATION_FAILURE,
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null,
 			JSONUtil.put("reason", reason));
@@ -55,7 +56,7 @@ public class MFAIpAddressAuditMessageBuilder {
 		User user, String checkerClassName) {
 
 		return new AuditMessage(
-			MFAIpAddressEventTypes.MFA_IP_OTP_VERIFICATION_SUCCESS,
+			MFAIpAddressEventTypes.MFA_IP_ADDRESS_VERIFICATION_SUCCESS,
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null, null);
 	}
