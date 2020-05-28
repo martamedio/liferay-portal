@@ -16,6 +16,7 @@ package com.liferay.multi.factor.authentication.web.internal.portlet.action;
 
 import com.liferay.login.web.constants.LoginPortletKeys;
 import com.liferay.multi.factor.authentication.spi.checker.browser.MFABrowserChecker;
+import com.liferay.multi.factor.authentication.spi.checker.headless.MFAHeadlessChecker;
 import com.liferay.multi.factor.authentication.web.internal.constants.MFAPortletKeys;
 import com.liferay.multi.factor.authentication.web.internal.constants.MFAWebKeys;
 import com.liferay.multi.factor.authentication.web.policy.MFAPolicy;
@@ -47,6 +48,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -107,13 +109,26 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 				AuthenticatedSessionManagerUtil.getAuthenticatedUserId(
 					httpServletRequest, login, password, null);
 
-			MFABrowserChecker mfaBrowserChecker = _getVerifiedMFABrowserChecker(
-				companyId, httpServletRequest, userId);
+			Optional<MFAHeadlessChecker> optionalMFAHeadlessChecker =
+				_mfaPolicy.getMFAHeadlessChecker(companyId);
 
-			if ((userId > 0) && (mfaBrowserChecker == null)) {
-				_redirectToVerify(actionRequest, actionResponse, userId);
+			boolean headlessVerified = optionalMFAHeadlessChecker.map(
+				mfaHeadlessChecker -> mfaHeadlessChecker.verifyHeadlessRequest(
+					httpServletRequest, userId)
+			).orElse(
+				false
+			);
 
-				return;
+			if (!headlessVerified) {
+				MFABrowserChecker mfaBrowserChecker =
+					_getVerifiedMFABrowserChecker(
+						companyId, httpServletRequest, userId);
+
+				if ((userId > 0) && (mfaBrowserChecker == null)) {
+					_redirectToVerify(actionRequest, actionResponse, userId);
+
+					return;
+				}
 			}
 		}
 
