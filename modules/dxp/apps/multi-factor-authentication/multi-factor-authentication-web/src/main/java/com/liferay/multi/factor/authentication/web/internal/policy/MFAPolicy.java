@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +47,10 @@ public class MFAPolicy {
 
 		List<MFABrowserChecker> mfaBrowserCheckers =
 			_mfaBrowserCheckerServiceTrackerMap.getService(companyId);
+
+		if (mfaBrowserCheckers == null) {
+			return Collections.emptyList();
+		}
 
 		Stream<MFABrowserChecker> stream = mfaBrowserCheckers.stream();
 
