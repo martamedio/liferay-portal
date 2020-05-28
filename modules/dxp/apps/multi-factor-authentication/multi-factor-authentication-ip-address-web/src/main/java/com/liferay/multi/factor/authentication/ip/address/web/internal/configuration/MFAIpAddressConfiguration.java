@@ -27,12 +27,12 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 @Meta.OCD(
 	id = "com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration",
-	localization = "content/Language", name = "mfa-ip-configuration-name"
+	localization = "content/Language", name = "mfa-ip-address-configuration-name"
 )
 public interface MFAIpAddressConfiguration {
 
 	@Meta.AD(
-		deflt = "false", description = "mfa-ip-otp-enabled-description",
+		deflt = "false", description = "mfa-ip-address-enabled-description",
 		name = "enabled", required = false
 	)
 	public boolean enabled();
@@ -45,8 +45,8 @@ public interface MFAIpAddressConfiguration {
 	 */
 	@Meta.AD(
 		deflt = "127.0.0.1/255.0.0.0|::1/128|10.0.0.0/8|172.16.0.0/12|192.168.0.0/16|fc00::/7",
-		description = "allowed-ips-with-masks-description",
-		name = "allowed-ips-with-masks-name", required = false
+		description = "allowed-ip-address-and-netmask-description",
+		name = "allowed-ip-address-and-netmask-name", required = false
 	)
 	public String[] allowedIpAddressAndNetMask();
 
