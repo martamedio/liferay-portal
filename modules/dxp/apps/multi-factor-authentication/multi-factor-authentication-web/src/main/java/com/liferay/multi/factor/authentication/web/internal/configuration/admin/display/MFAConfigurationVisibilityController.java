@@ -15,7 +15,7 @@
 package com.liferay.multi.factor.authentication.web.internal.configuration.admin.display;
 
 import com.liferay.configuration.admin.display.ConfigurationVisibilityController;
-import com.liferay.multi.factor.authentication.web.policy.MFAPolicy;
+import com.liferay.multi.factor.authentication.web.internal.policy.MFAPolicy;
 import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.osgi.util.StringPlus;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
