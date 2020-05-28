@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,15 +60,23 @@ public class MFAPolicy {
 		);
 	}
 
-	public Optional<MFAHeadlessChecker> getMFAHeadlessChecker(long companyId) {
-		List<MFAHeadlessChecker> mfaHeadlessCheckerList =
+	public List<MFAHeadlessChecker> getAvailableMFAHeadlessCheckers(
+		long companyId, long userId) {
+
+		List<MFAHeadlessChecker> mfaHeadlessCheckers =
 			_mfaHeadlessCheckerServiceTrackerMap.getService(companyId);
 
-		if (!ListUtil.isEmpty(mfaHeadlessCheckerList)) {
-			return Optional.of(mfaHeadlessCheckerList.get(0));
+		if (mfaHeadlessCheckers == null) {
+			return Collections.emptyList();
 		}
 
-		return Optional.empty();
+		Stream<MFAHeadlessChecker> stream = mfaHeadlessCheckers.stream();
+
+		return stream.filter(
+			mfaHeadlessChecker -> mfaHeadlessChecker.isAvailable(userId)
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	public boolean isMFAEnabled(long companyId) {

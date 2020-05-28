@@ -48,7 +48,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -109,15 +109,14 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 				AuthenticatedSessionManagerUtil.getAuthenticatedUserId(
 					httpServletRequest, login, password, null);
 
-			Optional<MFAHeadlessChecker> optionalMFAHeadlessChecker =
-				_mfaPolicy.getMFAHeadlessChecker(companyId);
+			List<MFAHeadlessChecker> mfaHeadlessCheckers =
+				_mfaPolicy.getAvailableMFAHeadlessCheckers(companyId, userId);
 
-			boolean headlessVerified = optionalMFAHeadlessChecker.map(
+			Stream<MFAHeadlessChecker> stream = mfaHeadlessCheckers.stream();
+
+			boolean headlessVerified = stream.anyMatch(
 				mfaHeadlessChecker -> mfaHeadlessChecker.verifyHeadlessRequest(
-					httpServletRequest, userId)
-			).orElse(
-				false
-			);
+					httpServletRequest, userId));
 
 			if (!headlessVerified) {
 				MFABrowserChecker mfaBrowserChecker =

@@ -27,7 +27,8 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 @Meta.OCD(
 	id = "com.liferay.multi.factor.authentication.ip.address.web.internal.configuration.MFAIpAddressConfiguration",
-	localization = "content/Language", name = "mfa-ip-address-configuration-name"
+	localization = "content/Language",
+	name = "mfa-ip-address-configuration-name"
 )
 public interface MFAIpAddressConfiguration {
 
