@@ -87,17 +87,15 @@ public class MFAConfigurationVisibilityController
 				@Override
 				public void modifiedService(
 					ServiceReference<Object> serviceReference,
-					List<String> strings) {
+					List<String> mfaVisibilityConfigurationPids) {
 
-					_mfaVisibilityConfigurationPids.removeAll(strings);
-
-					List<String> mfaVisibilityConfigurationPids =
-						StringPlus.asList(
-							serviceReference.getProperty(
-								"mfa.visibility.configuration.pid"));
+					_mfaVisibilityConfigurationPids.removeAll(
+						mfaVisibilityConfigurationPids);
 
 					_mfaVisibilityConfigurationPids.addAll(
-						mfaVisibilityConfigurationPids);
+						StringPlus.asList(
+							serviceReference.getProperty(
+								"mfa.visibility.configuration.pid")));
 
 					_update();
 				}
@@ -105,9 +103,10 @@ public class MFAConfigurationVisibilityController
 				@Override
 				public void removedService(
 					ServiceReference<Object> serviceReference,
-					List<String> strings) {
+					List<String> mfaVisibilityConfigurationPids) {
 
-					_mfaVisibilityConfigurationPids.removeAll(strings);
+					_mfaVisibilityConfigurationPids.removeAll(
+						mfaVisibilityConfigurationPids);
 
 					_update();
 				}
