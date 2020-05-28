@@ -77,7 +77,7 @@ public class MFAIpAddressMFAHeadlessChecker implements MFAHeadlessChecker {
 		}
 
 		if (AccessControlUtil.isAccessAllowed(
-				httpServletRequest, _allowedIPsWithMasks)) {
+				httpServletRequest, _allowedIpAddressesAndNetmasks)) {
 
 			_routeAuditMessage(
 				_mfaIpAddressAuditMessageBuilder.
@@ -107,8 +107,9 @@ public class MFAIpAddressMFAHeadlessChecker implements MFAHeadlessChecker {
 			return;
 		}
 
-		_allowedIPsWithMasks = new HashSet<>(
-			Arrays.asList(mfaIpAddressConfiguration.allowedIPsWithMasks()));
+		_allowedIpAddressesAndNetmasks = new HashSet<>(
+			Arrays.asList(
+				mfaIpAddressConfiguration.allowedIpAddressAndNetMask()));
 
 		_serviceRegistration = bundleContext.registerService(
 			MFAHeadlessChecker.class, this,
@@ -139,7 +140,7 @@ public class MFAIpAddressMFAHeadlessChecker implements MFAHeadlessChecker {
 	private static final Log _log = LogFactoryUtil.getLog(
 		MFAIpAddressMFAHeadlessChecker.class);
 
-	private Set<String> _allowedIPsWithMasks;
+	private Set<String> _allowedIpAddressesAndNetmasks;
 
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
 	private MFAIpAddressAuditMessageBuilder _mfaIpAddressAuditMessageBuilder;

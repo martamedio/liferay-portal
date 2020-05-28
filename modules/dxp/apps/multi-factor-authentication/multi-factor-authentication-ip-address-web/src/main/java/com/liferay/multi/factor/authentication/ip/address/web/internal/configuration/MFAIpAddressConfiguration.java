@@ -48,6 +48,6 @@ public interface MFAIpAddressConfiguration {
 		description = "allowed-ips-with-masks-description",
 		name = "allowed-ips-with-masks-name", required = false
 	)
-	public String[] allowedIPsWithMasks();
+	public String[] allowedIpAddressAndNetMask();
 
 }
