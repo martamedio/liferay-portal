@@ -17,9 +17,12 @@ package com.liferay.portal.remote.cors.client.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.remote.cors.configuration.WebContextCORSConfiguration;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Dictionary;
+
+import javax.ws.rs.HttpMethod;
 
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -52,7 +55,8 @@ public class CORSConfigurationClientTest extends BaseCORSClientTestCase {
 			"servlet.context.helper.select.filter",
 			"(osgi.jaxrs.name=test-cors)");
 
-		createFactoryConfiguration(properties);
+		createFactoryConfiguration(
+			WebContextCORSConfiguration.class.getName(), properties);
 
 		properties = new HashMapDictionary<>();
 
@@ -68,7 +72,8 @@ public class CORSConfigurationClientTest extends BaseCORSClientTestCase {
 			"servlet.context.helper.select.filter",
 			"(osgi.jaxrs.name=test-cors-url)");
 
-		createFactoryConfiguration(properties);
+		createFactoryConfiguration(
+			WebContextCORSConfiguration.class.getName(), properties);
 
 		registerJaxRsApplication(
 			new CORSTestApplication(), "no-cors", new HashMapDictionary<>());
@@ -87,15 +92,25 @@ public class CORSConfigurationClientTest extends BaseCORSClientTestCase {
 			"servlet.context.helper.select.filter",
 			"(osgi.jaxrs.name=test-cors-wrong-url)");
 
-		createFactoryConfiguration(properties);
+		createFactoryConfiguration(
+			WebContextCORSConfiguration.class.getName(), properties);
 	}
 
 	@Test
 	public void testCORSApplication() throws Exception {
-		assertURL("/cors/cors-app", true);
-		assertURL("/no-cors/cors-app", false);
-		assertURL("/test-cors-url/cors-app", true);
-		assertURL("/test-cors-wrong-url/cors-app", false);
+		assertJaxRSUrl("/cors/cors-app", HttpMethod.GET, true);
+		assertJaxRSUrl("/no-cors/cors-app", HttpMethod.GET, false);
+		assertJaxRSUrl("/test-cors-url/cors-app", HttpMethod.GET, true);
+		assertJaxRSUrl("/test-cors-wrong-url/cors-app", HttpMethod.GET, false);
+	}
+
+	@Test
+	public void testCORSPreflightApplication() throws Exception {
+		assertJaxRSUrl("/cors/cors-app", HttpMethod.OPTIONS, true);
+		assertJaxRSUrl("/no-cors/cors-app", HttpMethod.OPTIONS, false);
+		assertJaxRSUrl("/test-cors-url/cors-app", HttpMethod.OPTIONS, true);
+		assertJaxRSUrl(
+			"/test-cors-wrong-url/cors-app", HttpMethod.OPTIONS, false);
 	}
 
 }
