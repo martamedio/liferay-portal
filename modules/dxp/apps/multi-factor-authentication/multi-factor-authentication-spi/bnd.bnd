@@ -4,4 +4,5 @@ Bundle-Version: 1.0.0
 Export-Package:\
 	com.liferay.multi.factor.authentication.spi.checker,\
 	com.liferay.multi.factor.authentication.spi.checker.browser,\
-	com.liferay.multi.factor.authentication.spi.checker.headless
+	com.liferay.multi.factor.authentication.spi.checker.headless,\
+	com.liferay.multi.factor.authentication.spi.checker.setup
