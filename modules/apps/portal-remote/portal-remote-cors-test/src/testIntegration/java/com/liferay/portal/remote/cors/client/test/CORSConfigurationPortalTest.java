@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.remote.cors.configuration.PortalCORSConfiguration;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.net.URI;
+
 import java.util.Dictionary;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -80,20 +82,17 @@ public class CORSConfigurationPortalTest extends BaseCORSClientTestCase {
 
 	@Test
 	public void testNoCORSUsingPortalSession() throws Exception {
+		Cookie authenticatedCookie = _getAuthenticatedCookie(
+			"test@liferay.com", "test");
+
 		Invocation.Builder invocationBuilder = _getJsonWebTarget(
 			"user", "get-current-user"
 		).request();
 
-		Cookie authenticatedCookie = _getAuthenticatedCookie(
-			"test@liferay.com", "test");
+		invocationBuilder = invocationBuilder.cookie(authenticatedCookie);
 
-		invocationBuilder.accept(
-			"text/html"
-		).cookie(
-			authenticatedCookie
-		);
-
-		invocationBuilder.header("Origin", "http://test-cors.com");
+		invocationBuilder = invocationBuilder.header(
+			"Origin", "http://test-cors.com");
 
 		Response response = invocationBuilder.get();
 
@@ -104,31 +103,48 @@ public class CORSConfigurationPortalTest extends BaseCORSClientTestCase {
 	}
 
 	private Cookie _getAuthenticatedCookie(String login, String password) {
-		Invocation.Builder invocationBuilder = _getPortalWebTarget().request();
+		Invocation.Builder invocationBuilder = _getWebTarget(
+			"web", "guest"
+		).request();
 
 		Response response = invocationBuilder.get();
 
-		String pAuthToken = _parsePAuthToken(response);
+		_pAuth = _parsePAuthToken(response);
 
 		Map<String, NewCookie> cookies = response.getCookies();
 
 		NewCookie newCookie = cookies.get(CookieKeys.JSESSIONID);
 
-		invocationBuilder = _getLoginWebTarget().request();
+		invocationBuilder = _getWebTarget(
+			"c", "portal", "login"
+		).request();
 
-		invocationBuilder.cookie(newCookie);
+		invocationBuilder = invocationBuilder.cookie(newCookie);
 
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
 		formData.add("login", login);
 		formData.add("password", password);
-		formData.add("p_auth", pAuthToken);
+		formData.add("p_auth", _pAuth);
 
 		response = invocationBuilder.post(Entity.form(formData));
 
 		cookies = response.getCookies();
 
 		newCookie = cookies.get(CookieKeys.JSESSIONID);
+
+		URI redirectLocation = response.getLocation();
+
+		WebTarget redirectWebTarget = _getLocalhostWebTarget();
+
+		redirectWebTarget.path(redirectLocation.getPath());
+
+		invocationBuilder = redirectWebTarget.request();
+		invocationBuilder = invocationBuilder.cookie(newCookie);
+
+		response = invocationBuilder.get();
+
+		_pAuth = _parsePAuthToken(response);
 
 		if (newCookie == null) {
 			return null;
@@ -138,7 +154,7 @@ public class CORSConfigurationPortalTest extends BaseCORSClientTestCase {
 	}
 
 	private WebTarget _getJsonWebTarget(String... paths) {
-		WebTarget webTarget = _getWebTarget();
+		WebTarget webTarget = _getLocalhostWebTarget();
 
 		webTarget = webTarget.path("api");
 		webTarget = webTarget.path("jsonws");
@@ -147,29 +163,10 @@ public class CORSConfigurationPortalTest extends BaseCORSClientTestCase {
 			webTarget = webTarget.path(path);
 		}
 
-		return webTarget;
+		return webTarget.queryParam("p_auth", _pAuth);
 	}
 
-	private WebTarget _getLoginWebTarget() {
-		WebTarget webTarget = _getWebTarget();
-
-		webTarget = webTarget.path("c");
-		webTarget = webTarget.path("portal");
-		webTarget = webTarget.path("login");
-
-		return webTarget;
-	}
-
-	private WebTarget _getPortalWebTarget() {
-		WebTarget webTarget = _getWebTarget();
-
-		webTarget = webTarget.path("web");
-		webTarget = webTarget.path("guest");
-
-		return webTarget;
-	}
-
-	private WebTarget _getWebTarget() {
+	private WebTarget _getLocalhostWebTarget() {
 		ClientBuilder clientBuilder = new ClientBuilderImpl();
 
 		Client client = clientBuilder.build();
@@ -179,6 +176,16 @@ public class CORSConfigurationPortalTest extends BaseCORSClientTestCase {
 		UriBuilder uriBuilder = runtimeDelegate.createUriBuilder();
 
 		return client.target(uriBuilder.uri("http://localhost:8080"));
+	}
+
+	private WebTarget _getWebTarget(String... paths) {
+		WebTarget webTarget = _getLocalhostWebTarget();
+
+		for (String path : paths) {
+			webTarget = webTarget.path(path);
+		}
+
+		return webTarget;
 	}
 
 	private String _parsePAuthToken(Response response) {
@@ -193,5 +200,7 @@ public class CORSConfigurationPortalTest extends BaseCORSClientTestCase {
 
 	private static final Pattern _pAuthTokenPattern = Pattern.compile(
 		"Liferay.authToken\\s*=\\s*(['\"])(((?!\\1).)*)\\1;");
+
+	private String _pAuth;
 
 }
