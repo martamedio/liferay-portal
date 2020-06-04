@@ -17,6 +17,7 @@ package com.liferay.multi.factor.authentication.web.internal.policy;
 import com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration;
 import com.liferay.multi.factor.authentication.spi.checker.browser.BrowserMFAChecker;
 import com.liferay.multi.factor.authentication.spi.checker.headless.HeadlessMFAChecker;
+import com.liferay.multi.factor.authentication.spi.checker.setup.SetupMFAChecker;
 import com.liferay.multi.factor.authentication.web.internal.system.configuration.MFASystemConfiguration;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -24,9 +25,11 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,6 +83,17 @@ public class MFAPolicy {
 		).collect(
 			Collectors.toList()
 		);
+	}
+
+	public Optional<SetupMFAChecker> getSetupMFAChecker(long companyId) {
+		List<SetupMFAChecker> mfaSetupCheckerList =
+			_setupMFACheckerServiceTrackerMap.getService(companyId);
+
+		if (!ListUtil.isEmpty(mfaSetupCheckerList)) {
+			return Optional.of(mfaSetupCheckerList.get(0));
+		}
+
+		return Optional.empty();
 	}
 
 	public boolean isMFAEnabled(long companyId) {
@@ -139,6 +153,10 @@ public class MFAPolicy {
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, HeadlessMFAChecker.class, "(companyId=*)",
 				new PropertyServiceReferenceMapper<>("companyId"));
+		_setupMFACheckerServiceTrackerMap =
+			ServiceTrackerMapFactory.openMultiValueMap(
+				bundleContext, SetupMFAChecker.class, "(companyId=*)",
+				new PropertyServiceReferenceMapper<>("companyId"));
 	}
 
 	@Deactivate
@@ -154,5 +172,7 @@ public class MFAPolicy {
 
 	private ServiceTrackerMap<Long, List<HeadlessMFAChecker>>
 		_headlessMFACheckerServiceTrackerMap;
+	private ServiceTrackerMap<Long, List<SetupMFAChecker>>
+		_setupMFACheckerServiceTrackerMap;
 
 }
