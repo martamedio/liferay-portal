@@ -1,0 +1,1 @@
+create index IX_CEAB81E5 on MFATimeBasedOTPEntry (userId);
