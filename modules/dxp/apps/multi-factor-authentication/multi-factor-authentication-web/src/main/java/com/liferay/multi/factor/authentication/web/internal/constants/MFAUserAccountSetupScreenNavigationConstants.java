@@ -17,22 +17,8 @@ package com.liferay.multi.factor.authentication.web.internal.constants;
 /**
  * @author Marta Medio
  */
-public class MFAWebKeys {
+public class MFAUserAccountSetupScreenNavigationConstants {
 
-	public static final String BROWSER_MFA_CHECKER = "BROWSER_MFA_CHECKER";
-
-	public static final String BROWSER_MFA_CHECKER_NAME =
-		"BROWSER_MFA_CHECKER_NAME";
-
-	public static final String BROWSER_MFA_CHECKERS = "BROWSER_MFA_CHECKERS";
-
-	public static final String MFA_USER_ACCOUNT_LABEL =
-		"MFA_USER_ACCOUNT_LABEL";
-
-	public static final String MFA_USER_ID = "MFA_USER_ID";
-
-	public static final String MFA_WEB_DIGEST = "MFA_WEB_DIGEST";
-
-	public static final String MFA_WEB_KEY = "MFA_WEB_KEY";
+	public static final String CATEGORY_KEY_MFA = "multi-factor-authentication";
 
 }
