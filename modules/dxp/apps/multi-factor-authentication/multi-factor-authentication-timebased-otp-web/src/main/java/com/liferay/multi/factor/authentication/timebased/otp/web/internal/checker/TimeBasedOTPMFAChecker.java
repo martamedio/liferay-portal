@@ -37,9 +37,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
-import com.liferay.portal.url.builder.ModuleAbsolutePortalURLBuilder;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.IOException;
@@ -57,9 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -134,9 +130,6 @@ public class TimeBasedOTPMFAChecker
 				httpServletRequest.setAttribute(
 					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS,
 					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_DIGITS);
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_QRCODE_LIBRARY,
-					_getQRCodeLibraryUrl(httpServletRequest));
 				httpServletRequest.setAttribute(
 					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
 					sharedSecret);
@@ -499,21 +492,6 @@ public class TimeBasedOTPMFAChecker
 		Class<?> clazz = getClass();
 
 		return clazz.getName();
-	}
-
-	private String _getQRCodeLibraryUrl(HttpServletRequest httpServletRequest) {
-		Bundle bundle = FrameworkUtil.getBundle(
-			MFATimeBasedOTPConfiguration.class);
-
-		AbsolutePortalURLBuilder absolutePortalURLBuilder =
-			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
-				httpServletRequest);
-
-		ModuleAbsolutePortalURLBuilder moduleAbsolutePortalURLBuilder =
-			absolutePortalURLBuilder.forModule(bundle, "/js/qrcode.min.js");
-
-		return _portal.getPortalURL(httpServletRequest) +
-			moduleAbsolutePortalURLBuilder.build();
 	}
 
 	@SuppressWarnings("unchecked")
