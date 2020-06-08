@@ -135,9 +135,6 @@ public class TimeBasedOTPMFAChecker
 					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS,
 					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_DIGITS);
 				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_QRCODE_LIBRARY,
-					_getQRCodeLibraryUrl(httpServletRequest));
-				httpServletRequest.setAttribute(
 					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
 					sharedSecret);
 				httpServletRequest.setAttribute(

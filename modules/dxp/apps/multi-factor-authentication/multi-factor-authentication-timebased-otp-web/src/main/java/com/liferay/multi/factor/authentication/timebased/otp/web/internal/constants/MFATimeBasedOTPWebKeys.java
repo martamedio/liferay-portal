@@ -29,9 +29,6 @@ public class MFATimeBasedOTPWebKeys {
 	public static final String MFA_TIME_BASED_OTP_DIGITS =
 		"MFA_TIME_BASED_OTP_DIGITS";
 
-	public static final String MFA_TIME_BASED_OTP_QRCODE_LIBRARY =
-		"MFA_TIME_BASED_OTP_QRCODE_LIBRARY";
-
 	public static final String MFA_TIME_BASED_OTP_SHARED_SECRET =
 		"MFA_TIME_BASED_OTP_SHARED_SECRET";
 

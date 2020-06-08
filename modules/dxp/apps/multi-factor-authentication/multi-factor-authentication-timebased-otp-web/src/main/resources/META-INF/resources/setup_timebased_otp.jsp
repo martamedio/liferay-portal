@@ -20,7 +20,6 @@
 String mfaTimeBasedOTPAlgorithm = GetterUtil.getString(request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_ALGORITHM));
 String mfaTimeBasedOTPCompanyName = GetterUtil.getString(request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_COMPANY_NAME));
 int mfaTimeBasedOTPDigits = GetterUtil.getInteger(request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS));
-String mfaTimeBasedOTPQrCodeLibrary = (String)request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_QRCODE_LIBRARY);
 String mfaTimeBasedOTPSharedSecret = (String)request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET);
 int mfaTimeBasedOTPTimeCounter = GetterUtil.getInteger(request.getAttribute(MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_TIME_COUNTER));
 String userEmailAddress = user.getEmailAddress();
@@ -42,31 +41,19 @@ String userEmailAddress = user.getEmailAddress();
 	<aui:button type="submit" value="submit" />
 </div>
 
-<script src="<%=mfaTimeBasedOTPQrCodeLibrary%>" type="text/javascript"></script>
+<script text="text/javascript">
+	var account = '<%= HtmlUtil.escapeJS(userEmailAddress) %>';
+	var algorithm = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPAlgorithm) %>';
+	var digits = '<%= mfaTimeBasedOTPDigits %>';
+	var issuer = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPCompanyName) %>';
+	var secret = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPSharedSecret) %>';
+	var timeCounter = '<%= mfaTimeBasedOTPTimeCounter %>';
 
-<script type="text/javascript">
-	function <portlet:namespace/>renderQRCode() {
-		var account = '<%= HtmlUtil.escapeJS(userEmailAddress) %>';
-		var algorithm = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPAlgorithm) %>';
-		var digits = '<%= mfaTimeBasedOTPDigits %>';
-		var issuer = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPCompanyName) %>';
-		var secret = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPSharedSecret) %>';
-		var timeCounter = '<%= mfaTimeBasedOTPTimeCounter %>';
+	var text = "otpauth://totp/";
+	text += encodeURIComponent(issuer) + ":" + encodeURIComponent(account);
+	text += "?secret=" + encodeURIComponent(secret) + "&issuer=" + encodeURIComponent(issuer);
+	text += "&algorithm="+encodeURIComponent(algorithm)+"&digits="+encodeURIComponent(digits);
+	text += "&counter="+encodeURIComponent(timeCounter);
 
-		var text = "otpauth://totp/";
-		text += encodeURIComponent(issuer) + ":" + encodeURIComponent(account);
-		text += "?secret=" + encodeURIComponent(secret) + "&issuer=" + encodeURIComponent(issuer);
-		text += "&algorithm="+encodeURIComponent(algorithm)+"&digits="+encodeURIComponent(digits);
-		text += "&counter="+encodeURIComponent(timeCounter);
-
-		new QRCode(document.getElementById("<portlet:namespace/>qrcode"), {
-			text: text,
-			width: 256,
-			height: 256,
-			colorDark: "#000000",
-			colorLight: "#ffffff"
-		});
-	}
-
-	<portlet:namespace/>renderQRCode();
+	// Generate QRCode using "text" inside <div id="<portlet:namespace/>qrcode"></div>
 </script>
