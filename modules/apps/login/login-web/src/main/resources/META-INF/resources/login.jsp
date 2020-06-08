@@ -16,6 +16,14 @@
 
 <%@ include file="/init.jsp" %>
 
+<div id="theQRCode" style="height: 116px;">
+
+</div>
+
+<aui:script require='<%= npmResolvedPackageName + "/qrcode/generateCode as generateCode" %>'>
+	generateCode.default("theQRCode", "theMessage");
+</aui:script>
+
 <c:choose>
 	<c:when test="<%= themeDisplay.isSignedIn() %>">
 
