@@ -1,4 +1,7 @@
 {
+	"dependencies": {
+		"qrcode": "1.4.4"
+	},
 	"name": "login-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
