@@ -141,7 +141,7 @@ public class TimeBasedOTPMFAChecker
 
 				RequestDispatcher requestDispatcher =
 					_servletContext.getRequestDispatcher(
-						"/setup_timebased_otp.jsp");
+						"/mfa_timebased_otp_checker/setup.jsp");
 
 				requestDispatcher.include(
 					httpServletRequest, httpServletResponse);
