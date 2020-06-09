@@ -37,4 +37,7 @@
 
 		<reference entity="User" package-path="com.liferay.portal" />
 	</entity>
+	<exceptions>
+		<exception>DuplicateMFATimeBasedOTPEntry</exception>
+	</exceptions>
 </service-builder>
