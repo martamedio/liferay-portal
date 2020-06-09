@@ -35,4 +35,10 @@ public class MFATimeBasedOTPWebKeys {
 	public static final String MFA_TIME_BASED_OTP_TIME_COUNTER =
 		"MFA_TIME_BASED_OTP_TIME_COUNTER";
 
+	public static final String MFA_TIME_BASED_OTP_VALIDATED_AT_TIME =
+		"MFA_TIME_BASED_OTP_VALIDATED_AT_TIME";
+
+	public static final String MFA_TIME_BASED_OTP_VALIDATED_USER_ID =
+		"MFA_TIME_BASED_OTP_VALIDATED_USER_ID";
+
 }

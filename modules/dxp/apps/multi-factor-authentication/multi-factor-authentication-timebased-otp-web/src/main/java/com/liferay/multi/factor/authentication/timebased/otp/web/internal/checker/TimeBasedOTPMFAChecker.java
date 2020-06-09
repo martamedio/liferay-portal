@@ -33,9 +33,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionary;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 import com.liferay.portal.util.PropsValues;
@@ -44,9 +44,9 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -104,8 +104,7 @@ public class TimeBasedOTPMFAChecker
 				_servletContext.getRequestDispatcher(
 					"/mfa_timebased_otp_checker/setup_completed.jsp");
 
-			requestDispatcher.include(
-				httpServletRequest, httpServletResponse);
+			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
 		else {
 			Company company = _portal.getCompany(httpServletRequest);
@@ -130,14 +129,14 @@ public class TimeBasedOTPMFAChecker
 
 			session.setAttribute(
 				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
-				MFATimeBasedOTPUtil.generateSharedSecret(_algorithmKeySize));
+				MFATimeBasedOTPUtil.generateSharedSecret(
+					_mfaTimeBasedOTPConfiguration.algorithmKeySize()));
 
 			RequestDispatcher requestDispatcher =
 				_servletContext.getRequestDispatcher(
 					"/mfa_timebased_otp_checker/setup.jsp");
 
-			requestDispatcher.include(
-				httpServletRequest, httpServletResponse);
+			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
 	}
 
@@ -196,7 +195,8 @@ public class TimeBasedOTPMFAChecker
 
 		try {
 			if (MFATimeBasedOTPUtil.verifyTimeBasedOTP(
-					_clockSkew, mfaTimeBasedOTPSharedSecret, mfaTimeBasedOTP)) {
+					_mfaTimeBasedOTPConfiguration.clockSkew(),
+					mfaTimeBasedOTPSharedSecret, mfaTimeBasedOTP)) {
 
 				MFATimeBasedOTPEntry timeBasedOTPEntry =
 					_mfaTimeBasedOTPEntryLocalService.addTimeBasedOTPEntry(
@@ -273,17 +273,12 @@ public class TimeBasedOTPMFAChecker
 		if (verifyTimeBasedOTP(mfaTimeBasedOTP, user.getUserId())) {
 			HttpSession httpSession = originalHttpServletRequest.getSession();
 
-			Map<String, Object> validatedMap =
-				(Map<String, Object>)httpSession.getAttribute(_VALIDATED);
-
-			if (validatedMap == null) {
-				validatedMap = new HashMap<>(2);
-
-				httpSession.setAttribute(_VALIDATED, validatedMap);
-			}
-
-			validatedMap.put("userId", userId);
-			validatedMap.put("validatedAt", System.currentTimeMillis());
+			httpSession.setAttribute(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_AT_TIME,
+				System.currentTimeMillis());
+			httpSession.setAttribute(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_USER_ID,
+				userId);
 
 			_mfaTimeBasedOTPEntryLocalService.updateAttempts(
 				userId, remoteAddress, true);
@@ -312,29 +307,24 @@ public class TimeBasedOTPMFAChecker
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		MFATimeBasedOTPConfiguration mfaTimeBasedOTPConfiguration =
-			ConfigurableUtil.createConfigurable(
-				MFATimeBasedOTPConfiguration.class, properties);
+		_mfaTimeBasedOTPConfiguration = ConfigurableUtil.createConfigurable(
+			MFATimeBasedOTPConfiguration.class, properties);
 
-		if (!mfaTimeBasedOTPConfiguration.enabled()) {
+		if (!_mfaTimeBasedOTPConfiguration.enabled()) {
 			return;
 		}
 
-		_algorithmKeySize = mfaTimeBasedOTPConfiguration.algorithmKeySize();
-		_clockSkew = mfaTimeBasedOTPConfiguration.clockSkew();
-		_validationExpirationTime =
-			mfaTimeBasedOTPConfiguration.validationExpirationTime();
-
 		if (PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
-			List<String> sessionPhishingProtectedAttributesList =
-				new ArrayList<>(
-					Arrays.asList(
-						PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES));
+			List<String> sessionPhishingProtectedAttributes = new ArrayList<>(
+				Arrays.asList(
+					PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES));
 
-			sessionPhishingProtectedAttributesList.add(_VALIDATED);
-
+			sessionPhishingProtectedAttributes.add(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_AT_TIME);
+			sessionPhishingProtectedAttributes.add(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_USER_ID);
 			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES =
-				sessionPhishingProtectedAttributesList.toArray(new String[0]);
+				sessionPhishingProtectedAttributes.toArray(new String[0]);
 		}
 
 		_serviceRegistration = bundleContext.registerService(
@@ -354,15 +344,17 @@ public class TimeBasedOTPMFAChecker
 		_serviceRegistration.unregister();
 
 		if (PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
-			List<String> sessionPhishingProtectedAttributesList =
-				new ArrayList<>(
-					Arrays.asList(
-						PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES));
+			List<String> sessionPhishingProtectedAttributes = new ArrayList<>(
+				Arrays.asList(
+					PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES));
 
-			sessionPhishingProtectedAttributesList.remove(_VALIDATED);
+			sessionPhishingProtectedAttributes.remove(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_AT_TIME);
+			sessionPhishingProtectedAttributes.remove(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_USER_ID);
 
 			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES =
-				sessionPhishingProtectedAttributesList.toArray(new String[0]);
+				sessionPhishingProtectedAttributes.toArray(new String[0]);
 		}
 	}
 
@@ -394,38 +386,48 @@ public class TimeBasedOTPMFAChecker
 			return false;
 		}
 
-		Map<String, Object> validatedMap =
-			(Map<String, Object>)httpSession.getAttribute(_VALIDATED);
+		Object mfaTimeBasedOTPValidatedUserId = httpSession.getAttribute(
+			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_USER_ID);
 
-		if (validatedMap != null) {
-			if (userId != MapUtil.getLong(validatedMap, "userId")) {
-				_routeAuditMessage(
-					_mfaTimeBasedOTPAuditMessageBuilder.
-						buildNotVerifiedAuditMessage(
-							user, _getClassName(), "Not the same user"));
+		if (mfaTimeBasedOTPValidatedUserId == null) {
+			_routeAuditMessage(
+				_mfaTimeBasedOTPAuditMessageBuilder.
+					buildNotVerifiedAuditMessage(
+						user, _getClassName(), "Not verified yet"));
 
-				return false;
-			}
+			return false;
+		}
 
-			if (_validationExpirationTime < 0) {
-				_routeAuditMessage(
-					_mfaTimeBasedOTPAuditMessageBuilder.
-						buildVerifiedAuditMessage(user, _getClassName()));
+		if (!Objects.equals(mfaTimeBasedOTPValidatedUserId, userId)) {
+			_routeAuditMessage(
+				_mfaTimeBasedOTPAuditMessageBuilder.
+					buildNotVerifiedAuditMessage(
+						user, _getClassName(), "Not the same user"));
 
-				return true;
-			}
+			return false;
+		}
 
-			long validatedAt = MapUtil.getLong(validatedMap, "validatedAt");
+		if (_mfaTimeBasedOTPConfiguration.validationExpirationTime() < 0) {
+			_routeAuditMessage(
+				_mfaTimeBasedOTPAuditMessageBuilder.buildVerifiedAuditMessage(
+					user, _getClassName()));
 
-			if ((validatedAt + _validationExpirationTime * 1000) >
-					System.currentTimeMillis()) {
+			return true;
+		}
 
-				_routeAuditMessage(
-					_mfaTimeBasedOTPAuditMessageBuilder.
-						buildVerifiedAuditMessage(user, _getClassName()));
+		long time =
+			_mfaTimeBasedOTPConfiguration.validationExpirationTime() *
+				Time.SECOND;
 
-				return true;
-			}
+		time += (long)httpSession.getAttribute(
+			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_AT_TIME);
+
+		if (time > System.currentTimeMillis()) {
+			_routeAuditMessage(
+				_mfaTimeBasedOTPAuditMessageBuilder.buildVerifiedAuditMessage(
+					user, _getClassName()));
+
+			return true;
 		}
 
 		_routeAuditMessage(
@@ -445,8 +447,8 @@ public class TimeBasedOTPMFAChecker
 		if (mfaTimeBasedOTPEntry != null) {
 			try {
 				return MFATimeBasedOTPUtil.verifyTimeBasedOTP(
-					_clockSkew, mfaTimeBasedOTPEntry.getSharedSecret(),
-					timeBasedOtpValue);
+					_mfaTimeBasedOTPConfiguration.clockSkew(),
+					mfaTimeBasedOTPEntry.getSharedSecret(), timeBasedOtpValue);
 			}
 			catch (Exception exception) {
 				_log.error(
@@ -474,21 +476,17 @@ public class TimeBasedOTPMFAChecker
 		}
 	}
 
-	private static final String _VALIDATED =
-		TimeBasedOTPMFAChecker.class.getName() + "#VALIDATED";
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		TimeBasedOTPMFAChecker.class);
 
 	@Reference
 	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
 
-	private int _algorithmKeySize;
-	private long _clockSkew;
-
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
 	private MFATimeBasedOTPAuditMessageBuilder
 		_mfaTimeBasedOTPAuditMessageBuilder;
+
+	private MFATimeBasedOTPConfiguration _mfaTimeBasedOTPConfiguration;
 
 	@Reference
 	private MFATimeBasedOTPEntryLocalService _mfaTimeBasedOTPEntryLocalService;
@@ -505,7 +503,5 @@ public class TimeBasedOTPMFAChecker
 
 	@Reference
 	private UserLocalService _userLocalService;
-
-	private long _validationExpirationTime;
 
 }
