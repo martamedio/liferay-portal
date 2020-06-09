@@ -32,16 +32,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = MFATimeBasedOTPAuditMessageBuilder.class)
 public class MFATimeBasedOTPAuditMessageBuilder {
 
-	public AuditMessage buildMissingSetupUserVerificationFailureAuditMessage(
-		long companyId, User user, String checkerClassName) {
-
-		return new AuditMessage(
-			MFATimeBasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_FAILURE,
-			companyId, user.getUserId(), "NonConfigured", checkerClassName,
-			null, null,
-			JSONUtil.put("reason", "Missing Configuration for User"));
-	}
-
 	public AuditMessage buildNonexistentUserVerificationFailureAuditMessage(
 		long companyId, long userId, String checkerClassName) {
 
@@ -60,6 +50,15 @@ public class MFATimeBasedOTPAuditMessageBuilder {
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
 			checkerClassName, String.valueOf(user.getPrimaryKey()), null,
 			JSONUtil.put("reason", reason));
+	}
+
+	public AuditMessage buildUnconfiguredUserVerificationFailureAuditMessage(
+		long companyId, User user, String checkerClassName) {
+
+		return new AuditMessage(
+			MFATimeBasedOTPEventTypes.MFA_TIMEBASED_OTP_VERIFICATION_FAILURE,
+			companyId, user.getUserId(), "Unconfigured", checkerClassName, null,
+			null, JSONUtil.put("reason", "Unconfigured for User"));
 	}
 
 	public AuditMessage buildVerificationFailureAuditMessage(

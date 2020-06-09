@@ -275,7 +275,7 @@ public class TimeBasedOTPMFAChecker
 
 			_routeAuditMessage(
 				_mfaTimeBasedOTPAuditMessageBuilder.
-					buildMissingSetupUserVerificationFailureAuditMessage(
+					buildUnconfiguredUserVerificationFailureAuditMessage(
 						CompanyThreadLocal.getCompanyId(), user,
 						_getClassName()));
 
