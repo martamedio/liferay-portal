@@ -93,58 +93,51 @@ public class TimeBasedOTPMFAChecker
 	public void includeSetup(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
-		throws IOException, ServletException {
+		throws Exception {
 
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
 			_mfaTimeBasedOTPEntryLocalService.fetchMFATimeBasedOTPEntryByUserId(
 				userId);
 
-		try {
-			if (mfaTimeBasedOTPEntry != null) {
-				RequestDispatcher requestDispatcher =
-					_servletContext.getRequestDispatcher(
-						"/mfa_timebased_otp_checker/setup_completed.jsp");
+		if (mfaTimeBasedOTPEntry != null) {
+			RequestDispatcher requestDispatcher =
+				_servletContext.getRequestDispatcher(
+					"/mfa_timebased_otp_checker/setup_completed.jsp");
 
-				requestDispatcher.include(
-					httpServletRequest, httpServletResponse);
-			}
-			else {
-				Company company = _portal.getCompany(httpServletRequest);
-
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_ALGORITHM,
-					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_ALGORITHM);
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_COMPANY_NAME,
-					company.getName());
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS,
-					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_DIGITS);
-				httpServletRequest.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_TIME_COUNTER,
-					MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_COUNTER);
-
-				HttpServletRequest originalHttpServletRequest =
-					_portal.getOriginalServletRequest(httpServletRequest);
-
-				HttpSession session = originalHttpServletRequest.getSession();
-
-				session.setAttribute(
-					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
-					MFATimeBasedOTPUtil.generateSharedSecret(
-						_algorithmKeySize));
-
-				RequestDispatcher requestDispatcher =
-					_servletContext.getRequestDispatcher(
-						"/mfa_timebased_otp_checker/setup.jsp");
-
-				requestDispatcher.include(
-					httpServletRequest, httpServletResponse);
-			}
+			requestDispatcher.include(
+				httpServletRequest, httpServletResponse);
 		}
-		catch (PortalException portalException) {
-			throw new IOException(
-				"Unable to get Company: " + portalException, portalException);
+		else {
+			Company company = _portal.getCompany(httpServletRequest);
+
+			httpServletRequest.setAttribute(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_ALGORITHM,
+				MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_ALGORITHM);
+			httpServletRequest.setAttribute(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_COMPANY_NAME,
+				company.getName());
+			httpServletRequest.setAttribute(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS,
+				MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_DIGITS);
+			httpServletRequest.setAttribute(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_TIME_COUNTER,
+				MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_COUNTER);
+
+			HttpServletRequest originalHttpServletRequest =
+				_portal.getOriginalServletRequest(httpServletRequest);
+
+			HttpSession session = originalHttpServletRequest.getSession();
+
+			session.setAttribute(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
+				MFATimeBasedOTPUtil.generateSharedSecret(_algorithmKeySize));
+
+			RequestDispatcher requestDispatcher =
+				_servletContext.getRequestDispatcher(
+					"/mfa_timebased_otp_checker/setup.jsp");
+
+			requestDispatcher.include(
+				httpServletRequest, httpServletResponse);
 		}
 	}
 
