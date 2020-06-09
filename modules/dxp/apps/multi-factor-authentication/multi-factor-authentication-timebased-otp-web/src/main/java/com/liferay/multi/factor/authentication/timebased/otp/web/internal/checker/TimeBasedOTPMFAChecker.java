@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.IOException;
@@ -465,9 +464,6 @@ public class TimeBasedOTPMFAChecker
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		TimeBasedOTPMFAChecker.class);
-
-	@Reference
-	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
 
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
 	private MFATimeBasedOTPAuditMessageBuilder
