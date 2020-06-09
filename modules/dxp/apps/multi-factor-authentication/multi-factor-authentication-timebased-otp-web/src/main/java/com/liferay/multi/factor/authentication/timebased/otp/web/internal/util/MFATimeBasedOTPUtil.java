@@ -87,9 +87,8 @@ public class MFATimeBasedOTPUtil {
 	private static byte[] _generateHmac(byte[] key, String text) {
 		try {
 			Mac hmac = Mac.getInstance(MFA_TIMEBASED_OTP_ALGORITHM);
-			SecretKeySpec macKey = new SecretKeySpec(key, "RAW");
 
-			hmac.init(macKey);
+			hmac.init(new SecretKeySpec(key, "RAW"));
 
 			byte[] byteArray = new BigInteger(
 				"10" + text, 16
