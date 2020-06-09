@@ -41,7 +41,7 @@ String userEmailAddress = user.getEmailAddress();
 	<aui:button type="submit" value="submit" />
 </div>
 
-<script text="text/javascript">
+<aui:script require='<%= npmResolvedPackageName + "/qrcode/generateQRCode as generateQRCode" %>'>
 	var account = '<%= HtmlUtil.escapeJS(userEmailAddress) %>';
 	var algorithm = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPAlgorithm) %>';
 	var digits = '<%= mfaTimeBasedOTPDigits %>';
@@ -49,11 +49,19 @@ String userEmailAddress = user.getEmailAddress();
 	var secret = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPSharedSecret) %>';
 	var timeCounter = '<%= mfaTimeBasedOTPTimeCounter %>';
 
-	var text = "otpauth://totp/";
-	text += encodeURIComponent(issuer) + ":" + encodeURIComponent(account);
-	text += "?secret=" + encodeURIComponent(secret) + "&issuer=" + encodeURIComponent(issuer);
-	text += "&algorithm="+encodeURIComponent(algorithm)+"&digits="+encodeURIComponent(digits);
-	text += "&counter="+encodeURIComponent(timeCounter);
+	var qrCodeUrl = 'otpauth://totp/';
+	qrCodeUrl += encodeURIComponent(issuer) + ':' + encodeURIComponent(account);
+	qrCodeUrl +=
+		'?secret=' +
+		encodeURIComponent(secret) +
+		'&issuer=' +
+		encodeURIComponent(issuer);
+	qrCodeUrl +=
+		'&algorithm=' +
+		encodeURIComponent(algorithm) +
+		'&digits=' +
+		encodeURIComponent(digits);
+	qrCodeUrl += '&counter=' + encodeURIComponent(timeCounter);
 
-	// Generate QRCode using "text" inside <div id="<portlet:namespace/>qrcode"></div>
-</script>
+	generateQRCode.default('<portlet:namespace/>qrcode', qrCodeUrl);
+</aui:script>
