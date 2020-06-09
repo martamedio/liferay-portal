@@ -207,12 +207,12 @@ public class TimeBasedOTPMFAChecker
 				}
 			}
 		}
-		catch (Exception exception) {
+		catch (PortalException portalException) {
 			_log.error(
 				StringBundler.concat(
 					"Unable to generate time-based one-time password for user ",
-					userId, ": ", exception.getMessage()),
-				exception);
+					userId, ": ", portalException.getMessage()),
+				portalException);
 		}
 
 		return false;
