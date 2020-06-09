@@ -29,7 +29,7 @@
 
 		<!-- Finder methods -->
 
-		<finder name="UserId" return-type="MFATimeBasedOTP">
+		<finder name="UserId" return-type="MFATimeBasedOTP" unique="true">
 			<finder-column name="userId" />
 		</finder>
 
