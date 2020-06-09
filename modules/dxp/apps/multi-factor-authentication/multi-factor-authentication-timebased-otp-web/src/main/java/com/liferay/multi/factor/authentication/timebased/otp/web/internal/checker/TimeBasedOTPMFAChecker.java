@@ -265,15 +265,12 @@ public class TimeBasedOTPMFAChecker
 			return false;
 		}
 
-		boolean verified = verifyTimeBasedOTP(
-			mfaTimeBasedOTP, user.getUserId());
-
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
 		String remoteAddress = originalHttpServletRequest.getRemoteAddr();
 
-		if (verified) {
+		if (verifyTimeBasedOTP(mfaTimeBasedOTP, user.getUserId())) {
 			HttpSession httpSession = originalHttpServletRequest.getSession();
 
 			Map<String, Object> validatedMap =
@@ -295,19 +292,20 @@ public class TimeBasedOTPMFAChecker
 				_mfaTimeBasedOTPAuditMessageBuilder.
 					buildVerificationSuccessAuditMessage(
 						user, _getClassName()));
-		}
-		else {
-			_mfaTimeBasedOTPEntryLocalService.updateAttempts(
-				user.getUserId(), remoteAddress, false);
 
-			_routeAuditMessage(
-				_mfaTimeBasedOTPAuditMessageBuilder.
-					buildVerificationFailureAuditMessage(
-						user, _getClassName(),
-						"Incorrect time-based one-time password"));
+			return true;
 		}
 
-		return verified;
+		_mfaTimeBasedOTPEntryLocalService.updateAttempts(
+			user.getUserId(), remoteAddress, false);
+
+		_routeAuditMessage(
+			_mfaTimeBasedOTPAuditMessageBuilder.
+				buildVerificationFailureAuditMessage(
+					user, _getClassName(),
+					"Incorrect time-based one-time password"));
+
+		return false;
 	}
 
 	@Activate
