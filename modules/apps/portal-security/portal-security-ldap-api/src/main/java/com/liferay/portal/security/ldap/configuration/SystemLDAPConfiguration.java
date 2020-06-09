@@ -44,6 +44,7 @@ public interface SystemLDAPConfiguration extends CompanyScopedConfiguration {
 
 	@Meta.AD(
 		deflt = "follow", name = "referral",
+		optionLabels = {"follow", "ignore", "throws"},
 		optionValues = {"follow", "ignore", "throws"}, required = false
 	)
 	public String referral();

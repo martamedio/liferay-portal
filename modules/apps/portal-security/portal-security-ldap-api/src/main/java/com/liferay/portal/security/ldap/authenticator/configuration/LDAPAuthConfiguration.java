@@ -51,6 +51,7 @@ public interface LDAPAuthConfiguration extends CompanyScopedConfiguration {
 
 	@Meta.AD(
 		deflt = "bind", description = "method-help", name = "method",
+		optionLabels = {"bind", "password-compare"},
 		optionValues = {"bind", "password-compare"}, required = false
 	)
 	public String method();

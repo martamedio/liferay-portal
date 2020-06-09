@@ -50,8 +50,8 @@ public interface LDAPImportConfiguration extends CompanyScopedConfiguration {
 
 	@Meta.AD(
 		deflt = "user", description = "import-method-help",
-		name = "import-method", optionValues = {"group", "user"},
-		required = false
+		name = "import-method", optionLabels = {"group", "user"},
+		optionValues = {"group", "user"}, required = false
 	)
 	public String importMethod();
 
