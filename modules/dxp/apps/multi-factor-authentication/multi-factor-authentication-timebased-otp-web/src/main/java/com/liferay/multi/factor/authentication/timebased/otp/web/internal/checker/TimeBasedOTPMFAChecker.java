@@ -151,12 +151,6 @@ public class TimeBasedOTPMFAChecker
 			throw new IOException(
 				"Unable to get Company: " + portalException, portalException);
 		}
-		catch (ServletException servletException) {
-			throw new IOException(
-				"Unable to include /setup_timebased_otp.jsp: " +
-					servletException,
-				servletException);
-		}
 	}
 
 	@Override
