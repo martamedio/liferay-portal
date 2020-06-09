@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.util.PropsValues;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,6 +43,7 @@ import java.util.Objects;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -68,7 +70,7 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 	public void includeBrowserVerification(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
-		throws Exception {
+		throws IOException, ServletException {
 
 		User user = _userLocalService.fetchUser(userId);
 

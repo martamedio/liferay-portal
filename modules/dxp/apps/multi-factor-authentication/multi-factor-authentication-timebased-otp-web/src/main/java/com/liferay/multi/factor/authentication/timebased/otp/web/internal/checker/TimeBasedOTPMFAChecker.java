@@ -80,21 +80,13 @@ public class TimeBasedOTPMFAChecker
 	public void includeBrowserVerification(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
-		throws IOException {
+		throws IOException, ServletException {
 
 		RequestDispatcher requestDispatcher =
 			_servletContext.getRequestDispatcher(
 				"/mfa_timebased_otp_checker/verify_browser.jsp");
 
-		try {
-			requestDispatcher.include(httpServletRequest, httpServletResponse);
-		}
-		catch (ServletException servletException) {
-			throw new IOException(
-				"Unable to include /verify_browser.jsp: " +
-					servletException,
-				servletException);
-		}
+		requestDispatcher.include(httpServletRequest, httpServletResponse);
 	}
 
 	@Override
