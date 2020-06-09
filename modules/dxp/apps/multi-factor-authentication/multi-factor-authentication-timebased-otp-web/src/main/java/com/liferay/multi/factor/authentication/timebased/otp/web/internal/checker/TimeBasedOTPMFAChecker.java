@@ -161,7 +161,9 @@ public class TimeBasedOTPMFAChecker
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
-		if (isVerified(originalHttpServletRequest.getSession(false), userId)) {
+		HttpSession httpSession = originalHttpServletRequest.getSession(false);
+
+		if (isVerified(httpSession, userId)) {
 			return true;
 		}
 
