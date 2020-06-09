@@ -94,10 +94,8 @@ public class MFATimeBasedOTPUtil {
 
 			byte[] byteArray = bigInteger.toByteArray();
 
-			byte[] textBytes = Arrays.copyOfRange(
-				byteArray, 1, byteArray.length);
-
-			return hmac.doFinal(textBytes);
+			return hmac.doFinal(
+				Arrays.copyOfRange(byteArray, 1, byteArray.length));
 		}
 		catch (InvalidKeyException invalidKeyException) {
 			throw new IllegalArgumentException(
