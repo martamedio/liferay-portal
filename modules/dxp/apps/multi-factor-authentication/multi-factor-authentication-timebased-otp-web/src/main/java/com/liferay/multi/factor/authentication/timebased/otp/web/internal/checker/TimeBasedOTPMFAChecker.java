@@ -274,20 +274,18 @@ public class TimeBasedOTPMFAChecker
 		String remoteAddress = originalHttpServletRequest.getRemoteAddr();
 
 		if (verified) {
-			long validatedAt = System.currentTimeMillis();
+			HttpSession httpSession = originalHttpServletRequest.getSession();
 
-			HttpSession session = originalHttpServletRequest.getSession();
-
-			Map<String, Object> validatedMap = _getValidatedMap(session);
+			Map<String, Object> validatedMap = _getValidatedMap(httpSession);
 
 			if (validatedMap == null) {
 				validatedMap = new HashMap<>(2);
 
-				session.setAttribute(_VALIDATED, validatedMap);
+				httpSession.setAttribute(_VALIDATED, validatedMap);
 			}
 
 			validatedMap.put("userId", userId);
-			validatedMap.put("validatedAt", validatedAt);
+			validatedMap.put("validatedAt", System.currentTimeMillis());
 
 			_mfaTimeBasedOTPEntryLocalService.updateAttempts(
 				userId, remoteAddress, true);
