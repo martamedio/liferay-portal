@@ -17,8 +17,8 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String label = (String)request.getAttribute(MFAWebKeys.MFA_USER_ACCOUNT_LABEL);
-SetupMFAChecker mfaSetupChecker = (SetupMFAChecker)request.getAttribute(SetupMFAChecker.class.getName());
+String mfaUserAccountLabel = (String)request.getAttribute(MFAWebKeys.MFA_USER_ACCOUNT_LABEL);
+SetupMFAChecker setupMFAChecker = (SetupMFAChecker)request.getAttribute(SetupMFAChecker.class.getName());
 long userId = user.getUserId();
 %>
 
@@ -31,13 +31,13 @@ long userId = user.getUserId();
 
 	<div class="sheet sheet-lg">
 		<div class="sheet-header">
-			<h1 class="sheet-title"><%= label %></h1>
+			<h1 class="sheet-title"><%= mfaUserAccountLabel %></h1>
 		</div>
 
 		<liferay-ui:error key="userAccountSetupFailed" message="user-account-setup-failed" />
 
 		<%
-		mfaSetupChecker.includeSetup(request, response, userId);
+		setupMFAChecker.includeSetup(request, response, userId);
 		%>
 
 	</div>
