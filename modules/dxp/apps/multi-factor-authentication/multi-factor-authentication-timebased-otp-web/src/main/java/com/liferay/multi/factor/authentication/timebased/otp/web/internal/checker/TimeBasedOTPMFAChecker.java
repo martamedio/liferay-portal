@@ -189,19 +189,18 @@ public class TimeBasedOTPMFAChecker
 
 		HttpSession httpSession = originalHttpServletRequest.getSession();
 
-		String sharedSecret = (String)httpSession.getAttribute(
+		String mfaTimeBasedOTPSharedSecret = (String)httpSession.getAttribute(
 			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET);
-
 		String mfaTimeBasedOTP = ParamUtil.getString(
 			httpServletRequest, "mfaTimeBasedOTP");
 
 		try {
 			if (MFATimeBasedOTPUtil.verifyTimeBasedOTP(
-					_clockSkew, sharedSecret, mfaTimeBasedOTP)) {
+					_clockSkew, mfaTimeBasedOTPSharedSecret, mfaTimeBasedOTP)) {
 
 				MFATimeBasedOTPEntry timeBasedOTPEntry =
 					_mfaTimeBasedOTPEntryLocalService.addTimeBasedOTPEntry(
-						sharedSecret, userId);
+						mfaTimeBasedOTPSharedSecret, userId);
 
 				if (timeBasedOTPEntry != null) {
 					return true;
