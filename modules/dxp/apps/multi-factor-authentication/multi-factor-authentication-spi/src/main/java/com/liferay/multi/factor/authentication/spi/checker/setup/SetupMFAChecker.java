@@ -16,8 +16,6 @@ package com.liferay.multi.factor.authentication.spi.checker.setup;
 
 import com.liferay.multi.factor.authentication.spi.checker.MFAChecker;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,7 +28,7 @@ public interface SetupMFAChecker extends MFAChecker {
 	public void includeSetup(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
-		throws IOException;
+		throws Exception;
 
 	public boolean isAvailable(long userId);
 

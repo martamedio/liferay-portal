@@ -93,7 +93,7 @@ public class TimeBasedOTPMFAChecker
 	public void includeSetup(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long userId)
-		throws IOException {
+		throws IOException, ServletException {
 
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
 			_mfaTimeBasedOTPEntryLocalService.fetchMFATimeBasedOTPEntryByUserId(
