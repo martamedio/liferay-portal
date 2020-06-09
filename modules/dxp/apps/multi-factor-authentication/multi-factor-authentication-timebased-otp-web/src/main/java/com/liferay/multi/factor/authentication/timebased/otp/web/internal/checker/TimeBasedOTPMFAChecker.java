@@ -276,7 +276,8 @@ public class TimeBasedOTPMFAChecker
 		if (verified) {
 			HttpSession httpSession = originalHttpServletRequest.getSession();
 
-			Map<String, Object> validatedMap = _getValidatedMap(httpSession);
+			Map<String, Object> validatedMap =
+				(Map<String, Object>)httpSession.getAttribute(_VALIDATED);
 
 			if (validatedMap == null) {
 				validatedMap = new HashMap<>(2);
@@ -395,7 +396,8 @@ public class TimeBasedOTPMFAChecker
 			return false;
 		}
 
-		Map<String, Object> validatedMap = _getValidatedMap(httpSession);
+		Map<String, Object> validatedMap =
+			(Map<String, Object>)httpSession.getAttribute(_VALIDATED);
 
 		if (validatedMap != null) {
 			if (userId != MapUtil.getLong(validatedMap, "userId")) {
@@ -466,11 +468,6 @@ public class TimeBasedOTPMFAChecker
 		Class<?> clazz = getClass();
 
 		return clazz.getName();
-	}
-
-	@SuppressWarnings("unchecked")
-	private Map<String, Object> _getValidatedMap(HttpSession httpSession) {
-		return (Map<String, Object>)httpSession.getAttribute(_VALIDATED);
 	}
 
 	private void _routeAuditMessage(AuditMessage auditMessage) {
