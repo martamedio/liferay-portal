@@ -270,7 +270,7 @@ public class TimeBasedOTPMFAChecker
 
 		String remoteAddress = originalHttpServletRequest.getRemoteAddr();
 
-		if (verifyTimeBasedOTP(mfaTimeBasedOTP, user.getUserId())) {
+		if (_verify(mfaTimeBasedOTP, user.getUserId())) {
 			HttpSession httpSession = originalHttpServletRequest.getSession();
 
 			httpSession.setAttribute(
@@ -437,9 +437,19 @@ public class TimeBasedOTPMFAChecker
 		return false;
 	}
 
-	protected boolean verifyTimeBasedOTP(
-		String timeBasedOtpValue, long userId) {
+	private String _getClassName() {
+		Class<?> clazz = getClass();
 
+		return clazz.getName();
+	}
+
+	private void _routeAuditMessage(AuditMessage auditMessage) {
+		if (_mfaTimeBasedOTPAuditMessageBuilder != null) {
+			_mfaTimeBasedOTPAuditMessageBuilder.routeAuditMessage(auditMessage);
+		}
+	}
+
+	private boolean _verify(String timeBasedOtpValue, long userId) {
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
 			_mfaTimeBasedOTPEntryLocalService.fetchMFATimeBasedOTPEntryByUserId(
 				userId);
@@ -451,18 +461,6 @@ public class TimeBasedOTPMFAChecker
 		}
 
 		return false;
-	}
-
-	private String _getClassName() {
-		Class<?> clazz = getClass();
-
-		return clazz.getName();
-	}
-
-	private void _routeAuditMessage(AuditMessage auditMessage) {
-		if (_mfaTimeBasedOTPAuditMessageBuilder != null) {
-			_mfaTimeBasedOTPAuditMessageBuilder.routeAuditMessage(auditMessage);
-		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
