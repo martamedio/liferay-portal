@@ -58,14 +58,15 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 				"User ID  " + userId);
 		}
 
-		User user = userLocalService.getUserById(userId);
-
 		mfaTimeBasedOTPEntry = mfaTimeBasedOTPEntryPersistence.create(
 			counterLocalService.increment());
+
+		User user = userLocalService.getUserById(userId);
 
 		mfaTimeBasedOTPEntry.setCompanyId(user.getCompanyId());
 		mfaTimeBasedOTPEntry.setUserId(userId);
 		mfaTimeBasedOTPEntry.setUserName(user.getFullName());
+
 		mfaTimeBasedOTPEntry.setCreateDate(new Date());
 		mfaTimeBasedOTPEntry.setSharedSecret(sharedSecret);
 
