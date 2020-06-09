@@ -72,7 +72,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 	configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true,
 	service = {}
 )
-public class TimeBasedOTPMFAChecker
+public class TimeBasedOTPBrowserSetupMFAChecker
 	implements BrowserMFAChecker, SetupMFAChecker {
 
 	@Override
@@ -463,7 +463,7 @@ public class TimeBasedOTPMFAChecker
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		TimeBasedOTPMFAChecker.class);
+		TimeBasedOTPBrowserSetupMFAChecker.class);
 
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL)
 	private MFATimeBasedOTPAuditMessageBuilder
