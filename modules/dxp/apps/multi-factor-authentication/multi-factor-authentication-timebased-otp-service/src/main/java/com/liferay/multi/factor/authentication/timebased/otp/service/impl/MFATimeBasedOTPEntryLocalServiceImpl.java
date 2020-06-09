@@ -14,6 +14,7 @@
 
 package com.liferay.multi.factor.authentication.timebased.otp.service.impl;
 
+import com.liferay.multi.factor.authentication.timebased.otp.exception.DuplicateMFATimeBasedOTPEntryException;
 import com.liferay.multi.factor.authentication.timebased.otp.exception.NoSuchEntryException;
 import com.liferay.multi.factor.authentication.timebased.otp.model.MFATimeBasedOTPEntry;
 import com.liferay.multi.factor.authentication.timebased.otp.service.base.MFATimeBasedOTPEntryLocalServiceBaseImpl;
@@ -53,9 +54,8 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 			mfaTimeBasedOTPEntryPersistence.fetchByUserId(userId);
 
 		if (mfaTimeBasedOTPEntry != null) {
-			throw new IllegalArgumentException(
-				"There is already one TimeBased One-Time password for user " +
-					userId);
+			throw new DuplicateMFATimeBasedOTPEntryException(
+				"User ID  " + userId);
 		}
 
 		User user = userLocalService.getUserById(userId);
