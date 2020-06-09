@@ -90,9 +90,9 @@ public class MFATimeBasedOTPUtil {
 
 			hmac.init(new SecretKeySpec(key, "RAW"));
 
-			byte[] byteArray = new BigInteger(
-				"10" + text, 16
-			).toByteArray();
+			BigInteger bigInteger = new BigInteger("10" + text, 16);
+
+			byte[] byteArray = bigInteger.toByteArray();
 
 			byte[] textBytes = Arrays.copyOfRange(
 				byteArray, 1, byteArray.length);
