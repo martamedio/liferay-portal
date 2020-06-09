@@ -445,20 +445,9 @@ public class TimeBasedOTPMFAChecker
 				userId);
 
 		if (mfaTimeBasedOTPEntry != null) {
-			try {
-				return MFATimeBasedOTPUtil.verifyTimeBasedOTP(
-					_mfaTimeBasedOTPConfiguration.clockSkew(),
-					mfaTimeBasedOTPEntry.getSharedSecret(), timeBasedOtpValue);
-			}
-			catch (Exception exception) {
-				_log.error(
-					StringBundler.concat(
-						"Unable to generate TimeBased One-Time password for",
-						"user ", userId, ": ", exception.getMessage()),
-					exception);
-
-				return false;
-			}
+			return MFATimeBasedOTPUtil.verifyTimeBasedOTP(
+				_mfaTimeBasedOTPConfiguration.clockSkew(),
+				mfaTimeBasedOTPEntry.getSharedSecret(), timeBasedOtpValue);
 		}
 
 		return false;
