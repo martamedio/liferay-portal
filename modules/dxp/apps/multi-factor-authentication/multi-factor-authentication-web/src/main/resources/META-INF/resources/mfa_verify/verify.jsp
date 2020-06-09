@@ -50,7 +50,7 @@ int mfaCheckerIndex = ParamUtil.getInteger(request, "mfaCheckerIndex");
 			<portlet:param name="mfaCheckerIndex" value='<%= ((mfaCheckerIndex + 1) < browserMFACheckers.size()) ? String.valueOf(mfaCheckerIndex + 1) : "0" %>' />
 		</portlet:renderURL>
 
-		<b><a href="<%= HtmlUtil.escapeAttribute(useAnotherBrowserMFAChecker) %>"><liferay-ui:message key="use-another-mfa-checker" />: <%= browserMFACheckerName %></a></b>
+		<b><a href="<%= HtmlUtil.escapeAttribute(useAnotherBrowserMFAChecker) %>"><%= LanguageUtil.format(request, "use-another-mfa-checker", browserMFACheckerName, false) %></a></b>
 	</c:if>
 
 	<aui:button-row>
