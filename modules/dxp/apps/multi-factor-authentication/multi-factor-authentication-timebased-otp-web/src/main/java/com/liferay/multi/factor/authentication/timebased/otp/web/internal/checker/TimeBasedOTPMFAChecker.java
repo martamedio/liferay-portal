@@ -83,14 +83,15 @@ public class TimeBasedOTPMFAChecker
 		throws IOException {
 
 		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher("/verify_timebased_otp.jsp");
+			_servletContext.getRequestDispatcher(
+				"/mfa_timebased_otp_checker/verify_browser.jsp");
 
 		try {
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
 		catch (ServletException servletException) {
 			throw new IOException(
-				"Unable to include /verify_timebased_otp.jsp: " +
+				"Unable to include /verify_browser.jsp: " +
 					servletException,
 				servletException);
 		}
