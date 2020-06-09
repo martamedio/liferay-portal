@@ -16,10 +16,16 @@ package com.liferay.portal.remote.cors.client.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.remote.cors.configuration.PortalCORSConfiguration;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import java.net.URI;
 
@@ -27,6 +33,7 @@ import java.util.Dictionary;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.DeflaterOutputStream;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Client;
@@ -191,11 +198,30 @@ public class CORSConfigurationPortalTest extends BaseCORSClientTestCase {
 	private String _parsePAuthToken(Response response) {
 		String bodyContent = response.readEntity(String.class);
 
-		Matcher matcher = _pAuthTokenPattern.matcher(bodyContent);
+		try {
+			Matcher matcher = _pAuthTokenPattern.matcher(bodyContent);
 
-		matcher.find();
+			matcher.find();
 
-		return matcher.group(2);
+			return matcher.group(2);
+		}
+		catch (Exception exception) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+			try (DeflaterOutputStream out = new DeflaterOutputStream(baos)) {
+				out.write(bodyContent.getBytes());
+			}
+			catch (IOException ioException) {
+				throw new RuntimeException(ioException);
+			}
+
+			throw new RuntimeException(
+				StringBundler.concat(
+					"https://gchq.github.io/CyberChef/#recipe=",
+					URLCodec.encodeURL("From_Base64()Zlib_Inflate()"),
+					"\nInput:\n", Base64.encode(baos.toByteArray())),
+				exception);
+		}
 	}
 
 	private static final Pattern _pAuthTokenPattern = Pattern.compile(
