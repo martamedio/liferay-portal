@@ -74,8 +74,8 @@ public class MFATimeBasedOTPUtil {
 
 		for (long i = initialTime; i <= finalTime; i++) {
 			if (value.equals(
-				_generateTimeBasedOTP(
-					decodedSharedSecret, _getTimeCountHex(i)))) {
+					_generateTimeBasedOTP(
+						decodedSharedSecret, _getTimeCountHex(i)))) {
 
 				return true;
 			}

@@ -189,6 +189,7 @@ public class TimeBasedOTPBrowserSetupMFAChecker
 
 		String mfaTimeBasedOTPSharedSecret = (String)httpSession.getAttribute(
 			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET);
+
 		String mfaTimeBasedOTP = ParamUtil.getString(
 			httpServletRequest, "mfaTimeBasedOTP");
 
@@ -322,6 +323,7 @@ public class TimeBasedOTPBrowserSetupMFAChecker
 				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_AT_TIME);
 			sessionPhishingProtectedAttributes.add(
 				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_VALIDATED_USER_ID);
+
 			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES =
 				sessionPhishingProtectedAttributes.toArray(new String[0]);
 		}
