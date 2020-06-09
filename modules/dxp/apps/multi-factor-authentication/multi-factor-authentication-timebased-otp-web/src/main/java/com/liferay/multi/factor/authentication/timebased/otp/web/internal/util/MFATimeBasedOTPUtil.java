@@ -61,15 +61,15 @@ public class MFATimeBasedOTPUtil {
 	}
 
 	public static boolean verifyTimeBasedOTP(
-		long clockSkewMs, String sharedSecret, String value) {
+		long clockSkew, String sharedSecret, String value) {
 
 		byte[] decodedSharedSecret = Base32.decode(sharedSecret);
 
 		long min =
-			(System.currentTimeMillis() - clockSkewMs) /
+			(System.currentTimeMillis() - clockSkew) /
 				MFA_TIMEBASED_OTP_COUNTER;
 		long max =
-			(System.currentTimeMillis() + clockSkewMs) /
+			(System.currentTimeMillis() + clockSkew) /
 				MFA_TIMEBASED_OTP_COUNTER;
 
 		for (long i = min; i <= max; i++) {
