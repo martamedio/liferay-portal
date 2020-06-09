@@ -64,6 +64,7 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 		User user = userLocalService.getUserById(userId);
 
 		mfaTimeBasedOTPEntry.setCompanyId(user.getCompanyId());
+
 		mfaTimeBasedOTPEntry.setUserId(userId);
 		mfaTimeBasedOTPEntry.setUserName(user.getFullName());
 
