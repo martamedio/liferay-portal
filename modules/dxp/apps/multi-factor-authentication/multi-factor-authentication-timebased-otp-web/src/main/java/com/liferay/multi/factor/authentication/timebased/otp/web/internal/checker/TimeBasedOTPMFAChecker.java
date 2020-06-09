@@ -131,7 +131,8 @@ public class TimeBasedOTPMFAChecker
 
 				session.setAttribute(
 					MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
-					MFATimeBasedOTPUtil.generateSharedKey(_algorithmKeySize));
+					MFATimeBasedOTPUtil.generateSharedSecret(
+						_algorithmKeySize));
 
 				RequestDispatcher requestDispatcher =
 					_servletContext.getRequestDispatcher(
