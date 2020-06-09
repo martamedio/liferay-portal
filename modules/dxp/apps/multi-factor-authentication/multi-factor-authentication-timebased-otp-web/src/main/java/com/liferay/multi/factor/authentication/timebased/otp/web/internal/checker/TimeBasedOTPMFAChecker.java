@@ -187,9 +187,9 @@ public class TimeBasedOTPMFAChecker
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
-		HttpSession session = originalHttpServletRequest.getSession();
+		HttpSession httpSession = originalHttpServletRequest.getSession();
 
-		String sharedSecret = (String)session.getAttribute(
+		String sharedSecret = (String)httpSession.getAttribute(
 			MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET);
 
 		String mfaTimeBasedOTP = ParamUtil.getString(
