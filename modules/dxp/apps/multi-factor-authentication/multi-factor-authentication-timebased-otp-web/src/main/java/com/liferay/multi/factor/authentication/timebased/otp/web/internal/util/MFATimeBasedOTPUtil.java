@@ -65,20 +65,18 @@ public class MFATimeBasedOTPUtil {
 
 		byte[] decodedSharedSecret = Base32.decode(sharedSecret);
 
-		long min =
+		long initialTime =
 			(System.currentTimeMillis() - clockSkew) /
 				MFA_TIMEBASED_OTP_COUNTER;
-		long max =
+		long finalTime =
 			(System.currentTimeMillis() + clockSkew) /
 				MFA_TIMEBASED_OTP_COUNTER;
 
-		for (long i = min; i <= max; i++) {
-			String timeCountHex = _getTimeCountHex(i);
+		for (long i = initialTime; i <= finalTime; i++) {
+			if (value.equals(
+				_generateTimeBasedOTP(
+					decodedSharedSecret, _getTimeCountHex(i)))) {
 
-			String generatedTimeBasedOTP = _generateTimeBasedOTP(
-				decodedSharedSecret, timeCountHex);
-
-			if (value.equals(generatedTimeBasedOTP)) {
 				return true;
 			}
 		}
