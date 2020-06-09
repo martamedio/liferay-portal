@@ -134,9 +134,8 @@ public class MFATimeBasedOTPUtil {
 			return hex;
 		}
 
-		hex = String.format("%16s", hex);
-
-		return StringUtil.replace(hex, CharPool.SPACE, CharPool.NUMBER_0);
+		return StringUtil.replace(
+			String.format("%16s", hex), CharPool.SPACE, CharPool.NUMBER_0);
 	}
 
 }
