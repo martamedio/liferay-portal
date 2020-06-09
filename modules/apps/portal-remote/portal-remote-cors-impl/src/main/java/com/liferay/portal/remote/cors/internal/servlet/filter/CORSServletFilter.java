@@ -39,10 +39,7 @@ public class CORSServletFilter extends BaseFilter {
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		if (OAuth2ProviderScopeLiferayAccessControlContext.
-				isOAuth2AuthVerified() &&
-			corsSupport.isCORSRequest(httpServletRequest::getHeader)) {
-
+		if (corsSupport.isCORSRequest(httpServletRequest::getHeader)) {
 			return true;
 		}
 
@@ -68,7 +65,9 @@ public class CORSServletFilter extends BaseFilter {
 			return;
 		}
 
-		if (corsSupport.isValidCORSRequest(
+		if (OAuth2ProviderScopeLiferayAccessControlContext.
+				isOAuth2AuthVerified() &&
+			corsSupport.isValidCORSRequest(
 				httpServletRequest.getMethod(),
 				httpServletRequest::getHeader)) {
 
