@@ -85,17 +85,6 @@ public class MFAPolicy {
 		);
 	}
 
-	public Optional<SetupMFAChecker> getSetupMFAChecker(long companyId) {
-		List<SetupMFAChecker> mfaSetupCheckerList =
-			_setupMFACheckerServiceTrackerMap.getService(companyId);
-
-		if (!ListUtil.isEmpty(mfaSetupCheckerList)) {
-			return Optional.of(mfaSetupCheckerList.get(0));
-		}
-
-		return Optional.empty();
-	}
-
 	public boolean isMFAEnabled(long companyId) {
 		try {
 			MFASystemConfiguration mfaSystemConfiguration =
@@ -153,10 +142,6 @@ public class MFAPolicy {
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, HeadlessMFAChecker.class, "(companyId=*)",
 				new PropertyServiceReferenceMapper<>("companyId"));
-		_setupMFACheckerServiceTrackerMap =
-			ServiceTrackerMapFactory.openMultiValueMap(
-				bundleContext, SetupMFAChecker.class, "(companyId=*)",
-				new PropertyServiceReferenceMapper<>("companyId"));
 	}
 
 	@Deactivate
@@ -172,7 +157,5 @@ public class MFAPolicy {
 
 	private ServiceTrackerMap<Long, List<HeadlessMFAChecker>>
 		_headlessMFACheckerServiceTrackerMap;
-	private ServiceTrackerMap<Long, List<SetupMFAChecker>>
-		_setupMFACheckerServiceTrackerMap;
 
 }
