@@ -20,7 +20,6 @@
 String mfaUserAccountLabel = GetterUtil.getString(request.getAttribute(MFAWebKeys.MFA_USER_ACCOUNT_LABEL));
 SetupMFAChecker setupMFAChecker = (SetupMFAChecker)request.getAttribute(SetupMFAChecker.class.getName());
 long setupMFACheckerServiceId = GetterUtil.getLong(request.getAttribute(MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID));
-long userId = user.getUserId();
 %>
 
 <portlet:actionURL name="/my_account/setup_mfa" var="actionURL">
@@ -39,7 +38,7 @@ long userId = user.getUserId();
 		<liferay-ui:error key="userAccountSetupFailed" message="user-account-setup-failed" />
 
 		<%
-		setupMFAChecker.includeSetup(request, response, userId);
+		setupMFAChecker.includeSetup(request, response, user.getUserId());
 		%>
 
 	</div>
