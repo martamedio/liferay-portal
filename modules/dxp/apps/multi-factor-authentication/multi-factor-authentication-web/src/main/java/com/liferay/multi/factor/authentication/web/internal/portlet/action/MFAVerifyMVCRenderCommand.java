@@ -87,16 +87,14 @@ public class MFAVerifyMVCRenderCommand implements MVCRenderCommand {
 			browserMFAChecker = browserMFACheckers.get(0);
 		}
 
-		BrowserMFAChecker nextAvailableBrowserMFAChecker = null;
+		BrowserMFAChecker nextAvailableBrowserMFAChecker =
+			browserMFACheckers.get(0);
 
 		if ((mfaCheckerIndex > -1) &&
 			((mfaCheckerIndex + 1) < browserMFACheckers.size())) {
 
 			nextAvailableBrowserMFAChecker = browserMFACheckers.get(
 				mfaCheckerIndex + 1);
-		}
-		else {
-			nextAvailableBrowserMFAChecker = browserMFACheckers.get(0);
 		}
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
