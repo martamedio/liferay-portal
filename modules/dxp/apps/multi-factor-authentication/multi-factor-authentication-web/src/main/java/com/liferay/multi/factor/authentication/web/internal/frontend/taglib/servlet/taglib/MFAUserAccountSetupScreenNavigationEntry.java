@@ -127,8 +127,8 @@ public class MFAUserAccountSetupScreenNavigationEntry
 		}
 	}
 
-	private final SetupMFAChecker _setupMFAChecker;
 	private final long _serviceId;
 	private final ServletContext _servletContext;
+	private final SetupMFAChecker _setupMFAChecker;
 
 }

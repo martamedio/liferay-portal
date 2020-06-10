@@ -15,7 +15,7 @@
 package com.liferay.multi.factor.authentication.web.internal.portlet.action;
 
 import com.liferay.multi.factor.authentication.spi.checker.setup.SetupMFAChecker;
-import com.liferay.multi.factor.authentication.web.internal.policy.MFAPolicy;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -28,11 +28,12 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
-import java.util.Optional;
-
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -49,23 +50,17 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_bundleContext = bundleContext;
+	}
+
 	@Override
 	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		Optional<SetupMFAChecker> optionalMfaSetupChecker =
-			_mfaPolicy.getSetupMFAChecker(_portal.getCompanyId(actionRequest));
-
-		if (!optionalMfaSetupChecker.isPresent()) {
-			_log.error(
-				"Unable to generate user account setup for Multi-Factor " +
-					"Authentication: Setup verifier not present");
-
-			return;
-		}
-
-		SetupMFAChecker mfaSetupChecker = optionalMfaSetupChecker.get();
+		SetupMFAChecker mfaSetupChecker = getSetupMFAChecker(actionRequest);
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -98,11 +93,41 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
+	protected SetupMFAChecker getSetupMFAChecker(ActionRequest actionRequest) {
+		long setupMFACheckerServiceId = ParamUtil.getLong(
+			actionRequest, "setupMFACheckerServiceId");
+
+		ServiceReference<?> setupMFACheckerServiceReference =
+			_bundleContext.getServiceReference(
+				StringBundler.concat(
+					"(service.id=", setupMFACheckerServiceId, ")"));
+
+		if (setupMFACheckerServiceReference == null) {
+			_log.error(
+				"Unable to find SetupMFAChecker with service.id " +
+					setupMFACheckerServiceId);
+
+			return null;
+		}
+
+		Object setupMFAChecker = _bundleContext.getService(
+			setupMFACheckerServiceReference);
+
+		if (setupMFAChecker instanceof SetupMFAChecker) {
+			return (SetupMFAChecker)setupMFAChecker;
+		}
+
+		_log.error(
+			"Service with id " + setupMFACheckerServiceId +
+				" is not a SetupMFAChecker or is errored");
+
+		return null;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		MFAUserAccountSetupMVCActionCommand.class);
 
-	@Reference
-	private MFAPolicy _mfaPolicy;
+	private BundleContext _bundleContext;
 
 	@Reference
 	private Portal _portal;
