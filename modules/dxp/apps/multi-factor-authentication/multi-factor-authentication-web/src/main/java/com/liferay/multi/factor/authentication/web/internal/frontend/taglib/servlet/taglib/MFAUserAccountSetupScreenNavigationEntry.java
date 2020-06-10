@@ -102,14 +102,14 @@ public class MFAUserAccountSetupScreenNavigationEntry
 		throws IOException {
 
 		httpServletRequest.setAttribute(
-			SetupMFAChecker.class.getName(), _setupMFAChecker);
-
-		httpServletRequest.setAttribute(
 			MFAWebKeys.MFA_USER_ACCOUNT_LABEL,
 			getLabel(httpServletRequest.getLocale()));
 		httpServletRequest.setAttribute(
 			MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID,
 			GetterUtil.getLong(_serviceReference.getProperty("service.id")));
+
+		httpServletRequest.setAttribute(
+			SetupMFAChecker.class.getName(), _setupMFAChecker);
 
 		RequestDispatcher requestDispatcher =
 			_servletContext.getRequestDispatcher(
