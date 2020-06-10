@@ -35,4 +35,7 @@ public class MFAWebKeys {
 
 	public static final String MFA_WEB_KEY = "MFA_WEB_KEY";
 
+	public static final String SETUP_MFA_CHECKER_SERVICE_ID =
+		"SETUP_MFA_CHECKER_SERVICE_ID";
+
 }

@@ -18,6 +18,7 @@
 
 <%
 String mfaUserAccountLabel = (String)request.getAttribute(MFAWebKeys.MFA_USER_ACCOUNT_LABEL);
+long setupMFACheckerServiceId = GetterUtil.getLong(request.getAttribute(MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID));
 SetupMFAChecker setupMFAChecker = (SetupMFAChecker)request.getAttribute(SetupMFAChecker.class.getName());
 long userId = user.getUserId();
 %>
@@ -28,6 +29,7 @@ long userId = user.getUserId();
 
 <aui:form action="<%= actionURL %>" cssClass="portlet-users-admin-edit-user" data-senna-off="true" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+	<aui:input name="setupMFACheckerServiceId" type="hidden" value="<%= setupMFACheckerServiceId %>" />
 
 	<div class="sheet sheet-lg">
 		<div class="sheet-header">

@@ -45,8 +45,10 @@ public class MFAUserAccountSetupScreenNavigationEntry
 	implements ScreenNavigationEntry<User> {
 
 	public MFAUserAccountSetupScreenNavigationEntry(
-		SetupMFAChecker mfaSetupChecker, ServletContext servletContext) {
+		long serviceId, SetupMFAChecker mfaSetupChecker,
+		ServletContext servletContext) {
 
+		_serviceId = serviceId;
 		_mfaSetupChecker = mfaSetupChecker;
 		_servletContext = servletContext;
 	}
@@ -108,6 +110,8 @@ public class MFAUserAccountSetupScreenNavigationEntry
 		httpServletRequest.setAttribute(
 			MFAWebKeys.MFA_USER_ACCOUNT_LABEL,
 			getLabel(httpServletRequest.getLocale()));
+		httpServletRequest.setAttribute(
+			MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID, _serviceId);
 
 		RequestDispatcher requestDispatcher =
 			_servletContext.getRequestDispatcher(
@@ -124,6 +128,7 @@ public class MFAUserAccountSetupScreenNavigationEntry
 	}
 
 	private final SetupMFAChecker _mfaSetupChecker;
+	private final long _serviceId;
 	private final ServletContext _servletContext;
 
 }
