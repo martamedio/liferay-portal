@@ -44,23 +44,17 @@ String userEmailAddress = user.getEmailAddress();
 <aui:script require='<%= npmResolvedPackageName + "/qrcode/generateQRCode as generateQRCode" %>'>
 	var account = '<%= HtmlUtil.escapeJS(userEmailAddress) %>';
 	var algorithm = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPAlgorithm) %>';
+	var counter = '<%= mfaTimeBasedOTPTimeCounter %>';
 	var digits = '<%= mfaTimeBasedOTPDigits %>';
 	var issuer = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPCompanyName) %>';
 	var secret = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPSharedSecret) %>';
-	var timeCounter = '<%= mfaTimeBasedOTPTimeCounter %>';
 
-	var url = new URL(
-		'otpauth://totp/' +
-			encodeURIComponent(issuer) +
-			':' +
-			encodeURIComponent(account)
-	);
-
-	url.searchParams.append('secret', secret);
-	url.searchParams.append('issuer', issuer);
-	url.searchParams.append('algoritm', algorithm);
-	url.searchParams.append('digits', digits);
-	url.searchParams.append('counter', timeCounter);
-
-	generateQRCode.default('<portlet:namespace/>qrcode', url.toString());
+	generateQRCode.default('<portlet:namespace/>qrcode', {
+		account: account,
+		algorithm: algorithm,
+		counter: counter,
+		digits: digits,
+		issuer: issuer,
+		secret: secret,
+	});
 </aui:script>

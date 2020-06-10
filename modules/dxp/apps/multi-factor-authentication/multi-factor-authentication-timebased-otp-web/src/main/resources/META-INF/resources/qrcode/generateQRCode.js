@@ -11,16 +11,34 @@
 
 import QRCode from 'qrcode';
 
-export default (containerId, message) => {
-	QRCode.toDataURL(message)
-		.then((url) => {
+export default function generateQRCode(
+	containerId,
+	{account, algorithm, counter, digits, issuer, secret}
+) {
+	const url = new URL(
+		'otpauth://totp/' +
+			encodeURIComponent(issuer) +
+			':' +
+			encodeURIComponent(account)
+	);
+
+	url.searchParams.append('secret', encodeURIComponent(secret));
+	url.searchParams.append('issuer', encodeURIComponent(issuer));
+	url.searchParams.append('algorithm', encodeURIComponent(algorithm));
+	url.searchParams.append('digits', encodeURIComponent(digits));
+	url.searchParams.append('counter', encodeURIComponent(counter));
+
+	QRCode.toDataURL(url.toString())
+		.then((dataUrl) => {
 			const image = document.createElement('img');
-			image.setAttribute('src', url);
+
+			image.setAttribute('src', dataUrl);
 
 			const container = document.getElementById(containerId);
+
 			container.appendChild(image);
 		})
 		.catch((err) => {
 			console.error(err);
 		});
-};
+}
