@@ -65,16 +65,12 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		boolean mfaRemoveExistingSetup = ParamUtil.getBoolean(
-			actionRequest, "mfaRemoveExistingSetup");
-
-		if (mfaRemoveExistingSetup) {
+		if (ParamUtil.getBoolean(actionRequest, "mfaRemoveExistingSetup")) {
 			mfaSetupChecker.removeExistingSetup(themeDisplay.getUserId());
 		}
-
-		if (mfaSetupChecker.setUp(
-				_portal.getHttpServletRequest(actionRequest),
-				themeDisplay.getUserId())) {
+		else if (mfaSetupChecker.setUp(
+					_portal.getHttpServletRequest(actionRequest),
+					themeDisplay.getUserId())) {
 
 			String redirect = _portal.escapeRedirect(
 				ParamUtil.getString(actionRequest, "redirect"));
@@ -84,11 +80,8 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 			}
 
 			actionResponse.sendRedirect(redirect);
-
-			return;
 		}
-
-		if (!mfaRemoveExistingSetup) {
+		else {
 			SessionErrors.add(actionRequest, "userAccountSetupFailed");
 		}
 	}
