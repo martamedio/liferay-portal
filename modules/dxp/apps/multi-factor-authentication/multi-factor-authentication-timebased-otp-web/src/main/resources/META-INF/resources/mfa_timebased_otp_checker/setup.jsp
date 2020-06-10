@@ -34,7 +34,7 @@ String userEmailAddress = user.getEmailAddress();
 
 	<aui:input disabled="<%= true %>" label="shared-secret" name="sharedSecret" type="text" value="<%= mfaTimeBasedOTPSharedSecret %>" />
 
-	<div id="<portlet:namespace/>qrcode"></div>
+	<div class="qrcode-setup" id="<portlet:namespace/>qrcode"></div>
 </div>
 
 <div class="sheet-footer">
@@ -49,19 +49,18 @@ String userEmailAddress = user.getEmailAddress();
 	var secret = '<%= HtmlUtil.escapeJS(mfaTimeBasedOTPSharedSecret) %>';
 	var timeCounter = '<%= mfaTimeBasedOTPTimeCounter %>';
 
-	var qrCodeUrl = 'otpauth://totp/';
-	qrCodeUrl += encodeURIComponent(issuer) + ':' + encodeURIComponent(account);
-	qrCodeUrl +=
-		'?secret=' +
-		encodeURIComponent(secret) +
-		'&issuer=' +
-		encodeURIComponent(issuer);
-	qrCodeUrl +=
-		'&algorithm=' +
-		encodeURIComponent(algorithm) +
-		'&digits=' +
-		encodeURIComponent(digits);
-	qrCodeUrl += '&counter=' + encodeURIComponent(timeCounter);
+	var url = new URL(
+		'otpauth://totp/' +
+			encodeURIComponent(issuer) +
+			':' +
+			encodeURIComponent(account)
+	);
 
-	generateQRCode.default('<portlet:namespace/>qrcode', qrCodeUrl);
+	url.searchParams.append('secret', secret);
+	url.searchParams.append('issuer', issuer);
+	url.searchParams.append('algoritm', algorithm);
+	url.searchParams.append('digits', digits);
+	url.searchParams.append('counter', timeCounter);
+
+	generateQRCode.default('<portlet:namespace/>qrcode', url.toString());
 </aui:script>

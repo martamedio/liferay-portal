@@ -19,14 +19,18 @@
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
-taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
+taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
+taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.multi.factor.authentication.timebased.otp.web.internal.constants.MFATimeBasedOTPWebKeys" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
-page import="com.liferay.portal.kernel.util.HtmlUtil" %>
+page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.PortalUtil" %>
 
 <liferay-frontend:defineObjects />
 
 <liferay-theme:defineObjects />
 
-<portlet:defineObjects />
+<liferay-util:html-top>
+	<link href='<%= PortalUtil.getStaticResourceURL(request, application.getContextPath() + "/css/main.css") %>' rel="stylesheet" type="text/css" />
+</liferay-util:html-top>
