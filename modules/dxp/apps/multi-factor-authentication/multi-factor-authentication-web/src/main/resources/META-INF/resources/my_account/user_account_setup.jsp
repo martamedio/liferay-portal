@@ -18,8 +18,8 @@
 
 <%
 String mfaUserAccountLabel = GetterUtil.getString(request.getAttribute(MFAWebKeys.MFA_USER_ACCOUNT_LABEL));
-long setupMFACheckerServiceId = GetterUtil.getLong(request.getAttribute(MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID));
 SetupMFAChecker setupMFAChecker = (SetupMFAChecker)request.getAttribute(SetupMFAChecker.class.getName());
+long setupMFACheckerServiceId = GetterUtil.getLong(request.getAttribute(MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID));
 long userId = user.getUserId();
 %>
 
