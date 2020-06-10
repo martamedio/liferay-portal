@@ -46,12 +46,17 @@ public class MFAUserAccountSetupScreenNavigationEntry
 
 	public MFAUserAccountSetupScreenNavigationEntry(
 		ServiceReference<SetupMFAChecker> serviceReference,
-		SetupMFAChecker setupMFAChecker,
-		ServletContext servletContext) {
+		SetupMFAChecker setupMFAChecker, ServletContext servletContext) {
 
 		_serviceReference = serviceReference;
 		_setupMFAChecker = setupMFAChecker;
 		_servletContext = servletContext;
+
+		_bundle = _serviceReference.getBundle();
+
+		Class<? extends SetupMFAChecker> clazz = _setupMFAChecker.getClass();
+
+		_resourceBundleKey = clazz.getName();
 	}
 
 	@Override
@@ -68,21 +73,16 @@ public class MFAUserAccountSetupScreenNavigationEntry
 
 	@Override
 	public String getLabel(Locale locale) {
-		Class<? extends SetupMFAChecker> clazz = _setupMFAChecker.getClass();
-
-		Bundle bundle = _serviceReference.getBundle();
-
 		ResourceBundleLoader resourceBundleLoader =
 			ResourceBundleLoaderUtil.
 				getResourceBundleLoaderByBundleSymbolicName(
-					bundle.getSymbolicName());
-
-		String name = clazz.getName();
+					_bundle.getSymbolicName());
 
 		return GetterUtil.getString(
 			ResourceBundleUtil.getString(
-				resourceBundleLoader.loadResourceBundle(locale), name),
-			name);
+				resourceBundleLoader.loadResourceBundle(locale),
+				_resourceBundleKey),
+			_resourceBundleKey);
 	}
 
 	@Override
@@ -125,6 +125,8 @@ public class MFAUserAccountSetupScreenNavigationEntry
 		}
 	}
 
+	private final Bundle _bundle;
+	private final String _resourceBundleKey;
 	private final ServiceReference<SetupMFAChecker> _serviceReference;
 	private final ServletContext _servletContext;
 	private final SetupMFAChecker _setupMFAChecker;
