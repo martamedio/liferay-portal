@@ -92,11 +92,7 @@ public class MFAUserAccountSetupScreenNavigationEntry
 
 	@Override
 	public boolean isVisible(User user, User context) {
-		if (_setupMFAChecker != null) {
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 	@Override
