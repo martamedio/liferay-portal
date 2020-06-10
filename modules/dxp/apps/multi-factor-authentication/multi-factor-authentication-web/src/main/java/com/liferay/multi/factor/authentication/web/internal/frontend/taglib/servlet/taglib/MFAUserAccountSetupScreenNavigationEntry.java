@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Marta Medio
@@ -45,10 +45,11 @@ public class MFAUserAccountSetupScreenNavigationEntry
 	implements ScreenNavigationEntry<User> {
 
 	public MFAUserAccountSetupScreenNavigationEntry(
-		long serviceId, SetupMFAChecker setupMFAChecker,
+		ServiceReference<SetupMFAChecker> serviceReference,
+		SetupMFAChecker setupMFAChecker,
 		ServletContext servletContext) {
 
-		_serviceId = serviceId;
+		_serviceReference = serviceReference;
 		_setupMFAChecker = setupMFAChecker;
 		_servletContext = servletContext;
 	}
@@ -69,7 +70,7 @@ public class MFAUserAccountSetupScreenNavigationEntry
 	public String getLabel(Locale locale) {
 		Class<? extends SetupMFAChecker> clazz = _setupMFAChecker.getClass();
 
-		Bundle bundle = FrameworkUtil.getBundle(clazz);
+		Bundle bundle = _serviceReference.getBundle();
 
 		ResourceBundleLoader resourceBundleLoader =
 			ResourceBundleLoaderUtil.
@@ -111,7 +112,8 @@ public class MFAUserAccountSetupScreenNavigationEntry
 			MFAWebKeys.MFA_USER_ACCOUNT_LABEL,
 			getLabel(httpServletRequest.getLocale()));
 		httpServletRequest.setAttribute(
-			MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID, _serviceId);
+			MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID,
+			GetterUtil.getLong(_serviceReference.getProperty("service.id")));
 
 		RequestDispatcher requestDispatcher =
 			_servletContext.getRequestDispatcher(
@@ -127,7 +129,7 @@ public class MFAUserAccountSetupScreenNavigationEntry
 		}
 	}
 
-	private final long _serviceId;
+	private final ServiceReference<SetupMFAChecker> _serviceReference;
 	private final ServletContext _servletContext;
 	private final SetupMFAChecker _setupMFAChecker;
 
