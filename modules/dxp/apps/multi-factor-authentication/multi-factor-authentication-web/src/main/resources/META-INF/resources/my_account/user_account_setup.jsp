@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String mfaUserAccountLabel = (String)request.getAttribute(MFAWebKeys.MFA_USER_ACCOUNT_LABEL);
+String mfaUserAccountLabel = GetterUtil.getString(request.getAttribute(MFAWebKeys.MFA_USER_ACCOUNT_LABEL));
 long setupMFACheckerServiceId = GetterUtil.getLong(request.getAttribute(MFAWebKeys.SETUP_MFA_CHECKER_SERVICE_ID));
 SetupMFAChecker setupMFAChecker = (SetupMFAChecker)request.getAttribute(SetupMFAChecker.class.getName());
 long userId = user.getUserId();
