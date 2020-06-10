@@ -107,6 +107,9 @@ public class TimeBasedOTPBrowserSetupMFAChecker
 		}
 		else {
 			Company company = _portal.getCompany(httpServletRequest);
+			String mfaTimeBasedOTPSharedSecret =
+				MFATimeBasedOTPUtil.generateSharedSecret(
+					_mfaTimeBasedOTPConfiguration.algorithmKeySize());
 
 			httpServletRequest.setAttribute(
 				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_ALGORITHM,
@@ -118,8 +121,17 @@ public class TimeBasedOTPBrowserSetupMFAChecker
 				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_DIGITS,
 				MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_DIGITS);
 			httpServletRequest.setAttribute(
+				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
+				mfaTimeBasedOTPSharedSecret);
+			httpServletRequest.setAttribute(
 				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_TIME_COUNTER,
 				MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_COUNTER);
+
+			RequestDispatcher requestDispatcher =
+				_servletContext.getRequestDispatcher(
+					"/mfa_timebased_otp_checker/setup.jsp");
+
+			requestDispatcher.include(httpServletRequest, httpServletResponse);
 
 			HttpServletRequest originalHttpServletRequest =
 				_portal.getOriginalServletRequest(httpServletRequest);
@@ -128,14 +140,7 @@ public class TimeBasedOTPBrowserSetupMFAChecker
 
 			session.setAttribute(
 				MFATimeBasedOTPWebKeys.MFA_TIME_BASED_OTP_SHARED_SECRET,
-				MFATimeBasedOTPUtil.generateSharedSecret(
-					_mfaTimeBasedOTPConfiguration.algorithmKeySize()));
-
-			RequestDispatcher requestDispatcher =
-				_servletContext.getRequestDispatcher(
-					"/mfa_timebased_otp_checker/setup.jsp");
-
-			requestDispatcher.include(httpServletRequest, httpServletResponse);
+				mfaTimeBasedOTPSharedSecret);
 		}
 	}
 
