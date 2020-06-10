@@ -63,8 +63,6 @@ public class MFATimeBasedOTPUtil {
 	public static boolean verifyTimeBasedOTP(
 		long clockSkew, String sharedSecret, String value) {
 
-		byte[] decodedSharedSecret = Base32.decode(sharedSecret);
-
 		long initialTime =
 			(System.currentTimeMillis() - clockSkew) /
 				MFA_TIMEBASED_OTP_COUNTER;
@@ -75,7 +73,7 @@ public class MFATimeBasedOTPUtil {
 		for (long i = initialTime; i <= finalTime; i++) {
 			if (value.equals(
 					_generateTimeBasedOTP(
-						decodedSharedSecret, _getTimeCountHex(i)))) {
+						Base32.decode(sharedSecret), _getTimeCountHex(i)))) {
 
 				return true;
 			}
