@@ -15,7 +15,9 @@
 package com.liferay.multi.factor.authentication.web.internal.portlet.action;
 
 import com.liferay.multi.factor.authentication.spi.checker.setup.SetupMFAChecker;
-import com.liferay.petra.string.StringBundler;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -32,9 +34,9 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -52,7 +54,15 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_bundleContext = bundleContext;
+		_mfaCheckerServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, SetupMFAChecker.class, "(service.id=*)",
+				new PropertyServiceReferenceMapper<>("service.id"));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_mfaCheckerServiceTrackerMap.close();
 	}
 
 	@Override
@@ -60,15 +70,27 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		SetupMFAChecker mfaSetupChecker = getSetupMFAChecker(actionRequest);
+		long setupMFACheckerServiceId = ParamUtil.getLong(
+			actionRequest, "setupMFACheckerServiceId");
+
+		SetupMFAChecker setupMFAChecker =
+			_mfaCheckerServiceTrackerMap.getService(setupMFACheckerServiceId);
+
+		if (setupMFAChecker == null) {
+			_log.error(
+				"Unable to find SetupMFAChecker with service.id " +
+					setupMFACheckerServiceId);
+
+			return;
+		}
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		if (ParamUtil.getBoolean(actionRequest, "mfaRemoveExistingSetup")) {
-			mfaSetupChecker.removeExistingSetup(themeDisplay.getUserId());
+			setupMFAChecker.removeExistingSetup(themeDisplay.getUserId());
 		}
-		else if (mfaSetupChecker.setUp(
+		else if (setupMFAChecker.setUp(
 					_portal.getHttpServletRequest(actionRequest),
 					themeDisplay.getUserId())) {
 
@@ -86,41 +108,11 @@ public class MFAUserAccountSetupMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
-	protected SetupMFAChecker getSetupMFAChecker(ActionRequest actionRequest) {
-		long setupMFACheckerServiceId = ParamUtil.getLong(
-			actionRequest, "setupMFACheckerServiceId");
-
-		ServiceReference<?> setupMFACheckerServiceReference =
-			_bundleContext.getServiceReference(
-				StringBundler.concat(
-					"(service.id=", setupMFACheckerServiceId, ")"));
-
-		if (setupMFACheckerServiceReference == null) {
-			_log.error(
-				"Unable to find SetupMFAChecker with service.id " +
-					setupMFACheckerServiceId);
-
-			return null;
-		}
-
-		Object setupMFAChecker = _bundleContext.getService(
-			setupMFACheckerServiceReference);
-
-		if (setupMFAChecker instanceof SetupMFAChecker) {
-			return (SetupMFAChecker)setupMFAChecker;
-		}
-
-		_log.error(
-			"Service with id " + setupMFACheckerServiceId +
-				" is not a SetupMFAChecker or is errored");
-
-		return null;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		MFAUserAccountSetupMVCActionCommand.class);
 
-	private BundleContext _bundleContext;
+	private ServiceTrackerMap<Long, SetupMFAChecker>
+		_mfaCheckerServiceTrackerMap;
 
 	@Reference
 	private Portal _portal;
