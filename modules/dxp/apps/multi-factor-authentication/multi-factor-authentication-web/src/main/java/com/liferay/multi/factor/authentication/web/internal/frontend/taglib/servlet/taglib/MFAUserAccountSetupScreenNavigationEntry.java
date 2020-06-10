@@ -45,11 +45,11 @@ public class MFAUserAccountSetupScreenNavigationEntry
 	implements ScreenNavigationEntry<User> {
 
 	public MFAUserAccountSetupScreenNavigationEntry(
-		long serviceId, SetupMFAChecker mfaSetupChecker,
+		long serviceId, SetupMFAChecker setupMFAChecker,
 		ServletContext servletContext) {
 
 		_serviceId = serviceId;
-		_mfaSetupChecker = mfaSetupChecker;
+		_setupMFAChecker = setupMFAChecker;
 		_servletContext = servletContext;
 	}
 
@@ -60,14 +60,14 @@ public class MFAUserAccountSetupScreenNavigationEntry
 
 	@Override
 	public String getEntryKey() {
-		Class<? extends SetupMFAChecker> clazz = _mfaSetupChecker.getClass();
+		Class<? extends SetupMFAChecker> clazz = _setupMFAChecker.getClass();
 
 		return clazz.getName();
 	}
 
 	@Override
 	public String getLabel(Locale locale) {
-		Class<? extends SetupMFAChecker> clazz = _mfaSetupChecker.getClass();
+		Class<? extends SetupMFAChecker> clazz = _setupMFAChecker.getClass();
 
 		Bundle bundle = FrameworkUtil.getBundle(clazz);
 
@@ -91,7 +91,7 @@ public class MFAUserAccountSetupScreenNavigationEntry
 
 	@Override
 	public boolean isVisible(User user, User context) {
-		if (_mfaSetupChecker != null) {
+		if (_setupMFAChecker != null) {
 			return true;
 		}
 
@@ -105,7 +105,7 @@ public class MFAUserAccountSetupScreenNavigationEntry
 		throws IOException {
 
 		httpServletRequest.setAttribute(
-			SetupMFAChecker.class.getName(), _mfaSetupChecker);
+			SetupMFAChecker.class.getName(), _setupMFAChecker);
 
 		httpServletRequest.setAttribute(
 			MFAWebKeys.MFA_USER_ACCOUNT_LABEL,
@@ -127,7 +127,7 @@ public class MFAUserAccountSetupScreenNavigationEntry
 		}
 	}
 
-	private final SetupMFAChecker _mfaSetupChecker;
+	private final SetupMFAChecker _setupMFAChecker;
 	private final long _serviceId;
 	private final ServletContext _servletContext;
 
