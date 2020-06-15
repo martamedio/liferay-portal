@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.captcha.CaptchaException;
 import com.liferay.portal.kernel.captcha.CaptchaTextException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.security.RandomUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -487,6 +488,12 @@ public class SimpleCaptchaImpl implements Captcha {
 	private GimpyRenderer[] _gimpyRenderers;
 	private final Map<String, Object> _instances = new ConcurrentHashMap<>();
 	private NoiseProducer[] _noiseProducers;
+
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.captcha.api)(release.schema.version>=1.1.0))"
+	)
+	private Release _release;
+
 	private TextProducer[] _textProducers;
 	private WordRenderer[] _wordRenderers;
 
