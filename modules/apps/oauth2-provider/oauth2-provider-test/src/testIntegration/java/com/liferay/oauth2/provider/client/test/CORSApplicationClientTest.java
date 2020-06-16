@@ -23,6 +23,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Collections;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -63,6 +64,30 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 			"Access-Control-Allow-Origin");
 
 		Assert.assertNotEquals(_TEST_CORS_URI, corsHeaderString);
+	}
+
+	@Test
+	public void testPreflightCORSRequest() throws Exception {
+		WebTarget webTarget = getJsonWebTarget("user", "get-current-user");
+
+		String tokenString = getToken(
+			"oauthTestApplicationRO", null,
+			getResourceOwnerPasswordBiFunction("test@liferay.com", "test"),
+			this::parseTokenString);
+
+		Invocation.Builder invocationBuilder = authorize(
+			webTarget.request(), tokenString);
+
+		invocationBuilder.header(
+			"Access-Control-Request-Method", HttpMethod.OPTIONS);
+		invocationBuilder.header("Origin", _TEST_CORS_URI);
+
+		Response response = invocationBuilder.options();
+
+		String corsHeaderString = response.getHeaderString(
+			"Access-Control-Allow-Origin");
+
+		Assert.assertEquals(_TEST_CORS_URI, corsHeaderString);
 	}
 
 	@Test
