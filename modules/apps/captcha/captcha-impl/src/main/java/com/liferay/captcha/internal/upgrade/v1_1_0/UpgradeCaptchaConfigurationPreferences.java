@@ -89,7 +89,7 @@ public class UpgradeCaptchaConfigurationPreferences extends UpgradeProcess {
 		Stream<String> stream = Arrays.stream(array);
 
 		return stream.map(
-			s -> s.replace(target, replacement)
+			s -> target.equals(s.trim()) ? replacement : s
 		).toArray(
 			size -> new String[size]
 		);
