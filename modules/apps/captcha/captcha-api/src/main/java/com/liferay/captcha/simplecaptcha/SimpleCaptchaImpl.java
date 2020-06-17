@@ -428,6 +428,11 @@ public class SimpleCaptchaImpl implements Captcha {
 	@Reference
 	protected Portal portal;
 
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.captcha.impl)(release.schema.version>=1.1.0))"
+	)
+	protected Release release;
+
 	private HttpSession _getHttpSession(HttpServletRequest httpServletRequest) {
 		HttpServletRequest originalHttpServletRequest =
 			portal.getOriginalServletRequest(httpServletRequest);
@@ -488,12 +493,6 @@ public class SimpleCaptchaImpl implements Captcha {
 	private GimpyRenderer[] _gimpyRenderers;
 	private final Map<String, Object> _instances = new ConcurrentHashMap<>();
 	private NoiseProducer[] _noiseProducers;
-
-	@Reference(
-		target = "(&(release.bundle.symbolic.name=com.liferay.captcha.api)(release.schema.version>=1.1.0))"
-	)
-	private Release _release;
-
 	private TextProducer[] _textProducers;
 	private WordRenderer[] _wordRenderers;
 
