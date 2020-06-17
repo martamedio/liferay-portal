@@ -45,6 +45,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Application;
 
 import org.junit.AfterClass;
@@ -107,7 +108,10 @@ public abstract class BaseCORSClientTestCase {
 			Assert.assertNull(results[0]);
 		}
 
-		Assert.assertEquals("get", results[1]);
+		if (!HttpMethod.OPTIONS.equals(method)) {
+			Assert.assertNotEquals(StringPool.BLANK, results[1]);
+		}
+
 		Assert.assertEquals("200", results[2]);
 	}
 
@@ -136,7 +140,10 @@ public abstract class BaseCORSClientTestCase {
 			Assert.assertNull(results[0]);
 		}
 
-		Assert.assertNotEquals(StringPool.BLANK, results[1]);
+		if (!HttpMethod.OPTIONS.equals(method)) {
+			Assert.assertNotEquals(StringPool.BLANK, results[1]);
+		}
+
 		Assert.assertEquals("200", results[2]);
 	}
 

@@ -25,6 +25,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.HttpMethod;
+
 /**
  * @author Preston Crary
  */
@@ -50,7 +52,8 @@ public class AllowRestrictedHeadersCallable
 
 			httpURLConnection.setRequestProperty("Origin", _origin);
 			httpURLConnection.setRequestProperty(
-				_ACCESS_CONTROL_REQUEST_METHOD, _method);
+				_ACCESS_CONTROL_REQUEST_METHOD, HttpMethod.GET);
+			httpURLConnection.setRequestMethod(_method);
 
 			if (_authenticate) {
 				String encodedUserNameAndPassword = Base64.encode(
