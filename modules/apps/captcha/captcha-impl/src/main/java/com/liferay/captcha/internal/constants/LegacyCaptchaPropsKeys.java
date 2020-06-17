@@ -42,6 +42,14 @@ public class LegacyCaptchaPropsKeys {
 			"nl.captcha.gimpy.BlockGimpyRenderer";
 
 	public static final String
+		CAPTCHA_CONFIGURATION_SIMPLECAPTCHA_DROP_SHADOW_GYMPY_RENDERER_CLASS =
+			"com.liferay.captcha.simplecaptcha.gimpy.DropShadowGimpyRenderer";
+
+	public static final String
+		CAPTCHA_CONFIGURATION_SIMPLECAPTCHA_DROP_SHADOW_GYMPY_RENDERER_DEPRECATED_CLASS =
+			"nl.captcha.gimpy.DropShadowGimpyRenderer";
+
+	public static final String
 		CAPTCHA_CONFIGURATION_SIMPLECAPTCHA_GIMPY_RENDERERS_PROPERTY =
 			"simpleCaptchaGimpyRenderers";
 

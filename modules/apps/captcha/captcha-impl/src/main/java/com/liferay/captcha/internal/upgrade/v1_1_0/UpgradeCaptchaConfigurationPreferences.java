@@ -64,6 +64,13 @@ public class UpgradeCaptchaConfigurationPreferences extends UpgradeProcess {
 		upgradedSimpleCaptchaGimpyRenderers = _replaceArrayValue(
 			upgradedSimpleCaptchaGimpyRenderers,
 			LegacyCaptchaPropsKeys.
+				CAPTCHA_CONFIGURATION_SIMPLECAPTCHA_DROP_SHADOW_GYMPY_RENDERER_DEPRECATED_CLASS,
+			LegacyCaptchaPropsKeys.
+				CAPTCHA_CONFIGURATION_SIMPLECAPTCHA_DROP_SHADOW_GYMPY_RENDERER_CLASS);
+
+		upgradedSimpleCaptchaGimpyRenderers = _replaceArrayValue(
+			upgradedSimpleCaptchaGimpyRenderers,
+			LegacyCaptchaPropsKeys.
 				CAPTCHA_CONFIGURATION_SIMPLECAPTCHA_RIPPLE_GYMPY_RENDERER_DEPRECATED_CLASS,
 			LegacyCaptchaPropsKeys.
 				CAPTCHA_CONFIGURATION_SIMPLECAPTCHA_RIPPLE_GYMPY_RENDERER_CLASS);
