@@ -17,13 +17,13 @@ package com.liferay.portal.remote.cors.client.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.remote.cors.configuration.PortalCORSConfiguration;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Dictionary;
 
 import javax.ws.rs.HttpMethod;
 
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,28 +33,29 @@ import org.junit.runner.RunWith;
  * @author Marta Medio
  */
 @RunWith(Arquillian.class)
-public class CORSAnnotationClientTest extends BaseCORSClientTestCase {
+public class CORSConfigurationPortalTest extends BaseCORSClientTestCase {
 
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
-	@Before
-	public void setUp() {
+	@Test
+	public void testNoCORSUsingBasic() throws Exception {
+		assertJsonWSUrl("/user/get-current-user", HttpMethod.OPTIONS, true);
+		assertJsonWSUrl("/user/get-current-user", HttpMethod.GET, false);
+
 		Dictionary<String, Object> properties = new HashMapDictionary<>();
 
-		properties.put("liferay.cors.annotation", true);
+		properties.put("configuration.name", "test-cors");
 
-		registerJaxRsApplication(new CORSTestApplication(), "test", properties);
-	}
+		properties.put("filter.mapping.url.pattern", "/api/jsonws/*");
 
-	@Test
-	public void testApplicationAnnotationNoCORSWithoutOAuth2()
-		throws Exception {
+		createFactoryConfiguration(
+			PortalCORSConfiguration.class.getName(), properties);
 
-		assertJaxRSUrl("/test/cors-app", HttpMethod.OPTIONS, true);
-		assertJaxRSUrl("/test/cors-app", HttpMethod.GET, false);
+		assertJsonWSUrl("/user/get-current-user", HttpMethod.OPTIONS, true);
+		assertJsonWSUrl("/user/get-current-user", HttpMethod.GET, false);
 	}
 
 }
