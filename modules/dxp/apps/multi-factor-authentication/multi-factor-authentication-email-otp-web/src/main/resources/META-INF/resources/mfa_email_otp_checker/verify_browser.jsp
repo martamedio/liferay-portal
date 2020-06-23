@@ -17,6 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
+String mfaEmailOTPAddress = (String)request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SEND_TO_ADDRESS_OBFUSCATED);
 long mfaEmailOTPFailedAttemptsRetryTimeout = GetterUtil.getLong(request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_FAILED_ATTEMPTS_RETRY_TIMEOUT));
 long mfaEmailOTPSetAtTime = GetterUtil.getLong(request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME));
 %>
@@ -29,7 +30,7 @@ long mfaEmailOTPSetAtTime = GetterUtil.getLong(request.getAttribute(MFAEmailOTPW
 
 <div id="<portlet:namespace />phaseOne">
 	<div class="portlet-msg-info">
-		<liferay-ui:message key="your-one-time-password-will-be-sent-to-your-email-address" />
+		<liferay-ui:message arguments="<%= mfaEmailOTPAddress %>" key="your-one-time-password-will-be-sent-to-your-email-address" translateArguments="<%= false %>" />
 	</div>
 
 	<aui:button-row>
