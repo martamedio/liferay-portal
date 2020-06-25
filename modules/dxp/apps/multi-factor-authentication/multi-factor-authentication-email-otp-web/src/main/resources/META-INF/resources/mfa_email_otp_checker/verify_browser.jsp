@@ -23,7 +23,7 @@ long mfaEmailOTPSetAtTime = (Long)request.getAttribute(MFAEmailOTPWebKeys.MFA_EM
 
 <div id="<portlet:namespace />phaseOne">
 	<div class="portlet-msg-info">
-		<liferay-ui:message arguments="<%= mfaEmailOTPAddress %>" key="your-one-time-password-will-be-sent-to-your-email-address" translateArguments="<%= false %>" />
+		<liferay-ui:message arguments="<%= mfaEmailOTPAddress %>" key="please-press-the-button-below-to-obtain-your-one-time-password-it-will-be-sent-to-x" translateArguments="<%= false %>" />
 	</div>
 
 	<aui:button-row>
