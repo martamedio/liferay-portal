@@ -88,8 +88,8 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 		HttpSession httpSession = originalHttpServletRequest.getSession();
 
 		httpServletRequest.setAttribute(
-			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SEND_TO_ADDRESS,
-			user.getEmailAddress());
+			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SEND_TO_ADDRESS_OBFUSCATED,
+			obfuscateEmailAddress(user.getEmailAddress()));
 		httpServletRequest.setAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME,
 			GetterUtil.getLong(
@@ -217,6 +217,26 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 			userId, originalHttpServletRequest.getRemoteAddr(), false);
 
 		return false;
+	}
+
+	protected static String obfuscateEmailAddress(String emailAddress) {
+		String alias = emailAddress.substring(0, emailAddress.indexOf('@'));
+
+		int maskLength = Math.max(
+			(int)Math.ceil(alias.length() / 2.0), Math.min(3, alias.length()));
+
+		int startMaskIndex = (int)Math.ceil(
+			(alias.length() - maskLength) / 2.0);
+
+		int endMaskIndex = startMaskIndex + maskLength;
+
+		char[] chars = emailAddress.toCharArray();
+
+		for (int i = startMaskIndex; i < endMaskIndex; i++) {
+			chars[i] = '*';
+		}
+
+		return new String(chars);
 	}
 
 	@Activate

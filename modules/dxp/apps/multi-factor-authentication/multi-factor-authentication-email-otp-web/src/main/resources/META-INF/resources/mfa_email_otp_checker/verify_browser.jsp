@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String mfaEmailOTPAddress = (String)request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SEND_TO_ADDRESS);
+String mfaEmailOTPAddress = (String)request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SEND_TO_ADDRESS_OBFUSCATED);
 long mfaEmailOTPSetAtTime = (Long)request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME);
 %>
 
