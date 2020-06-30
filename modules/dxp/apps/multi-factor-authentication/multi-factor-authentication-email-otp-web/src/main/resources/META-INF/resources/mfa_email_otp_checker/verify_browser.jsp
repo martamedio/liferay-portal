@@ -23,7 +23,7 @@ long mfaEmailOTPSetAtTime = GetterUtil.getLong(request.getAttribute(MFAEmailOTPW
 
 <c:if test="<%= mfaEmailOTPFailedAttemptsRetryTimeout > 0 %>">
 	<div class="alert alert-danger">
-		<liferay-ui:message arguments="<%= mfaEmailOTPFailedAttemptsRetryTimeout %>" key="maximum-allowed-attemps-error" translateArguments="<%= false %>" />
+		<liferay-ui:message arguments="<%= mfaEmailOTPFailedAttemptsRetryTimeout %>" key="maximum-allowed-attempts-error" translateArguments="<%= false %>" />
 	</div>
 </c:if>
 
