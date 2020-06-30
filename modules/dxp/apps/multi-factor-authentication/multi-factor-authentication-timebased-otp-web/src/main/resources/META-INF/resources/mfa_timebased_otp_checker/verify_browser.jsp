@@ -21,3 +21,7 @@
 </h3>
 
 <aui:input label="mfa-timebased-otp" name="mfaTimeBasedOTP" showRequiredLabel="yes" />
+
+<aui:button-row>
+	<aui:button type="submit" value="submit" />
+</aui:button-row>

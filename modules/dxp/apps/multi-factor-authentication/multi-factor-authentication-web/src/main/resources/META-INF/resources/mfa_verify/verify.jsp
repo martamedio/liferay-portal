@@ -52,8 +52,4 @@ int mfaCheckerIndex = ParamUtil.getInteger(request, "mfaCheckerIndex");
 
 		<b><a href="<%= HtmlUtil.escapeAttribute(useAnotherBrowserMFAChecker) %>"><%= LanguageUtil.format(request, "use-another-mfa-checker", browserMFACheckerName, false) %></a></b>
 	</c:if>
-
-	<aui:button-row>
-		<aui:button type="submit" value="submit" />
-	</aui:button-row>
 </aui:form>
