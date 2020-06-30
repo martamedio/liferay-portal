@@ -22,6 +22,7 @@ import com.liferay.multi.factor.authentication.email.otp.web.internal.constants.
 import com.liferay.multi.factor.authentication.spi.checker.browser.BrowserMFAChecker;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -83,6 +84,12 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 			}
 
 			return;
+		}
+
+		if (_maximumAllowedAttemptsReached(user.getUserId())) {
+			httpServletRequest.setAttribute(
+				MFAEmailOTPWebKeys.MFA_EMAIL_OTP_FAILED_ATTEMPTS_RETRY_TIMEOUT,
+				_mfaEmailOTPConfiguration.retryTimeout());
 		}
 
 		HttpServletRequest originalHttpServletRequest =
@@ -152,37 +159,14 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 			return false;
 		}
 
-		MFAEmailOTPEntry mfaEmailOTPEntry =
-			_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(userId);
+		if (_maximumAllowedAttemptsReached(userId)) {
+			_routeAuditMessage(
+				_mfaEmailOTPAuditMessageBuilder.
+					buildVerificationFailureAuditMessage(
+						user, _getClassName(),
+						"Reached maximum allowed attempts"));
 
-		if (mfaEmailOTPEntry == null) {
-			mfaEmailOTPEntry =
-				_mfaEmailOTPEntryLocalService.addMFAEmailOTPEntry(userId);
-		}
-
-		if ((_mfaEmailOTPConfiguration.failedAttemptsAllowed() >= 0) &&
-			(_mfaEmailOTPConfiguration.failedAttemptsAllowed() <=
-				mfaEmailOTPEntry.getFailedAttempts()) &&
-			(_mfaEmailOTPConfiguration.retryTimeout() >= 0)) {
-
-			Date lastFailDate = mfaEmailOTPEntry.getLastFailDate();
-
-			long time =
-				(_mfaEmailOTPConfiguration.retryTimeout() * Time.SECOND) +
-					lastFailDate.getTime();
-
-			if (time <= System.currentTimeMillis()) {
-				_mfaEmailOTPEntryLocalService.resetFailedAttempts(userId);
-			}
-			else {
-				_routeAuditMessage(
-					_mfaEmailOTPAuditMessageBuilder.
-						buildVerificationFailureAuditMessage(
-							user, _getClassName(),
-							"Reached maximum allowed attempts"));
-
-				return false;
-			}
+			return false;
 		}
 
 		HttpServletRequest originalHttpServletRequest =
@@ -314,6 +298,43 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 		Class<?> clazz = getClass();
 
 		return clazz.getName();
+	}
+
+	private boolean _maximumAllowedAttemptsReached(long userId) {
+		try {
+			MFAEmailOTPEntry mfaEmailOTPEntry =
+				_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(
+					userId);
+
+			if (mfaEmailOTPEntry == null) {
+				mfaEmailOTPEntry =
+					_mfaEmailOTPEntryLocalService.addMFAEmailOTPEntry(userId);
+			}
+
+			if ((_mfaEmailOTPConfiguration.failedAttemptsAllowed() >= 0) &&
+				(_mfaEmailOTPConfiguration.failedAttemptsAllowed() <=
+					mfaEmailOTPEntry.getFailedAttempts()) &&
+				(_mfaEmailOTPConfiguration.retryTimeout() >= 0)) {
+
+				Date lastFailDate = mfaEmailOTPEntry.getLastFailDate();
+
+				long time =
+					(_mfaEmailOTPConfiguration.retryTimeout() * Time.SECOND) +
+						lastFailDate.getTime();
+
+				if (time <= System.currentTimeMillis()) {
+					_mfaEmailOTPEntryLocalService.resetFailedAttempts(userId);
+				}
+				else {
+					return true;
+				}
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException, portalException);
+		}
+
+		return false;
 	}
 
 	private void _routeAuditMessage(AuditMessage auditMessage) {

@@ -17,8 +17,15 @@
 <%@ include file="/init.jsp" %>
 
 <%
+long mfaEmailOTPFailedAttemptsRetryTimeout = GetterUtil.getLong(request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_FAILED_ATTEMPTS_RETRY_TIMEOUT));
 long mfaEmailOTPSetAtTime = (Long)request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME);
 %>
+
+<c:if test="<%= mfaEmailOTPFailedAttemptsRetryTimeout > 0 %>">
+	<div class="alert alert-danger">
+		<liferay-ui:message arguments="<%= mfaEmailOTPFailedAttemptsRetryTimeout %>" key="maximum-allowed-attemps-error" translateArguments="<%= false %>" />
+	</div>
+</c:if>
 
 <div id="<portlet:namespace />phaseOne">
 	<div class="portlet-msg-info">
@@ -37,7 +44,7 @@ long mfaEmailOTPSetAtTime = (Long)request.getAttribute(MFAEmailOTPWebKeys.MFA_EM
 </div>
 
 <aui:button-row>
-	<aui:button type="submit" value="submit" />
+	<aui:button id="submitEmailButton" type="submit" value="submit" />
 </aui:button-row>
 
 <aui:script use="aui-base,aui-io-request">
@@ -45,9 +52,13 @@ long mfaEmailOTPSetAtTime = (Long)request.getAttribute(MFAEmailOTPWebKeys.MFA_EM
 
 	var configuredResendDuration = <%= mfaEmailOTPConfiguration.resendEmailTimeout() %>;
 
+	var failedAttemptsRetryTimeout = <%=mfaEmailOTPFailedAttemptsRetryTimeout %>;
+
 	var countdown;
 
 	var sendEmailButton = A.one('#<portlet:namespace />sendEmailButton');
+
+	var submitEmailButton = A.one('#<portlet:namespace />submitEmailButton');
 
 	var originalButtonText = sendEmailButton.text();
 
@@ -89,6 +100,31 @@ long mfaEmailOTPSetAtTime = (Long)request.getAttribute(MFAEmailOTPWebKeys.MFA_EM
 			resendDuration,
 			1000
 		);
+	}
+
+	if (failedAttemptsRetryTimeout > 0) {
+		sendEmailButton.setAttribute('disabled', 'disabled');
+		submitEmailButton.setAttribute('disabled', 'disabled');
+
+		var originalSubmitButtonText = submitEmailButton.text();
+
+		setInterval(function () {
+			--failedAttemptsRetryTimeout;
+			{
+				if (failedAttemptsRetryTimeout < 1) {
+					sendEmailButton.removeAttribute('disabled');
+
+					submitEmailButton.text(originalSubmitButtonText);
+
+					submitEmailButton.removeAttribute('disabled');
+
+					clearInterval(failedAttemptsRetryTimeout);
+				}
+				else {
+					submitEmailButton.text(failedAttemptsRetryTimeout);
+				}
+			}
+		}, 1000);
 	}
 
 	A.one('#<portlet:namespace />sendEmailButton').on('click', function (event) {
