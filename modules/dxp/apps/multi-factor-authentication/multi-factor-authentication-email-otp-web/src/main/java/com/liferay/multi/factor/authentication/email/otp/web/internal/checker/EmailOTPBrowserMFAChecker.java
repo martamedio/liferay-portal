@@ -86,7 +86,7 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 			return;
 		}
 
-		if (_maximumAllowedAttemptsReached(user.getUserId())) {
+		if (_isMaximumAllowedAttemptsReached(user.getUserId())) {
 			httpServletRequest.setAttribute(
 				MFAEmailOTPWebKeys.MFA_EMAIL_OTP_FAILED_ATTEMPTS_RETRY_TIMEOUT,
 				_mfaEmailOTPConfiguration.retryTimeout());
@@ -159,7 +159,7 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 			return false;
 		}
 
-		if (_maximumAllowedAttemptsReached(userId)) {
+		if (_isMaximumAllowedAttemptsReached(userId)) {
 			_routeAuditMessage(
 				_mfaEmailOTPAuditMessageBuilder.
 					buildVerificationFailureAuditMessage(
@@ -300,7 +300,7 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 		return clazz.getName();
 	}
 
-	private boolean _maximumAllowedAttemptsReached(long userId) {
+	private boolean _isMaximumAllowedAttemptsReached(long userId) {
 		try {
 			MFAEmailOTPEntry mfaEmailOTPEntry =
 				_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(
