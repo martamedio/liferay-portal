@@ -18,7 +18,7 @@
 
 <%
 long mfaEmailOTPFailedAttemptsRetryTimeout = GetterUtil.getLong(request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_FAILED_ATTEMPTS_RETRY_TIMEOUT));
-long mfaEmailOTPSetAtTime = (Long)request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME);
+long mfaEmailOTPSetAtTime = GetterUtil.getLong(request.getAttribute(MFAEmailOTPWebKeys.MFA_EMAIL_OTP_SET_AT_TIME));
 %>
 
 <c:if test="<%= mfaEmailOTPFailedAttemptsRetryTimeout > 0 %>">
