@@ -159,6 +159,13 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 			return false;
 		}
 
+		MFAEmailOTPEntry mfaEmailOTPEntry =
+			_mfaEmailOTPEntryLocalService.fetchMFAEmailOTPEntryByUserId(userId);
+
+		if (mfaEmailOTPEntry == null) {
+			_mfaEmailOTPEntryLocalService.addMFAEmailOTPEntry(userId);
+		}
+
 		if (_isMaximumAllowedAttemptsReached(userId)) {
 			_routeAuditMessage(
 				_mfaEmailOTPAuditMessageBuilder.
@@ -307,8 +314,7 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 					userId);
 
 			if (mfaEmailOTPEntry == null) {
-				mfaEmailOTPEntry =
-					_mfaEmailOTPEntryLocalService.addMFAEmailOTPEntry(userId);
+				return false;
 			}
 
 			if ((_mfaEmailOTPConfiguration.failedAttemptsAllowed() >= 0) &&
