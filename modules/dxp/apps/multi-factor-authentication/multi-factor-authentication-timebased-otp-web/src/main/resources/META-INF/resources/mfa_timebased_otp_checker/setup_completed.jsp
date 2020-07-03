@@ -17,11 +17,13 @@
 <%@ include file="/init.jsp" %>
 
 <div class="sheet-section">
-	<liferay-ui:message key="mfa-timebased-otp-verification-already-configured" />
+	<liferay-ui:message key="you-can-only-have-one-timebased-otp-password-configured-you-must-delete-actual-one-to-generate-new-timebased-otp" />
 
 	<aui:input name="mfaRemoveExistingSetup" type="hidden" value="<%= true %>" />
 </div>
 
 <div class="sheet-footer">
-	<aui:button type="submit" value="generate-new-verification" />
+	<button class="btn btn-danger" type="submit">
+		<liferay-ui:message key="remove-configured-timebased-otp" />
+	</button>
 </div>
