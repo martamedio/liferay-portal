@@ -1,0 +1,10 @@
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldValueRenderer.render(Lcom/liferay/dynamic/data/mapping/storage/DDMFormFieldValue;Ljava/util/Locale;)Ljava/lang/String;:UNKNOWN
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldValueRenderer.<init>()V
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldType.getDDMFormFieldTypeSettings()Ljava/lang/Class;:SAFE
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldType.getName()Ljava/lang/String;:SAFE
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldType.getModuleName()Ljava/lang/String;:UNKNOWN
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldType.<init>()V
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldType.isCustomDDMFormFieldType()Z
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldTemplateContextContributor.getItemSelectorURL(Lcom/liferay/dynamic/data/mapping/render/DDMFormFieldRenderingContext;Ljavax/servlet/http/HttpServletRequest;)Ljava/lang/String;:SAFE^0:0,UNKNOWN
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldTemplateContextContributor.<init>()V
+com/liferay/journal/article/dynamic/data/mapping/form/field/type/internal/JournalArticleDDMFormFieldTemplateContextContributor.getParameters(Lcom/liferay/dynamic/data/mapping/model/DDMFormField;Lcom/liferay/dynamic/data/mapping/render/DDMFormFieldRenderingContext;)Ljava/util/Map;:UNKNOWN
