@@ -1,0 +1,7 @@
+Bundle-Name: Liferay SAML Dynamic Include Dynamic Data Mapping Form Field Type
+Bundle-SymbolicName: com.liferay.saml.dynamic.include.dynamic.data.mapping.form.field.type
+Bundle-Version: 1.0.9
+Provide-Capability:\
+	soy;\
+		type:String="SamlDynamicIncludeLiferayFormField"
+Web-ContextPath: /saml-dynamic-include-dynamic-data-mapping-form-field-type
