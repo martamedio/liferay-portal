@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <h3>
-	<liferay-ui:message key="please-enter-the-otp-from-the-application" />:
+	<liferay-ui:message key="please-enter-the-otp-from-the-application" />
 </h3>
 
 <aui:input label="mfa-timebased-otp" name="mfaTimeBasedOTP" showRequiredLabel="yes" />
