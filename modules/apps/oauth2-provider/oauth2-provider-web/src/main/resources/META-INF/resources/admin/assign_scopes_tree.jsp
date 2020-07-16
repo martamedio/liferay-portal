@@ -90,9 +90,17 @@ pageContext.setAttribute("scopeAliasesDescriptionsMap", scopeAliasesDescriptions
 													</div>
 													</c:otherwise>
 												</c:choose>
-											<div class="col-md-6 text-left">
-												${scopeAliasesDescriptionsMap.get(tree.value)}
-											</div>
+
+												<div class="col-md-6 text-left">
+												<c:choose>
+													<c:when test="${assignedDeletedScopeAliases.contains(tree.value)}">
+														<liferay-ui:message key="this-scope-is-no-longer-available" />
+													</c:when>
+													<c:otherwise>
+														${scopeAliasesDescriptionsMap.get(tree.value)}
+													</c:otherwise>
+												</c:choose>
+												</div>
 										</clay:row>
 									</li>
 
@@ -117,7 +125,14 @@ pageContext.setAttribute("scopeAliasesDescriptionsMap", scopeAliasesDescriptions
 													</c:otherwise>
 												</c:choose>
 											<div class="col-md-6 text-left">
-												${scopeAliasesDescriptionsMap.get(tree.value)}
+												<c:choose>
+													<c:when test="${assignedDeletedScopeAliases.contains(tree.value)}">
+														<liferay-ui:message key="this-scope-is-no-longer-available" />
+													</c:when>
+													<c:otherwise>
+														${scopeAliasesDescriptionsMap.get(tree.value)}
+													</c:otherwise>
+												</c:choose>
 											</div>
 										</clay:row>
 									</li>
