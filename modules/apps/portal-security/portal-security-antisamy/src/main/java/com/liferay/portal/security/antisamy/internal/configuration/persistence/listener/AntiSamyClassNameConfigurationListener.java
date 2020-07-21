@@ -56,7 +56,8 @@ public class AntiSamyClassNameConfigurationListener
 		if (url == null) {
 			throw new ConfigurationModelListenerException(
 				ResourceBundleUtil.getString(
-					_getResourceBundle(), "configuration-file-not-found",
+					_getResourceBundle(),
+					"specified-file-configuration-not-found",
 					configurationFileURL),
 				AntiSamyClassNameConfiguration.class, getClass(), properties);
 		}
