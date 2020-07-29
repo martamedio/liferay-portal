@@ -64,13 +64,14 @@ public class MFASystemConfigurationUserNotificationHandler
 		if (mfaDisableGlobally) {
 			body = LanguageUtil.get(
 				resourceBundle,
-				"multi-factor-authentication-disabled-system-settings-wont-" +
-					"work-for-any-instance");
+				"multi-factor-authentication-has-been-disabled-by-the-system-" +
+					"administrator-and-is-unavailable-to-all-instances");
 		}
 		else {
 			body = LanguageUtil.get(
 				resourceBundle,
-				"multi-factor-authentication-enabled-for-all-instances");
+				"multi-factor-authentication-has-been-enabled-by-the-system-" +
+					"administrator");
 		}
 
 		String title = LanguageUtil.get(
