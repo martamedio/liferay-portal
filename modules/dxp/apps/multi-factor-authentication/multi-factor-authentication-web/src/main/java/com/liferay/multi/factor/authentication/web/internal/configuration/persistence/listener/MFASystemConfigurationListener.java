@@ -57,13 +57,13 @@ public class MFASystemConfigurationListener
 	public void onAfterSave(String pid, Dictionary<String, Object> properties)
 		throws ConfigurationModelListenerException {
 
-		try {
-			boolean mfaDisableGlobally = GetterUtil.getBoolean(
-				properties.get("disableGlobally"));
+		boolean mfaDisableGlobally = GetterUtil.getBoolean(
+			properties.get("disableGlobally"));
 
-			for (Company company : _companyLocalService.getCompanies()) {
-				long companyId = company.getCompanyId();
+		for (Company company : _companyLocalService.getCompanies()) {
+			long companyId = company.getCompanyId();
 
+			try {
 				MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
 					ConfigurationProviderUtil.getCompanyConfiguration(
 						MFAEmailOTPConfiguration.class, companyId);
@@ -73,25 +73,18 @@ public class MFASystemConfigurationListener
 						companyId, mfaDisableGlobally);
 				}
 			}
-		}
-		catch (ConfigurationException configurationException) {
-			_log.error(
-				"Unable to obtain multi-factor authentication configuration",
-				configurationException);
-
-			throw new ConfigurationModelListenerException(
-				configurationException.getMessage(),
-				ConfigurationException.class,
-				MFASystemConfigurationListener.class, properties);
-		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to send multi-factor authentication notification",
-				portalException);
-
-			throw new ConfigurationModelListenerException(
-				portalException.getMessage(), PortalException.class,
-				MFASystemConfigurationListener.class, properties);
+			catch (ConfigurationException configurationException) {
+				_log.error(
+					"Unable to get multi-factor authentication configuration " +
+						"for company " + companyId,
+					configurationException);
+			}
+			catch (PortalException portalException) {
+				_log.error(
+					"Failed to send notifications to administrators of " +
+						"company " + companyId,
+					portalException);
+			}
 		}
 	}
 
