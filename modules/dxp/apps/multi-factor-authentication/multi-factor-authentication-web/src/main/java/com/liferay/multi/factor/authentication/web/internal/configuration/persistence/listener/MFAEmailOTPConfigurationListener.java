@@ -78,7 +78,7 @@ public class MFAEmailOTPConfigurationListener
 		}
 		catch (ConfigurationException configurationException) {
 			_log.error(
-				"Unable to obtain multi-factor authentication configuration",
+				"Unable to get multi-factor authentication configuration",
 				configurationException);
 
 			throw new ConfigurationModelListenerException(
@@ -87,9 +87,7 @@ public class MFAEmailOTPConfigurationListener
 				MFASystemConfigurationListener.class, properties);
 		}
 		catch (PortalException portalException) {
-			_log.error(
-				"Unable to send multi-factor authentication notification",
-				portalException);
+			_log.error("Failed to send notification", portalException);
 
 			throw new ConfigurationModelListenerException(
 				portalException.getMessage(), PortalException.class,
