@@ -38,7 +38,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -59,6 +61,10 @@ public class MFASystemConfigurationListener
 
 		boolean mfaDisableGlobally = GetterUtil.getBoolean(
 			properties.get("disableGlobally"));
+
+		if (mfaDisableGlobally == _mfaDisableGlobally) {
+			return;
+		}
 
 		for (Company company : _companyLocalService.getCompanies()) {
 			long companyId = company.getCompanyId();
@@ -86,6 +92,14 @@ public class MFASystemConfigurationListener
 					portalException);
 			}
 		}
+
+		_mfaDisableGlobally = mfaDisableGlobally;
+	}
+
+	@Activate
+	protected void activate(Map<String, Object> properties) {
+		_mfaDisableGlobally = GetterUtil.getBoolean(
+			properties.get("disableGlobally"));
 	}
 
 	private void _sendNotificationToInstanceAdministrators(
@@ -121,6 +135,8 @@ public class MFASystemConfigurationListener
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	private boolean _mfaDisableGlobally;
 
 	@Reference
 	private RoleLocalService _roleLocalService;
