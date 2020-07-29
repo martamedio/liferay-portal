@@ -61,22 +61,24 @@ public class MFAEmailOTPConfigurationListener
 			boolean mfaEnabled = GetterUtil.getBoolean(
 				properties.get("enabled"));
 
-			if (mfaDisableGlobally && mfaEnabled) {
-				long userId = PrincipalThreadLocal.getUserId();
-
-				JSONObject notificationEventJSONObject = JSONUtil.put(
-					"classPK", ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
-				).put(
-					"mfaDisableGlobally", mfaDisableGlobally
-				).put(
-					"userId", userId
-				);
-
-				_userNotificationEventLocalService.sendUserNotificationEvents(
-					userId, ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-					UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
-					notificationEventJSONObject);
+			if (!mfaDisableGlobally || !mfaEnabled) {
+				return;
 			}
+
+			long userId = PrincipalThreadLocal.getUserId();
+
+			JSONObject notificationEventJSONObject = JSONUtil.put(
+				"classPK", ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
+			).put(
+				"mfaDisableGlobally", mfaDisableGlobally
+			).put(
+				"userId", userId
+			);
+
+			_userNotificationEventLocalService.sendUserNotificationEvents(
+				userId, ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+				UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
+				notificationEventJSONObject);
 		}
 		catch (ConfigurationException configurationException) {
 			_log.error(
