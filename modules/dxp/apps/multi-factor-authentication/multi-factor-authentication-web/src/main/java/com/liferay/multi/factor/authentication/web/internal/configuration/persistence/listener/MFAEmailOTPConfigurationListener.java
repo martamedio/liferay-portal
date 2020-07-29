@@ -19,7 +19,6 @@ import com.liferay.multi.factor.authentication.web.internal.system.configuration
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -40,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	immediate = true,
-	property = "model.class.name=com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration.scoped",
+	property = "model.class.name=com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration",
 	service = ConfigurationModelListener.class
 )
 public class MFAEmailOTPConfigurationListener
@@ -58,27 +57,24 @@ public class MFAEmailOTPConfigurationListener
 			boolean mfaDisableGlobally =
 				mfaSystemConfiguration.disableGlobally();
 
-			boolean mfaEnabled = GetterUtil.getBoolean(
-				properties.get("enabled"));
+			if (!mfaDisableGlobally ||
+				!GetterUtil.getBoolean(properties.get("enabled"))) {
 
-			if (!mfaDisableGlobally || !mfaEnabled) {
 				return;
 			}
 
 			long userId = PrincipalThreadLocal.getUserId();
 
-			JSONObject notificationEventJSONObject = JSONUtil.put(
-				"classPK", ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
-			).put(
-				"mfaDisableGlobally", mfaDisableGlobally
-			).put(
-				"userId", userId
-			);
-
 			_userNotificationEventLocalService.sendUserNotificationEvents(
 				userId, ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 				UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
-				notificationEventJSONObject);
+				JSONUtil.put(
+					"classPK", ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
+				).put(
+					"mfaDisableGlobally", mfaDisableGlobally
+				).put(
+					"userId", userId
+				));
 		}
 		catch (ConfigurationException configurationException) {
 			_log.error(

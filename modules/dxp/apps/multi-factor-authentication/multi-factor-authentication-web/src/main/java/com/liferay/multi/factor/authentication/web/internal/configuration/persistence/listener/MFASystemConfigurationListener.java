@@ -19,7 +19,6 @@ import com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailO
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -37,7 +36,6 @@ import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Dictionary;
-import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -109,24 +107,19 @@ public class MFASystemConfigurationListener
 		Role role = _roleLocalService.getRole(
 			companyId, RoleConstants.ADMINISTRATOR);
 
-		List<User> administratorUsers = _userLocalService.getRoleUsers(
-			role.getRoleId());
-
-		for (User user : administratorUsers) {
+		for (User user : _userLocalService.getRoleUsers(role.getRoleId())) {
 			long userId = user.getUserId();
-
-			JSONObject notificationEventJSONObject = JSONUtil.put(
-				"classPK", ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
-			).put(
-				"mfaDisableGlobally", mfaDisableGlobally
-			).put(
-				"userId", userId
-			);
 
 			_userNotificationEventLocalService.sendUserNotificationEvents(
 				userId, ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 				UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
-				notificationEventJSONObject);
+				JSONUtil.put(
+					"classPK", ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
+				).put(
+					"mfaDisableGlobally", mfaDisableGlobally
+				).put(
+					"userId", userId
+				));
 		}
 	}
 
