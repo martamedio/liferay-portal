@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -51,7 +51,7 @@ public class MFAEmailOTPConfigurationListener
 
 		try {
 			MFASystemConfiguration mfaSystemConfiguration =
-				ConfigurationProviderUtil.getSystemConfiguration(
+				_configurationProvider.getSystemConfiguration(
 					MFASystemConfiguration.class);
 
 			boolean mfaDisableGlobally =
@@ -97,6 +97,9 @@ public class MFAEmailOTPConfigurationListener
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		MFAEmailOTPConfigurationListener.class);
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private UserNotificationEventLocalService

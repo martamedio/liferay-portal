@@ -17,7 +17,7 @@ package com.liferay.multi.factor.authentication.web.internal.notifications;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.notifications.BaseModelUserNotificationHandler;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marta Medio
@@ -62,24 +63,27 @@ public class MFASystemConfigurationUserNotificationHandler
 			serviceContext.getLocale(), getClass());
 
 		if (mfaDisableGlobally) {
-			body = LanguageUtil.get(
+			body = _language.get(
 				resourceBundle,
 				"multi-factor-authentication-has-been-disabled-by-the-system-" +
 					"administrator-and-is-unavailable-to-all-instances");
 		}
 		else {
-			body = LanguageUtil.get(
+			body = _language.get(
 				resourceBundle,
 				"multi-factor-authentication-has-been-enabled-by-the-system-" +
 					"administrator");
 		}
 
-		String title = LanguageUtil.get(
+		String title = _language.get(
 			resourceBundle, "multi-factor-authentication");
 
 		return StringUtil.replace(
 			getBodyTemplate(), new String[] {"[$BODY$]", "[$TITLE$]"},
 			new String[] {body, title});
 	}
+
+	@Reference
+	private Language _language;
 
 }

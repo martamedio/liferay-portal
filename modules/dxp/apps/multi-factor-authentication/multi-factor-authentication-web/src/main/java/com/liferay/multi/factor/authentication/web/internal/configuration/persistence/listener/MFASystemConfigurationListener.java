@@ -28,7 +28,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -69,7 +69,7 @@ public class MFASystemConfigurationListener
 
 			try {
 				MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
-					ConfigurationProviderUtil.getCompanyConfiguration(
+					_configurationProvider.getCompanyConfiguration(
 						MFAEmailOTPConfiguration.class, companyId);
 
 				if (mfaEmailOTPConfiguration.enabled()) {
@@ -128,6 +128,9 @@ public class MFASystemConfigurationListener
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	private boolean _mfaDisableGlobally;
 
