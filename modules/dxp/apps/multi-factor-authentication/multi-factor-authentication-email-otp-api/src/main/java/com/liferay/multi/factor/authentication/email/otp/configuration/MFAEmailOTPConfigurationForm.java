@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutColumn;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutPage;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutRow;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldType;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 
 /**
@@ -68,10 +69,17 @@ public interface MFAEmailOTPConfigurationForm {
 	@DDMFormField(label = "%email-from-name")
 	public String emailFromName();
 
-	@DDMFormField(label = "%email-otp-sent-body")
+	@DDMFormField(
+		label = "%email-otp-sent-body", properties = "displayStyle=multiline",
+		type = DDMFormFieldType.LOCALIZABLE_TEXT
+	)
 	public LocalizedValuesMap emailOTPSentBody();
 
-	@DDMFormField(label = "%email-otp-sent-subject")
+	@DDMFormField(
+		label = "%email-otp-sent-subject",
+		properties = "displayStyle=multiline",
+		type = DDMFormFieldType.LOCALIZABLE_TEXT
+	)
 	public LocalizedValuesMap emailOTPSentSubject();
 
 	@DDMFormField(
