@@ -173,7 +173,8 @@ public class DefaultUserResolver implements UserResolver {
 					"User is a stranger and company " + companyId +
 						" does not allow strangers to create accounts");
 			}
-			else if (!company.isStrangersWithMx() &&
+			else if (Validator.isNotNull(emailAddress) &&
+					 !company.isStrangersWithMx() &&
 					 company.hasCompanyMx(emailAddress)) {
 
 				throw new UserEmailAddressException.MustNotUseCompanyMx(
