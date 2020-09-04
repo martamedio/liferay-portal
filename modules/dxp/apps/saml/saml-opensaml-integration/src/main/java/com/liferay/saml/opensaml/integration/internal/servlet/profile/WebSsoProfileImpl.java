@@ -774,6 +774,11 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 					SamlWebKeys.SAML_SSO_ERROR,
 					ContactNameException.class.getSimpleName());
 			}
+			else if (portalException instanceof SubjectException) {
+				httpSession.setAttribute(
+					SamlWebKeys.SAML_SSO_ERROR,
+					SubjectException.class.getSimpleName());
+			}
 			else if (portalException instanceof UserEmailAddressException) {
 				httpSession.setAttribute(
 					SamlWebKeys.SAML_SSO_ERROR,
@@ -796,6 +801,14 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 			httpServletResponse.sendRedirect(
 				getAuthRedirectURL(messageContext, httpServletRequest));
+
+			if (portalException instanceof SubjectException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(portalException, portalException);
+				}
+
+				return;
+			}
 
 			throw portalException;
 		}
