@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.exception.ContactNameException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
+import com.liferay.portal.kernel.exception.UserEmailAddressException.MustNotUseCompanyMx;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -773,6 +774,11 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 				httpSession.setAttribute(
 					SamlWebKeys.SAML_SSO_ERROR,
 					ContactNameException.class.getSimpleName());
+			}
+			else if (portalException instanceof MustNotUseCompanyMx) {
+				httpSession.setAttribute(
+					SamlWebKeys.SAML_SSO_ERROR,
+					MustNotUseCompanyMx.class.getSimpleName());
 			}
 			else if (portalException instanceof UserEmailAddressException) {
 				httpSession.setAttribute(
