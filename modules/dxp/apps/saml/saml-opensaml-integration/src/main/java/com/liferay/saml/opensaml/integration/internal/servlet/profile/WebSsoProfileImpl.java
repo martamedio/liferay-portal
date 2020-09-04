@@ -797,7 +797,7 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			httpServletResponse.sendRedirect(
 				getAuthRedirectURL(messageContext, httpServletRequest));
 
-			return;
+			throw portalException;
 		}
 
 		SamlSpSession samlSpSession = getSamlSpSession(httpServletRequest);
