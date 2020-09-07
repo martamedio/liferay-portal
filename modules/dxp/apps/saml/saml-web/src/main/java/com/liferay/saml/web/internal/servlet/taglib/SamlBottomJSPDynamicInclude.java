@@ -94,7 +94,7 @@ public class SamlBottomJSPDynamicInclude extends BaseJSPDynamicInclude {
 	public void register(
 		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
 
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
+		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#pre");
 	}
 
 	@Override
