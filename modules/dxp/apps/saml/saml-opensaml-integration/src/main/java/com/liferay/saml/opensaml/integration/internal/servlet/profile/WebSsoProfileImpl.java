@@ -770,35 +770,45 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 			HttpSession httpSession = originalHttpServletRequest.getSession();
 
+			httpSession.setAttribute(
+				SamlWebKeys.SAML_SUBJECT_NAME_ID, nameID.getValue());
+
+			String errorKey = StringPool.BLANK;
+
 			if (portalException instanceof ContactNameException) {
-				httpSession.setAttribute(
-					SamlWebKeys.SAML_SSO_ERROR,
-					ContactNameException.class.getSimpleName());
+				errorKey = ContactNameException.class.getSimpleName();
+			}
+			else if (portalException instanceof SubjectException) {
+				errorKey = SubjectException.class.getSimpleName();
 			}
 			else if (portalException instanceof MustNotUseCompanyMx) {
-				httpSession.setAttribute(
-					SamlWebKeys.SAML_SSO_ERROR,
-					MustNotUseCompanyMx.class.getSimpleName());
+				errorKey = MustNotUseCompanyMx.class.getSimpleName();
 			}
 			else if (portalException instanceof UserEmailAddressException) {
-				httpSession.setAttribute(
-					SamlWebKeys.SAML_SSO_ERROR,
-					UserEmailAddressException.class.getSimpleName());
+				errorKey = UserEmailAddressException.class.getSimpleName();
 			}
 			else if (portalException instanceof UserScreenNameException) {
-				httpSession.setAttribute(
-					SamlWebKeys.SAML_SSO_ERROR,
-					UserScreenNameException.class.getSimpleName());
+				errorKey = UserScreenNameException.class.getSimpleName();
 			}
 			else {
 				Class<?> clazz = portalException.getClass();
 
 				httpSession.setAttribute(
 					SamlWebKeys.SAML_SSO_ERROR, clazz.getSimpleName());
+
+				throw portalException;
 			}
 
-			httpSession.setAttribute(
-				SamlWebKeys.SAML_SUBJECT_NAME_ID, nameID.getValue());
+			httpSession.setAttribute(SamlWebKeys.SAML_SSO_ERROR, errorKey);
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+			else {
+				if (!(portalException instanceof SubjectException)) {
+					_log.error(portalException.getMessage());
+				}
+			}
 
 			httpServletResponse.sendRedirect(
 				getAuthRedirectURL(messageContext, httpServletRequest));
