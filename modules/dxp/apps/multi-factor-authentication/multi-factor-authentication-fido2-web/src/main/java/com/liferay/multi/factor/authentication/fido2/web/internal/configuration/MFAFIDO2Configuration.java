@@ -48,7 +48,7 @@ public interface MFAFIDO2Configuration {
 	 */
 	@Meta.AD(
 		deflt = 1, description = "allowed-credentials-per-user-description",
-		name = "allowed-credentials-per-user-name"
+		name = "allowed-credentials-per-user"
 	)
 	public int allowedCredentialsPerUser();
 
