@@ -17,17 +17,17 @@ package com.liferay.portal.security.service.access.policy.service.impl;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -124,10 +124,8 @@ public class SAPEntryLocalServiceImpl extends SAPEntryLocalServiceBaseImpl {
 			companyId, RoleConstants.GUEST);
 
 		if (systemDefaultSAPEntry == null) {
-			Map<Locale, String> titleMap = HashMapBuilder.put(
-				LocaleUtil.getDefault(),
-				_sapConfiguration.systemDefaultSAPEntryDescription()
-			).build();
+			Map<Locale, String> titleMap = LocalizationUtil.getMap(
+				_sapConfiguration.systemDefaultSAPEntryDescription());
 
 			systemDefaultSAPEntry = addSAPEntry(
 				defaultUserId,
@@ -143,10 +141,8 @@ public class SAPEntryLocalServiceImpl extends SAPEntryLocalServiceBaseImpl {
 		}
 
 		if (systemUserPasswordSAPEntry == null) {
-			Map<Locale, String> titleMap = HashMapBuilder.put(
-				LocaleUtil.getDefault(),
-				_sapConfiguration.systemUserPasswordSAPEntryDescription()
-			).build();
+			Map<Locale, String> titleMap = LocalizationUtil.getMap(
+				_sapConfiguration.systemUserPasswordSAPEntryDescription());
 
 			systemUserPasswordSAPEntry = addSAPEntry(
 				defaultUserId,
@@ -265,9 +261,9 @@ public class SAPEntryLocalServiceImpl extends SAPEntryLocalServiceBaseImpl {
 
 	@Activate
 	@Modified
-	protected void activate(Map<String, Object> properties) {
-		_sapConfiguration = ConfigurableUtil.createConfigurable(
-			SAPConfiguration.class, properties);
+	protected void activate() throws Exception {
+		_sapConfiguration = ConfigurationProviderUtil.getSystemConfiguration(
+			SAPConfiguration.class);
 	}
 
 	protected String normalizeServiceSignatures(String serviceSignatures) {
