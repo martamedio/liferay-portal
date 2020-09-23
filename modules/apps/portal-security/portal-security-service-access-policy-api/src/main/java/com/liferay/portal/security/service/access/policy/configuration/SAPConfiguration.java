@@ -17,6 +17,7 @@ package com.liferay.portal.security.service.access.policy.configuration;
 import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 
 /**
  * @author Mika Koivisto
@@ -38,10 +39,10 @@ public interface SAPConfiguration {
 	public String systemDefaultSAPEntryName();
 
 	@Meta.AD(
-		deflt = "System Service Access Policy Applied on Every Request",
+		deflt = "${resource:com/liferay/portal/security/service/access/policy/configuration/system_default_SAP_entry_description.tmpl}",
 		name = "system-default-sap-entry-description", required = false
 	)
-	public String systemDefaultSAPEntryDescription();
+	public LocalizedValuesMap systemDefaultSAPEntryDescription();
 
 	@Meta.AD(
 		deflt = "com.liferay.portal.kernel.service.CountryService#getCountries\ncom.liferay.portal.kernel.service.RegionService#getRegions",
@@ -56,10 +57,10 @@ public interface SAPConfiguration {
 	public String systemUserPasswordSAPEntryName();
 
 	@Meta.AD(
-		deflt = "System Service Access Policy for Requests Authenticated Using User Password",
+		deflt = "${resource:com/liferay/portal/security/service/access/policy/configuration/system_user_password_SAP_entry_description.tmpl}",
 		name = "system-user-password-sap-entry-description", required = false
 	)
-	public String systemUserPasswordSAPEntryDescription();
+	public LocalizedValuesMap systemUserPasswordSAPEntryDescription();
 
 	@Meta.AD(
 		deflt = "*", name = "system-user-password-sap-entry-service-signatures",
