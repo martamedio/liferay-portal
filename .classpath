@@ -1,36 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="definitions"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/apps/petra/petra-content/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/apps/petra/petra-encryptor/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/apps/petra/petra-log4j/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/apps/petra/petra-mail/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/apps/petra/petra-xml/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-concurrent/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-executor/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-function/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-io/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-lang/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-memory/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-nio/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-process/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-reflect/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-sql-dsl-api/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-sql-dsl-spi/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/petra/petra-string/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="modules/core/registry-api/src/main/java"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="portal-impl/src"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="portal-impl/test/unit"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="portal-kernel/src"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="portal-kernel/test/unit"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="portal-test/src"/>
-	<classpathentry excluding="**/.svn/**|.svn/|com/liferay/portalweb/dependencies/" kind="src" path="portal-web/test/functional"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="support-tomcat/src"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="util-bridges/src"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="util-java/src"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="util-java/test/unit"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="util-slf4j/src"/>
-	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="util-taglib/src"/>
+	<classpathentry kind="src" path="modules/apps/asset/asset-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/asset/asset-link-test/src/testIntegration/java"/>
+
+	<classpathentry kind="src" path="modules/apps/calendar/calendar-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/calendar/calendar-service/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/calendar/calendar-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/calendar/calendar-test/src/testIntegration/java"/>
+	<classpathentry kind="src" path="modules/apps/calendar/calendar-test-util/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/configuration-admin/configuration-admin-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/export-import/export-import-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/export-import/export-import-service/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/export-import/export-import-test/src/testIntegration/java"/>
+	<classpathentry kind="src" path="modules/apps/export-import/export-import-test-util/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/hello-world/hello-world-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/layout/layout-admin-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/layout/layout-test-util/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/login/login-authentication-facebook-connect-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/login/login-authentication-opensso-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/login/login-authentication-openid-connect-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/login/login-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/greetings-rest-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-jsonws/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-rest-spi/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-scope-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-scope-spi/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-scope-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-scope-liferay-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-scope-liferay-spi/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-service/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-shortcut/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/oauth2-provider/oauth2-provider-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/petra/petra-content/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/petra/petra-encryptor/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/petra/petra-log4j/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/petra/petra-mail/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/petra/petra-xml/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal/portal-aop-api/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal/portal-instance-lifecycle-api/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-configuration/portal-configuration-metatype-definitions-annotations/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-configuration/portal-configuration-metatype-definitions-equinox/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-configuration/portal-configuration-test-util/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-configuration/portal-configuration-module-configuration/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-crypto-hash/portal-crypto-hash-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-crypto-hash/portal-crypto-hash-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-crypto-hash/portal-crypto-hash-generator-spi/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-crypto-hash/portal-crypto-hash-pepper-storage-spi/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-crypto-hash/portal-crypto-hash-test/src/testIntegration/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-crypto-hash-generator/portal-crypto-hash-generator-spi/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-crypto-hash-generator/portal-crypto-hash-generator-message-digest/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-crypto-hash-generator/portal-crypto-hash-generator-message-digest/src/test/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-remote/portal-remote-cors-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-remote/portal-remote-cors-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-remote/portal-remote-cors-impl/src/test/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-remote/portal-remote-cors-test/src/testIntegration/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-search/portal-search-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-search/portal-search-spi/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-search-elasticsearch6/portal-search-elasticsearch6-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-search-elasticsearch6/portal-search-elasticsearch6-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-search-elasticsearch6/portal-search-elasticsearch6-spi/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-search-elasticsearch7/portal-search-elasticsearch7-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-search-elasticsearch7/portal-search-elasticsearch7-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-search-elasticsearch7/portal-search-elasticsearch7-spi/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-security-audit/portal-security-audit-storage-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-audit/portal-security-audit-storage-service/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-audit/portal-security-audit-router/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-audit/portal-security-audit-event-generators-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-audit/portal-security-audit-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-audit/portal-security-audit-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-audit/portal-security-audit-wiring/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-audit/portal-security-audit-event-generators-user-management/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-security-password/portal-security-password-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-password/portal-security-password-service/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-ntlm/portal-security-sso-ntlm-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-ntlm/portal-security-sso-ntlm-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-ntlm/portal-security-sso-ntlm-settings-authentication-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-openid/portal-security-sso-openid-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-openid/portal-security-sso-openid-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-openid/portal-security-sso-openid-settings-authentication-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-openid/portal-security-sso-openid-login-authentication-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-google/portal-security-sso-google-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-google/portal-security-sso-google-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-google/portal-security-sso-google-login-authentication-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso-google/portal-security-sso-google-settings-authentication-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-opensso-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-opensso-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-token-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-token-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-cas-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-cas-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-openid-connect-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-openid-connect-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-facebook-connect-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-sso/portal-security-sso-facebook-connect-impl/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-security-wedeploy-auth/portal-security-wedeploy-auth-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-wedeploy-auth/portal-security-wedeploy-auth-service/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-security-wedeploy-auth/portal-security-wedeploy-auth-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/portal-settings/portal-settings-authentication-cas-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-settings/portal-settings-authentication-facebook-connect-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-settings/portal-settings-authentication-openid-connect-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-settings/portal-settings-authentication-token-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-settings/portal-settings-authentication-ldap-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-settings/portal-settings-authentication-opensso-web/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-settings/portal-settings-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/portal-settings/portal-settings-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/site/site-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/site/site-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/apps/site/site-service/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/static/portal-configuration/portal-configuration-metatype-api/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/apps/static/portal-configuration/portal-configuration-persistence-api/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/core/jaxws-osgi-bridge/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/core/osgi-service-tracker-collections/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/core/petra/petra-concurrent/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-executor/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-function/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-io/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-lang/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-memory/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-nio/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-process/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-reflect/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/petra/petra-string/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/registry-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/registry-impl/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/portal-app-license-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/portal-app-license-resolver-hook/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/portal-bootstrap/src/main/java"/>
+	<classpathentry kind="src" path="modules/core/portal-equinox-log-bridge/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-checker-record-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-checker-record-service/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-spi/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-email-otp-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-email-otp-service/src/main/java"/>
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-email-otp-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-timebased-otp-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-timebased-otp-service/src/main/java"/>
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-timebased-otp-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-fido2-credential-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-fido2-credential-service/src/main/java"/>
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-fido2-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/dxp/apps/multi-factor-authentication/multi-factor-authentication-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/dxp/apps/portal-reports-engine-console/portal-reports-engine-console-api/src/main/java"/>
+	<classpathentry kind="src" path="modules/dxp/apps/portal-reports-engine-console/portal-reports-engine-console-web/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/test/arquillian-extension-junit-bridge/src/main/java"/>
+
+	<classpathentry kind="src" path="modules/util/portal-tools-service-builder/src/main/java"/>
+
+	<classpathentry kind="src" path="portal-impl/src"/>
+	<classpathentry kind="src" path="portal-kernel/src"/>
+	<classpathentry kind="src" path="portal-test/src"/>
+	<classpathentry kind="src" path="support-tomcat/src"/>
+	<classpathentry kind="src" path="util-bridges/src"/>
+	<classpathentry kind="src" path="util-java/src"/>
+	<classpathentry kind="src" path="util-slf4j/src"/>
+	<classpathentry kind="src" path="util-taglib/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/development/activation.jar"/>
 	<classpathentry kind="lib" path="lib/development/alloy-taglib.jar"/>
@@ -128,8 +287,6 @@
 	<classpathentry kind="lib" path="lib/portal/asm.jar"/>
 	<classpathentry kind="lib" path="lib/portal/aspectj-rt.jar"/>
 	<classpathentry kind="lib" path="lib/portal/aspectj-weaver.jar"/>
-	<classpathentry kind="lib" path="lib/portal/axiom-api.jar"/>
-	<classpathentry kind="lib" path="lib/portal/axiom-impl.jar"/>
 	<classpathentry kind="lib" path="lib/portal/axis.jar"/>
 	<classpathentry kind="lib" path="lib/portal/axis-ant.jar"/>
 	<classpathentry kind="lib" path="lib/portal/bcmail.jar"/>
@@ -154,8 +311,8 @@
 	<classpathentry kind="lib" path="lib/portal/commons-discovery.jar"/>
 	<classpathentry kind="lib" path="lib/portal/commons-exec.jar"/>
 	<classpathentry kind="lib" path="lib/portal/commons-fileupload.jar"/>
+	<classpathentry kind="lib" path="lib/portal/commons-httpclient.jar"/>
 	<classpathentry kind="lib" path="lib/portal/commons-io.jar"/>
-	<classpathentry kind="lib" path="lib/portal/commons-lang3.jar"/>
 	<classpathentry kind="lib" path="lib/portal/commons-lang.jar"/>
 	<classpathentry kind="lib" path="lib/portal/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/portal/commons-math3.jar"/>
@@ -206,13 +363,13 @@
 	<classpathentry kind="lib" path="lib/portal/jcommon.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jcl-over-slf4j.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jdom.jar"/>
-	<classpathentry kind="lib" path="lib/portal/jdom2.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jempbox.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jena.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jericho-html.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jersey-common.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jfreechart.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jhighlight.jar"/>
+	<classpathentry kind="lib" path="lib/portal/jhlabs-filters.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jmatio.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jna.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jodconverter.jar"/>
@@ -259,16 +416,15 @@
 	<classpathentry kind="lib" path="lib/portal/ridl.jar"/>
 	<classpathentry kind="lib" path="lib/portal/rmi-api.jar"/>
 	<classpathentry kind="lib" path="lib/portal/rome.jar"/>
-	<classpathentry kind="lib" path="lib/portal/rometools-utils.jar"/>
 	<classpathentry kind="lib" path="lib/portal/rometools.jar"/>
 	<classpathentry kind="lib" path="lib/portal/saaj-api.jar"/>
 	<classpathentry kind="lib" path="lib/portal/saaj-impl.jar"/>
 	<classpathentry kind="lib" path="lib/portal/scribe.jar"/>
 	<classpathentry kind="lib" path="lib/portal/serializer.jar"/>
+	<classpathentry kind="lib" path="lib/portal/simplecaptcha.jar"/>
 	<classpathentry kind="lib" path="lib/portal/slf4j-api.jar"/>
 	<classpathentry kind="lib" path="lib/portal/soap.jar"/>
 	<classpathentry kind="lib" path="lib/portal/soap-api.jar"/>
-	<classpathentry kind="lib" path="lib/portal/sparse-bit-set.jar"/>
 	<classpathentry kind="lib" path="lib/portal/spring-aop.jar"/>
 	<classpathentry kind="lib" path="lib/portal/spring-aspects.jar"/>
 	<classpathentry kind="lib" path="lib/portal/spring-beans.jar"/>
@@ -293,6 +449,7 @@
 	<classpathentry kind="lib" path="lib/portal/tomcat-jdbc.jar"/>
 	<classpathentry kind="lib" path="lib/portal/tomcat-juli.jar"/>
 	<classpathentry kind="lib" path="lib/portal/transaction.jar"/>
+	<classpathentry kind="lib" path="lib/portal/truezip.jar"/>
 	<classpathentry kind="lib" path="lib/portal/unoil.jar"/>
 	<classpathentry kind="lib" path="lib/portal/urlrewritefilter.jar"/>
 	<classpathentry kind="lib" path="lib/portal/vorbis-java-core.jar"/>
@@ -311,5 +468,13 @@
 	<classpathentry kind="lib" path="lib/portal/xuggle-xuggler-noarch.jar"/>
 	<classpathentry kind="lib" path="lib/portal/xz.jar"/>
 	<classpathentry kind="lib" path="lib/portal/yui-compressor.jar"/>
+	<classpathentry kind="lib" path="/home/arthurchan35/Documents/org.osgi.core-6.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/arthurchan35/Downloads/org.osgi.service.component.annotations-1.3.0.jar"/>
+	<classpathentry kind="lib" path="/home/arthurchan35/Documents/org.osgi.service.cm-1.5.0.jar"/>
+	<classpathentry kind="lib" path="/home/arthurchan35/Downloads/webauthn-server-core-1.6.4.jar"/>
+	<classpathentry kind="lib" path="/home/arthurchan35/Downloads/jackson-core-2.11.2.jar"/>
+	<classpathentry kind="lib" path="/home/arthurchan35/Downloads/jackson-annotations-2.11.2.jar"/>
+	<classpathentry kind="lib" path="/home/arthurchan35/Downloads/jackson-databind-2.11.2.jar"/>
+<classpathentry kind="lib" path="/home/arthurchan35/Downloads/jackson-datatype-jdk8-2.11.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
