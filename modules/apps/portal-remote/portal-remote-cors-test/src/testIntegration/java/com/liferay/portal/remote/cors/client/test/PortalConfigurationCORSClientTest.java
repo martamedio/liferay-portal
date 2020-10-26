@@ -21,8 +21,6 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.remote.cors.configuration.PortalCORSConfiguration;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.net.URI;
-
 import java.util.Dictionary;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -135,19 +133,6 @@ public class PortalConfigurationCORSClientTest extends BaseCORSClientTestCase {
 		cookies = response.getCookies();
 
 		newCookie = cookies.get(CookieKeys.JSESSIONID);
-
-		URI redirectLocation = response.getLocation();
-
-		WebTarget redirectWebTarget = _getLocalhostWebTarget();
-
-		redirectWebTarget.path(redirectLocation.getPath());
-
-		invocationBuilder = redirectWebTarget.request();
-		invocationBuilder = invocationBuilder.cookie(newCookie);
-
-		response = invocationBuilder.get();
-
-		_pAuth = _parsePAuthToken(response);
 
 		if (newCookie == null) {
 			return null;
