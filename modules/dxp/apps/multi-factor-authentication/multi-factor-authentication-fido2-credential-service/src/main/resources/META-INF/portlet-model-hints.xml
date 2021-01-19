@@ -9,9 +9,8 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="credentialKey" type="String">
-			<hint name="max-length">128</hint>
-		</field>
+		<field name="credentialKey" type="String" />
+		<field name="credentialKeyHash" type="long" />
 		<field name="credentialType" type="int" />
 		<field name="failedAttempts" type="int" />
 		<field name="publicKeyCOSE" type="String">
