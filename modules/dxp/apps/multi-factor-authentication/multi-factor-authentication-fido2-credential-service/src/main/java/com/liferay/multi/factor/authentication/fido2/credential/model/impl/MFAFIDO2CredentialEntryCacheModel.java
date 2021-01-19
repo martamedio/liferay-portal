@@ -78,7 +78,7 @@ public class MFAFIDO2CredentialEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -96,6 +96,8 @@ public class MFAFIDO2CredentialEntryCacheModel
 		sb.append(modifiedDate);
 		sb.append(", credentialKey=");
 		sb.append(credentialKey);
+		sb.append(", credentialKeyHash=");
+		sb.append(credentialKeyHash);
 		sb.append(", credentialType=");
 		sb.append(credentialType);
 		sb.append(", failedAttempts=");
@@ -148,6 +150,7 @@ public class MFAFIDO2CredentialEntryCacheModel
 			mfaFIDO2CredentialEntryImpl.setCredentialKey(credentialKey);
 		}
 
+		mfaFIDO2CredentialEntryImpl.setCredentialKeyHash(credentialKeyHash);
 		mfaFIDO2CredentialEntryImpl.setCredentialType(credentialType);
 		mfaFIDO2CredentialEntryImpl.setFailedAttempts(failedAttempts);
 
@@ -178,6 +181,8 @@ public class MFAFIDO2CredentialEntryCacheModel
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 		credentialKey = objectInput.readUTF();
+
+		credentialKeyHash = objectInput.readLong();
 
 		credentialType = objectInput.readInt();
 
@@ -214,6 +219,8 @@ public class MFAFIDO2CredentialEntryCacheModel
 			objectOutput.writeUTF(credentialKey);
 		}
 
+		objectOutput.writeLong(credentialKeyHash);
+
 		objectOutput.writeInt(credentialType);
 
 		objectOutput.writeInt(failedAttempts);
@@ -236,6 +243,7 @@ public class MFAFIDO2CredentialEntryCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public String credentialKey;
+	public long credentialKeyHash;
 	public int credentialType;
 	public int failedAttempts;
 	public String publicKeyCOSE;

@@ -58,6 +58,9 @@ public class MFAFIDO2CredentialEntryTable
 	public final Column<MFAFIDO2CredentialEntryTable, String> credentialKey =
 		createColumn(
 			"credentialKey", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<MFAFIDO2CredentialEntryTable, Long> credentialKeyHash =
+		createColumn(
+			"credentialKeyHash", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<MFAFIDO2CredentialEntryTable, Integer> credentialType =
 		createColumn(
 			"credentialType", Integer.class, Types.INTEGER,
