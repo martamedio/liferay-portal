@@ -6,7 +6,7 @@ create table MFAFIDO2CredentialEntry (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	credentialKey VARCHAR(75) null,
+	credentialKey TEXT null,
 	credentialKeyHash LONG,
 	credentialType INTEGER,
 	failedAttempts INTEGER,

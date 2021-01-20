@@ -169,7 +169,9 @@ public class MFAFIDO2CredentialEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		mfaFIDO2CredentialEntryId = objectInput.readLong();
@@ -180,7 +182,7 @@ public class MFAFIDO2CredentialEntryCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		credentialKey = objectInput.readUTF();
+		credentialKey = (String)objectInput.readObject();
 
 		credentialKeyHash = objectInput.readLong();
 
@@ -213,10 +215,10 @@ public class MFAFIDO2CredentialEntryCacheModel
 		objectOutput.writeLong(modifiedDate);
 
 		if (credentialKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(credentialKey);
+			objectOutput.writeObject(credentialKey);
 		}
 
 		objectOutput.writeLong(credentialKeyHash);

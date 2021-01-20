@@ -72,7 +72,7 @@ public class MFAFIDO2CredentialEntryModelImpl
 		{"mfaFIDO2CredentialEntryId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"credentialKey", Types.VARCHAR},
+		{"modifiedDate", Types.TIMESTAMP}, {"credentialKey", Types.CLOB},
 		{"credentialKeyHash", Types.BIGINT}, {"credentialType", Types.INTEGER},
 		{"failedAttempts", Types.INTEGER}, {"publicKeyCOSE", Types.VARCHAR},
 		{"signatureCount", Types.BIGINT}
@@ -89,7 +89,7 @@ public class MFAFIDO2CredentialEntryModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("credentialKey", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("credentialKey", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("credentialKeyHash", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("credentialType", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("failedAttempts", Types.INTEGER);
@@ -98,7 +98,7 @@ public class MFAFIDO2CredentialEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table MFAFIDO2CredentialEntry (mvccVersion LONG default 0 not null,mfaFIDO2CredentialEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,credentialKey VARCHAR(75) null,credentialKeyHash LONG,credentialType INTEGER,failedAttempts INTEGER,publicKeyCOSE VARCHAR(128) null,signatureCount LONG)";
+		"create table MFAFIDO2CredentialEntry (mvccVersion LONG default 0 not null,mfaFIDO2CredentialEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,credentialKey TEXT null,credentialKeyHash LONG,credentialType INTEGER,failedAttempts INTEGER,publicKeyCOSE VARCHAR(128) null,signatureCount LONG)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table MFAFIDO2CredentialEntry";
