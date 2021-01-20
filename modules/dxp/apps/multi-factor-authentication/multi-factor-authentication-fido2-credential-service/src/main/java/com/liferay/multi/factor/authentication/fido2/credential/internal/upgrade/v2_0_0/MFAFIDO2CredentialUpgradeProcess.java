@@ -34,12 +34,19 @@ public class MFAFIDO2CredentialUpgradeProcess extends UpgradeProcess {
 	protected void doUpgrade() throws Exception {
 		_dropIndexes();
 
-		alter(
-			MFAFIDO2CredentialEntryTable.class,
-			new AlterColumnType("credentialKey", "LONGTEXT null"),
-			new AlterTableAddColumn("credentialKeyHash", "LONG null"));
+		if (hasColumn("MFAFIDO2CredentialEntry", "credentialKey")) {
+			alter(
+				MFAFIDO2CredentialEntryTable.class,
+				new AlterColumnType("credentialKey", "LONGTEXT null"));
+		}
 
-		_generateCredentialKeyHash();
+		if (!hasColumn("MFAFIDO2CredentialEntry", "credentialKeyHash")) {
+			alter(
+				MFAFIDO2CredentialEntryTable.class,
+				new AlterTableAddColumn("credentialKeyHash", "LONG null"));
+
+			_generateCredentialKeyHash();
+		}
 
 		_createIndexes();
 	}
@@ -62,8 +69,13 @@ public class MFAFIDO2CredentialUpgradeProcess extends UpgradeProcess {
 
 	private void _dropIndexes() throws Exception {
 		try {
-			runSQL("drop index IX_4C5F79F9 on MFAFIDO2CredentialEntry");
-			runSQL("drop index IX_2B0CF873 on MFAFIDO2CredentialEntry");
+			if (hasIndex("MFAFIDO2CredentialEntry", "IX_4C5F79F9")) {
+				runSQL("drop index IX_4C5F79F9 on MFAFIDO2CredentialEntry");
+			}
+
+			if (hasIndex("MFAFIDO2CredentialEntry", "IX_2B0CF873")) {
+				runSQL("drop index IX_2B0CF873 on MFAFIDO2CredentialEntry");
+			}
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
