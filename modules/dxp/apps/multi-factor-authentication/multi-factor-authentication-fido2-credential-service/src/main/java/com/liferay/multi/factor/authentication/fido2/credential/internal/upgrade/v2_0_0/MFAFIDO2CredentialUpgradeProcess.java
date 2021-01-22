@@ -15,8 +15,6 @@
 package com.liferay.multi.factor.authentication.fido2.credential.internal.upgrade.v2_0_0;
 
 import com.liferay.multi.factor.authentication.fido2.credential.internal.upgrade.v2_0_0.util.MFAFIDO2CredentialEntryTable;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.Validator;
@@ -52,35 +50,25 @@ public class MFAFIDO2CredentialUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _createIndexes() throws Exception {
-		try {
-			runSQL(
-				"create unique index IX_F2E36027 on MFAFIDO2CredentialEntry (" +
-					"userId, credentialKeyHash)");
-			runSQL(
-				"create index IX_A95911A1 on MFAFIDO2CredentialEntry (" +
-					"credentialKeyHash)");
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception, exception);
-			}
-		}
+		runSQLTemplateString(
+			"create unique index IX_F2E36027 on MFAFIDO2CredentialEntry (" +
+				"userId, credentialKeyHash)",
+			false);
+		runSQLTemplateString(
+			"create index IX_A95911A1 on MFAFIDO2CredentialEntry (" +
+				"credentialKeyHash)",
+			false);
 	}
 
 	private void _dropIndexes() throws Exception {
-		try {
-			if (hasIndex("MFAFIDO2CredentialEntry", "IX_4C5F79F9")) {
-				runSQL("drop index IX_4C5F79F9 on MFAFIDO2CredentialEntry");
-			}
-
-			if (hasIndex("MFAFIDO2CredentialEntry", "IX_2B0CF873")) {
-				runSQL("drop index IX_2B0CF873 on MFAFIDO2CredentialEntry");
-			}
+		if (hasIndex("MFAFIDO2CredentialEntry", "IX_4C5F79F9")) {
+			runSQLTemplateString(
+				"drop index IX_4C5F79F9 on MFAFIDO2CredentialEntry", false);
 		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception, exception);
-			}
+
+		if (hasIndex("MFAFIDO2CredentialEntry", "IX_2B0CF873")) {
+			runSQLTemplateString(
+				"drop index IX_2B0CF873 on MFAFIDO2CredentialEntry", false);
 		}
 	}
 
@@ -128,8 +116,5 @@ public class MFAFIDO2CredentialUpgradeProcess extends UpgradeProcess {
 			preparedStatement.execute();
 		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		MFAFIDO2CredentialUpgradeProcess.class);
 
 }
